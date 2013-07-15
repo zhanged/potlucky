@@ -51,10 +51,18 @@ describe "UserPages" do
 
   describe "profile page" do
     let(:user) { FactoryGirl.create(:user) }
+    let!(:g1) { FactoryGirl.create(:gather, user: user, activity: "Foo") }
+    let!(:g2) { FactoryGirl.create(:gather, user: user, activity: "Bar") }
+    
     before { visit user_path(user) }
 
     it { should have_content(user.name) }
     it { should have_title(user.name) }
+
+    describe "gathers" do
+      it { should have_content(g1.activity) }
+      it { should have_content(g2.activity) }
+    end
   end
 
   describe "signup page" do

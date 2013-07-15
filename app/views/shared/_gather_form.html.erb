@@ -1,0 +1,10 @@
+<%= form_for(@gather) do |f| %>
+	<%= render 'shared/error_messages', object: f.object %>
+	<div class="field">
+		<%= f.text_field :activity, placeholder: "What" %>
+		<%= f.text_area :details, placeholder: "Details" %>	
+		<%= f.text_area :invited, placeholder: "Who" %>
+		<%= f.number_field :tilt, placeholder: "Tilt" %>
+	</div>
+	<%= f.submit "Gather", class: "btn btn-large btn-primary" %>
+<% end %>

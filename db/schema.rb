@@ -11,7 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130708204622) do
+ActiveRecord::Schema.define(version: 20130711221518) do
+
+  create_table "gathers", force: true do |t|
+    t.string   "activity"
+    t.string   "invited"
+    t.string   "location"
+    t.string   "date"
+    t.string   "time"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "details"
+    t.integer  "tilt"
+  end
+
+  add_index "gathers", ["user_id", "created_at"], name: "index_gathers_on_user_id_and_created_at"
 
   create_table "users", force: true do |t|
     t.string   "name"

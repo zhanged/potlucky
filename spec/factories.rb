@@ -9,4 +9,15 @@ FactoryGirl.define do
 			admin true
 		end
 	end
+
+	factory :gather do
+		activity "Lorem ipsum"
+		invited "SF Friends"
+      	location "Ladies of Avalon"
+      	date "July 15"
+      	time "7-10pm"
+      	details "lorem ipsum"
+      	tilt "5"
+		user
+	end
 end

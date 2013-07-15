@@ -1,0 +1,20 @@
+<li>
+	  <span class="activity"><%= gather.activity %></span>
+	  <span class="details"><%= gather.details %></span> 
+	  <span class="invited"><%= gather.invited %></span>
+	  <span class="tilt"><%= gather.tilt %></span>
+	<!-- <span class="dateandtime">
+		<%= gather.date %>
+		<% if gather.time != "" %>
+			@ <%= gather.time %>
+		<% end %>
+	</span> -->
+	<span class="timestamp">
+		Posted <%= time_ago_in_words(gather.created_at) %> ago.
+	</span>
+	<% if current_user?(gather.user) %>
+    <%= link_to "delete", gather, method: :delete,
+                                     data: { confirm: "You sure?" },
+                                     title: gather.activity %>
+  	<% end %>
+</li>
