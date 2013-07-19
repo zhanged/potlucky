@@ -6,21 +6,15 @@ describe Gather do
   before do
   	@gather = user.gathers.build(
   		activity: "Potluck", 
-  		invited: "SF Friends",
-      	location: "Ladies of Avalon",
-      	date: "July 15",
-      	time: "7-10pm",
+  		invited: "user1@example.com; user2@example.com,user3@example.com",
   		details: "lorem ipsum",
-  		tilt: "5")
+  		tilt: 2)
   end
 
   subject { @gather }
 
   it { should respond_to(:activity) }
   it { should respond_to(:invited) }
-  it { should respond_to(:location) }
-  it { should respond_to(:date) }
-  it { should respond_to(:time) }
   it { should respond_to(:details) }
   it { should respond_to(:tilt) }
   its(:user) { should eq user }
@@ -40,5 +34,10 @@ describe Gather do
   describe "with activity name that is too long" do
   	before { @gather.activity = "a" * 41 }
   	it { should_not be_valid }
+  end
+
+  describe "with tilt that is greater than emails" do
+    before { @gather.tilt = 2 + @gather.invited.count("@") }
+    it { should_not be_valid }
   end
 end

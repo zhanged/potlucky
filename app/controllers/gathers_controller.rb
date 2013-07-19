@@ -8,7 +8,8 @@ class GathersController < ApplicationController
 			flash[:success] = "Gathering created!"
 			redirect_to root_url
 		else
-			@feed_items = []		
+			
+			@feed_items = current_user.feed.paginate(page: params[:page])#[]		
 			render 'static_pages/home'
 		end
 	end
