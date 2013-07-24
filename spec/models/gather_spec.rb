@@ -17,6 +17,11 @@ describe Gather do
   it { should respond_to(:invited) }
   it { should respond_to(:details) }
   it { should respond_to(:tilt) }
+  it { should respond_to(:invitations) }
+  it { should respond_to(:invitees) }
+  it { should respond_to(:invited_already?) }
+  it { should respond_to(:invite!) }
+  it { should respond_to(:uninvite!) }
   its(:user) { should eq user }
 
   it { should be_valid }
@@ -39,5 +44,23 @@ describe Gather do
   describe "with tilt that is greater than emails" do
     before { @gather.tilt = 2 + @gather.invited.count("@") }
     it { should_not be_valid }
+  end
+
+  describe "inviting" do
+    let(:other_user) { FactoryGirl.create(:user) }
+    before do
+      @gather.save
+      @gather.invite!(other_user)
+    end
+
+    it { should be_invited_already(other_user) }
+    its(:invitees) { should include(other_user) }
+
+    describe "and unfollowing" do
+      before { @gather.uninvite!(other_user) }
+
+      it { should_not be_invited_already(other_user) }
+      its(:invitees) { should_not include(other_user) }
+    end
   end
 end

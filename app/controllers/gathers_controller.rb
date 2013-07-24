@@ -9,7 +9,7 @@ class GathersController < ApplicationController
 			redirect_to root_url
 		else
 			
-			@feed_items = current_user.feed.paginate(page: params[:page])#[]		
+			@feed_items = current_user.feed.paginate(page: params[:page]) #Also in static_pages_controller, needed here so show feed during error
 			render 'static_pages/home'
 		end
 	end

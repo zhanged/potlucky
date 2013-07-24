@@ -18,6 +18,8 @@ describe User do
 	it { should respond_to(:admin) }
 	it { should respond_to(:gathers) }
 	it { should respond_to(:feed) }
+	it { should respond_to(:reverse_invitations) }
+	it { should respond_to(:gatherings) }
 
 	it { should be_valid }
 	it { should_not be_admin }
@@ -133,13 +135,31 @@ describe User do
 		end
 
 		describe "status" do
-			let(:unfollowed_gather) do
-				FactoryGirl.create(:gather, user: FactoryGirl.create(:user))
+			let(:half_friend) { FactoryGirl.create(:user) }			
+			let(:uninvited_gather) { FactoryGirl.create(:gather, user: half_friend) }
+			let(:invited_gather) { FactoryGirl.create(:gather, user: half_friend) }				
+
+			before do
+				invited_gather.invite!(@user)
 			end
 
 			its(:feed) { should include(newer_gather) }
 			its(:feed) { should include(older_gather) }
-			its(:feed) { should_not include(unfollowed_gather) }
+			its(:feed) { should_not include(uninvited_gather) }
+			its(:feed) { should include(invited_gather) }
 		end
 	end
+
+	describe "invited" do
+		let(:other_user) { FactoryGirl.create(:user) }
+		let(:other_gather) { FactoryGirl.create(:gather, user: other_user) }
+		before do
+			@user.save
+			other_gather.save
+			other_gather.invite!(@user)
+		end
+
+		its(:gatherings) { should include(other_gather) }
+	end
+
 end

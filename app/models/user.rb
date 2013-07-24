@@ -1,5 +1,8 @@
 class User < ActiveRecord::Base
 	has_many :gathers, dependent: :destroy
+	belongs_to :invitation, foreign_key: "invitee_id"
+	has_many :reverse_invitations, foreign_key: "invitee_id", class_name: "Invitation"
+	has_many :gatherings, through: :reverse_invitations
 	before_save { self.email = email.downcase }
 	before_create :create_remember_token
 	validates :name, 	presence: true, length: { maximum: 50 }
@@ -17,8 +20,7 @@ class User < ActiveRecord::Base
 	end
 
 	def feed
-		# this is preliminary. see "following users" for full implementation
-		Gather.where("user_id = ?", id)
+		Gather.from_gathers_invited_to(self)
 	end
 
 	private

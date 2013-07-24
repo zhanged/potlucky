@@ -1,14 +1,14 @@
 <li>
-	  <span class="activity"><%= gather.activity %></span>
-	  <span class="details"><%= gather.details %></span> 
-	  <span class="invited"><%= gather.invited %></span>
-	  <span class="tilt"><%= gather.tilt %></span>
-	<!-- <span class="dateandtime">
-		<%= gather.date %>
-		<% if gather.time != "" %>
-			@ <%= gather.time %>
+	<span class="activity"><%= gather.activity %></span>
+	<span class="details"><%= gather.details %></span> 
+<!-- 	<span class="invited"><%= gather.invited %></span> -->
+	<span><div class="user_avatars">
+		<% gather.invitees.each do |invitee| %>
+		<%= link_to gravatar_for(invitee, size:30), invitee %>
 		<% end %>
-	</span> -->
+	</div>
+	</span>
+	<span class="tilt"><%= gather.tilt %></span>
 	<span class="timestamp">
 		Posted <%= time_ago_in_words(gather.created_at) %> ago.
 	</span>

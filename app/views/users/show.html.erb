@@ -2,18 +2,26 @@
 <div class="row">
   <aside class="span4">
     <section>
-      <h1>
-        <%= gravatar_for @user %>
-        <%= @user.name %>
-      </h1>
+	    <%= gravatar_for @user %>
+	    <h1><%= @user.name %></h1>      
+		<span>
+		</span>
+		<span>
+		  <%= pluralize(@user.gathers.count, "gathering") %> created
+		</span>
+		<span>
+		  <%= @user.gatherings.count %> invited to
+		</span>
+      
     </section>
   </aside>
 	<div class="span8">
-		<% if @user.gathers.any? %>
+		
 			<ol class="gathers">
-				<%= render @gathers %>
+				<% @userfeed = @user.feed.paginate(page: params[:page]) %>
+				<%= render partial: 'shared/feed_item', collection: @userfeed %>
 			</ol>
-			<%= will_paginate @gathers %>
-		<% end %>
+			<%= will_paginate @userfeed %>
+		
 	</div>
 </div>

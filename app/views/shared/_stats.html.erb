@@ -1,0 +1,7 @@
+<% @user ||= current_user %>
+<div class="stats">
+      <%= @user.gathers.count %>
+    gatherings created,
+      <%= @user.gatherings.count %>
+    invited to
+</div>

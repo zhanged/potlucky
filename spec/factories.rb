@@ -12,11 +12,8 @@ FactoryGirl.define do
 
 	factory :gather do
 		activity "Lorem ipsum"
-		invited "friend1@gmail.com, friend2@gmail.com, friend3@gmail.com"
-#      	location "Ladies of Avalon"
- #     	date "July 15"
-  #    	time "7-10pm"
-      	details "lorem ipsum"
+		invited "person_92@example.com, person_103@example.com, person_54@example.com"
+      	details "the details"
       	tilt "4"
 		user
 	end
