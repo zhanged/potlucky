@@ -23,6 +23,18 @@ class User < ActiveRecord::Base
 		Gather.from_gathers_invited_to(self)
 	end
 
+	def join?(invitation_id)
+		Invitation.find_by(id: invitation_id).status.include?("Yes")
+	end
+
+	def join!(invitation_id)
+		Invitation.find_by(id: invitation_id).update(status: "Yes")
+	end
+
+	def unjoin!(invitation_id)
+		Invitation.find_by(id: invitation_id).update(status: "NA")
+	end
+
 	private
 
 		def create_remember_token

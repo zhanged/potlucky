@@ -1,0 +1,7 @@
+<% if current_page?(root_url) %>
+	<% if Invitation.find_by(invitee: current_user, gathering: feed_item).status == "NA" %>
+		<%= render 'shared/join', :feed_item => feed_item  %>
+	<% else %>
+		<%= render 'shared/unjoin', :feed_item => feed_item   %>
+	<% end %>
+<% end %>

@@ -20,6 +20,8 @@ describe User do
 	it { should respond_to(:feed) }
 	it { should respond_to(:reverse_invitations) }
 	it { should respond_to(:gatherings) }
+	it { should respond_to(:join!) }
+	it { should respond_to(:unjoin!) }
 
 	it { should be_valid }
 	it { should_not be_admin }
@@ -160,6 +162,21 @@ describe User do
 		end
 
 		its(:gatherings) { should include(other_gather) }
-	end
 
+		describe "and joining" do
+			before do 
+				@user.join!(other_gather)
+			end
+
+			it { should be_join(other_gather) }
+
+			describe "and then unjoining" do
+				before do 
+					@user.unjoin!(other_gather)
+				end
+
+				it { should_not be_join(other_gather) }				
+			end
+		end
+	end
 end

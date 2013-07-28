@@ -7,6 +7,8 @@
 	<% end %>
 	</div></span>
 	<span class="tilt"><%= feed_item.tilt %></span>
+	<span><%= render 'shared/join_form', :feed_item => feed_item %>
+	</span>
  	<span class="timestamp">
 	Created by <%= feed_item.user.name %> <%= time_ago_in_words(feed_item.created_at) %> ago.
 	</span>

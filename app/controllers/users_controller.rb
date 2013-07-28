@@ -23,7 +23,7 @@ class UsersController < ApplicationController
     if @user.update_attributes(user_params)
       flash[:success] = "Profile updated"
       sign_in @user
-      redirect_to @user
+      redirect_to(root_path)
     else
       render 'edit'
     end
@@ -34,7 +34,7 @@ class UsersController < ApplicationController
     if @user.save
       sign_in @user
       flash[:success] = "Welcome to Potlucky!"
-      redirect_to @user
+      redirect_to(root_path)
     else
       render 'new'
     end

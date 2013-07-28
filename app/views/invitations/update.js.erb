@@ -1,0 +1,5 @@
+<% if Invitation.find_by(id: params["id"]).status == "NA" -%>
+	$("#join_form").html("<%= escape_javascript(render('shared/unjoin', feed_item = feed_item)) %>")
+<% else -%>
+	$("#join_form").html("<%= escape_javascript(render('shared/join')) %>")
+<% end -%>
