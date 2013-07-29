@@ -6,7 +6,14 @@
 		<%= link_to gravatar_for(invitee, size:30), invitee %>
 	<% end %>
 	</div></span>
-	<span class="tilt"><%= feed_item.tilt %></span>
+	<span class="tilt">
+		<% if feed_item.num_joining >= feed_item.tilt %>
+			<b><i><%= "It's on!" %></i></b>
+		<% else %>
+
+		<% end %> 
+		<%= feed_item.num_joining %> joining, <%= feed_item.tilt %> to tilt 		
+	</span>
 	<span><%= render 'shared/join_form', :feed_item => feed_item %>
 	</span>
  	<span class="timestamp">

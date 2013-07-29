@@ -28,11 +28,17 @@ class User < ActiveRecord::Base
 	end
 
 	def join!(invitation_id)
-		Invitation.find_by(id: invitation_id).update(status: "Yes")
+		this_invitation = Invitation.find_by(id: invitation_id)
+		this_invitation.update(status: "Yes")
+		this_gather_id = Gather.find_by(id: this_invitation.gathering_id).id
+		Gather.increment_counter(:num_joining, this_gather_id)
 	end
 
 	def unjoin!(invitation_id)
-		Invitation.find_by(id: invitation_id).update(status: "NA")
+		this_invitation = Invitation.find_by(id: invitation_id)
+		this_invitation.update(status: "NA")
+		this_gather_id = Gather.find_by(id: this_invitation.gathering_id).id
+		Gather.decrement_counter(:num_joining, this_gather_id)
 	end
 
 	private

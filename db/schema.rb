@@ -23,7 +23,9 @@ ActiveRecord::Schema.define(version: 20130720215951) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "details"
-    t.integer  "tilt"
+    t.integer  "tilt",        default: 1
+    t.integer  "num_invited"
+    t.integer  "num_joining", default: 1
   end
 
   add_index "gathers", ["user_id", "created_at"], name: "index_gathers_on_user_id_and_created_at"

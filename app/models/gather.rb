@@ -18,6 +18,7 @@ class Gather < ActiveRecord::Base
 				invite!(User.create!(name: invitee.split('@').first, email: invitee, password: "foobar", password_confirmation: "foobar"))
 			end
 		end
+		self.num_invited = invitees.count
 		invitations.find_by(invitee_id: user.id).update(status: "Yes")
 	end
 
