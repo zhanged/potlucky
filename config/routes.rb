@@ -9,6 +9,7 @@ Potlucky::Application.routes.draw do
   match '/signout', to: 'sessions#destroy',    via: 'delete'
   match '/help',    to: 'static_pages#help',   via: 'get'
   match '/about',   to: 'static_pages#about',  via: 'get'
+  get "sms-quickstart"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
