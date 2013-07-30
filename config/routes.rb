@@ -1,4 +1,6 @@
 Potlucky::Application.routes.draw do
+  get "twilio/firstsms"
+  get "twilio/respond"
   resources :users
   resources :sessions, only: [:new, :create, :destroy]
   resources :gathers,  only: [:create, :destroy]
