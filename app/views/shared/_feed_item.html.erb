@@ -1,6 +1,5 @@
 <li id="<%= feed_item.id %>">
 	<span class="activity"><%= feed_item.activity %></span>
-	<span class="details"><%= feed_item.details %></span>
 	<span class="invited"><div class="user_avatars">
 	<% feed_item.invitees.each do |invitee| %>
 		<%= link_to gravatar_for(invitee, size:30), invitee %>

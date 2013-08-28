@@ -6,7 +6,7 @@ class Gather < ActiveRecord::Base
 		self.invited = (user.email + ", " + invited).downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.join(", ")
 	end
 	default_scope -> { order('gathers.created_at DESC') }
-	validates :activity, presence: true, length: { maximum: 40 }
+	validates :activity, presence: true, length: { maximum: 80 }
 	validates :user_id, presence: true
 	validate :tilt_must_fall_in_range_of_invited, unless: "tilt.nil?"
 	after_create do
@@ -20,6 +20,18 @@ class Gather < ActiveRecord::Base
 		end
 		self.num_invited = invitees.count
 		invitations.find_by(invitee_id: user.id).update(status: "Yes")
+	end
+	after_create :text_confirmation
+
+	def text_confirmation
+		account_sid = "ACbb2447b2100021b9e65920128431f756"
+		auth_token = "2ff59ce4c8f6b6b6eb871c61d9f9fc50"
+		@client = Twilio::REST::Client.new account_sid, auth_token
+		 
+		message = @client.account.sms.messages.create(:body => "You've created a new gathering!",
+		    :to => "+13476032899",
+		    :from => "+14154231000")
+		puts message.from
 	end
 
 	def invited_already?(other_user)
