@@ -21,17 +21,18 @@ class Gather < ActiveRecord::Base
 		self.num_invited = invitees.count
 		invitations.find_by(invitee_id: user.id).update(status: "Yes")
 	end
-	after_create :text_confirmation
+	after_save :text_upon_tilt
 
-	def text_confirmation
-		account_sid = "ACbb2447b2100021b9e65920128431f756"
-		auth_token = "2ff59ce4c8f6b6b6eb871c61d9f9fc50"
-		@client = Twilio::REST::Client.new account_sid, auth_token
-		 
-		message = @client.account.sms.messages.create(:body => "You've created a new gathering!",
-		    :to => "+13476032899",
-		    :from => "+14154231000")
-		puts message.from
+	def text_upon_tilt
+		if num_joining == tilt
+			account_sid = "ACbb2447b2100021b9e65920128431f756"
+			auth_token = "2ff59ce4c8f6b6b6eb871c61d9f9fc50"
+			@client = Twilio::REST::Client.new account_sid, auth_token
+			 
+			message = @client.account.sms.messages.create(:body => "Your gathering has tilted!",
+			    :to => "+13476032899",
+			    :from => "+14154231000")
+			puts message.from
 	end
 
 	def invited_already?(other_user)
