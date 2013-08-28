@@ -33,6 +33,7 @@ class Gather < ActiveRecord::Base
 			    :to => "+13476032899",
 			    :from => "+14154231000")
 			puts message.from
+		end
 	end
 
 	def invited_already?(other_user)
