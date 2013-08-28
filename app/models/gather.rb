@@ -48,6 +48,12 @@ class Gather < ActiveRecord::Base
 		invitations.find_by(invitee_id: other_user.id).destroy
 	end
 
+#	def increase_num_joining!(invitation_id)
+#		this_invitation = Invitation.find_by(id: invitation_id)
+#		this_gather_id = Gather.find_by(id: this_invitation.gathering_id).id
+#		Gather.increment_counter(:num_joining, this_gather_id)
+#	end
+
 	def tilt_must_fall_in_range_of_invited		
 		if tilt < 0 || tilt > (invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.count + 1)
 			errors.add(:tilt, "- Invite #{tilt - invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.count - 1} more people for tilt to be valid")

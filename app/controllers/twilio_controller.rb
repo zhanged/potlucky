@@ -1,13 +1,7 @@
 class TwilioController < ApplicationController
-  def firstsms
-  end
-
-  def respond
-  	get '/sms-quickstart' do
-  twiml = Twilio::TwiML::Response.new do |r|
-    r.Sms "Hey Monkey. Thanks for the message!"
-  end
-  twiml.text
-end
-  end
+	BASE_URL = "http://serene-journey-3919.herokuapp.com/twilio/respond"
+  
+    def respond
+    	render 'twilio_test.xml.erb', :content_type => 'text/xml'
+	end
 end

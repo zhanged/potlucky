@@ -3,7 +3,7 @@ Potlucky::Application.routes.draw do
   get "twilio/respond"
   resources :users
   resources :sessions, only: [:new, :create, :destroy]
-  resources :gathers,  only: [:create, :destroy]
+  resources :gathers,  only: [:create, :update, :destroy]
   resources :invitations, only: [:create, :update, :destroy]
   root to: 'static_pages#home'
   match '/signup',  to: 'users#new',           via: 'get'

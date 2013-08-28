@@ -5,6 +5,7 @@
 		<%= link_to gravatar_for(invitee, size:30), invitee %>
 	<% end %>
 	</div></span>
+	<span class="timestamp"><%= feed_item.invited %></span>
 	<span class="tilt">
 		<% if feed_item.num_joining >= feed_item.tilt %>
 			<b><i><%= "It's on!" %></i></b>
