@@ -21,7 +21,7 @@ class Gather < ActiveRecord::Base
 		self.num_invited = invitees.count
 		invitations.find_by(invitee_id: user.id).update(status: "Yes")
 	end
-	after_save :text_upon_tilt
+	after_update :text_upon_tilt
 
 	def text_upon_tilt
 		if num_joining == tilt
