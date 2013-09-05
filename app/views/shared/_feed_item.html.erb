@@ -5,14 +5,16 @@
 		<%= link_to gravatar_for(invitee, size:30), invitee %>
 	<% end %>
 	</div></span>
-	<span class="timestamp"><%= feed_item.invited %></span>
+	<span class="timestamp"><b><%= feed_item.invited_yes %></b><%= feed_item.invited_no %></span>
 	<span class="tilt">
-		<% if feed_item.num_joining >= feed_item.tilt %>
-			<b><i><%= "It's on!" %></i></b>
+		<% if feed_item.tilt == nil %>
+		<%= feed_item.num_joining %> joining
 		<% else %>
-
+			<% if feed_item.num_joining >= feed_item.tilt %>
+				<b><i><%= "It's on!" %></i></b>
+			<% end %>
+			<%= feed_item.num_joining %> joining, <%= feed_item.tilt %> to tilt
 		<% end %> 
-		<%= feed_item.num_joining %> joining, <%= feed_item.tilt %> to tilt 		
 	</span>
 	<span><%= render 'shared/join_form', :feed_item => feed_item %>
 	</span>

@@ -4,10 +4,12 @@ class User < ActiveRecord::Base
 	has_many :reverse_invitations, foreign_key: "invitee_id", class_name: "Invitation"
 	has_many :gatherings, through: :reverse_invitations
 	before_save { self.email = email.downcase }
+	before_validation { self.phone = phone.gsub(/\D/,'') }
 	before_create :create_remember_token
 	validates :name, 	presence: true, length: { maximum: 50 }
 	VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-	validates :email, 	presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
+	validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
+	validates :phone, presence: true, length: { is: 10 }
 	has_secure_password
 	validates :password, length: { minimum: 6 }
 
@@ -30,15 +32,15 @@ class User < ActiveRecord::Base
 	def join!(invitation_id)
 		this_invitation = Invitation.find_by(id: invitation_id)
 		this_invitation.update(status: "Yes")
-		this_gather_id = Gather.find_by(id: this_invitation.gathering_id).id
-		Gather.increment_counter(:num_joining, this_gather_id)
+#		this_gather_id = Gather.find_by(id: this_invitation.gathering_id).id
+#		Gather.increment_counter(:num_joining, this_gather_id)
 	end
 
 	def unjoin!(invitation_id)
 		this_invitation = Invitation.find_by(id: invitation_id)
 		this_invitation.update(status: "NA")
-		this_gather_id = Gather.find_by(id: this_invitation.gathering_id).id
-		Gather.decrement_counter(:num_joining, this_gather_id)
+#		this_gather_id = Gather.find_by(id: this_invitation.gathering_id).id
+#		Gather.decrement_counter(:num_joining, this_gather_id)
 	end
 
 	private
