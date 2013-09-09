@@ -18,7 +18,7 @@ class Gather < ActiveRecord::Base
 			if User.where(email: invitee).present?
 				invite!(User.find_by(email: invitee))
 			else
-				invite!(User.create!(name: invitee.split('@').first, email: invitee, phone: "0000000000", password: "foobar", password_confirmation: "foobar"))
+				invite!(User.create!(email: invitee))
 			end
 		end
 		invitations.find_by(invitee_id: user.id).update(status: "Yes")
@@ -45,9 +45,7 @@ class Gather < ActiveRecord::Base
 		@gather.update_attributes(invited_yes: (@gather.invited_yes + " " + @joining_user.email))
 		@gather.update_attributes(invited_no: @gather.invited_no.sub(@joining_user.email,''))
 		
-		account_sid = "ACbb2447b2100021b9e65920128431f756"
-		auth_token = "2ff59ce4c8f6b6b6eb871c61d9f9fc50"
-		@client = Twilio::REST::Client.new account_sid, auth_token
+		@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 			
 		if @gather.num_joining == @gather.tilt			 
 			message = @client.account.sms.messages.create(
@@ -73,9 +71,11 @@ class Gather < ActiveRecord::Base
 		@gather.update_attributes(invited_no: (@gather.invited_no + " " + @unjoining_user.email))
 		@gather.update_attributes(invited_yes: @gather.invited_yes.sub(@unjoining_user.email,''))
 
-		account_sid = "ACbb2447b2100021b9e65920128431f756"
-		auth_token = "2ff59ce4c8f6b6b6eb871c61d9f9fc50"
-		@client = Twilio::REST::Client.new account_sid, auth_token
+#		account_sid = "ACbb2447b2100021b9e65920128431f756"
+#		auth_token = "2ff59ce4c8f6b6b6eb871c61d9f9fc50"
+#		@client = Twilio::REST::Client.new account_sid, auth_token
+		@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+
 
 		if (@gather.num_joining + 1) >= @gather.tilt			 
 			message = @client.account.sms.messages.create(
