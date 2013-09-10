@@ -14,7 +14,7 @@ class Gather < ActiveRecord::Base
 	after_create do
 		invitees = invited.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
 		invitees.each do |invitee|
-			if User.where(email: invitee).present?
+			if User.find_by(email: invitee).present?
 				@user = User.find_by(email: invitee)
 				invite!@user
 				@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: self.id)
