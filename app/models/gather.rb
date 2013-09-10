@@ -3,6 +3,7 @@ class Gather < ActiveRecord::Base
 	has_many :invitations, foreign_key: "gathering_id", dependent: :destroy
 	has_many :invitees, through: :invitations
 	before_create do
+		self.invited = invited.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.join(" ")
 		self.invited_yes = user.email
 		self.invited_no = invited
 	end
@@ -25,21 +26,22 @@ class Gather < ActiveRecord::Base
 				    from: "+14154231000")
 					puts message.from
 				else
-					UserMailer.invitation_email(@user, self, @invitation).deliver
+					UserMailer.invitation_email(@user, self, @invitation, user).deliver
 				end
 			else
 				invite!(User.create!(email: invitee))
 				@user = User.find_by(email: invitee)
 				@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: self.id)
-				UserMailer.invitation_email(@user, self, @invitation).deliver
+				UserMailer.invitation_email(@user, self, @invitation, user).deliver
 			end
 		end
 		
-		self.invited = (user.email + " " + invited).downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.join(" ")
+		self.update_attributes(invited: (user.email + " " + invited))
+		self.update_attributes(num_invited: invitees.count + 1)
 		invite!user
-		self.num_invited = invitees.count
-
 		invitations.find_by(invitee_id: user.id).update(status: "Yes")
+		self.update_attributes(num_joining: 1)
+
 	end
 
 	def invited_already?(other_user)

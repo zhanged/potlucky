@@ -10,8 +10,10 @@ class TwilioController < ApplicationController
     		Invitation.find_by(id: @invitation_id).update
     		if Invitation.find_by(id: @invitation_id) == "Yes"
 				render 'joined.xml.erb', :content_type => 'text/xml'
+				puts "Just joined!"
 			elsif Invitation.find_by(id: @invitation_id) == "NA"
 				render 'unjoined.xml.erb', :content_type => 'text/xml'
+				puts "Just unjoined!"
 			end
     	else
     		@invitee_id = Invitation.find_by(id: @invitation_id).invitee_id
@@ -20,8 +22,10 @@ class TwilioController < ApplicationController
     		Invitation.find_by(id: @invitation_id).update
     		if Invitation.find_by(id: @invitation_id) == "Yes"
 				render 'joined.xml.erb', :content_type => 'text/xml'
+				puts "Just joined!"
 			elsif Invitation.find_by(id: @invitation_id) == "NA"
 				render 'unjoined.xml.erb', :content_type => 'text/xml'
+				puts "Just unjoined!"
 			end
     	end
 #    	render 'twilio_test.xml.erb', :content_type => 'text/xml'
