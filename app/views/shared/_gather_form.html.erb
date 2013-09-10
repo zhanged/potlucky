@@ -3,7 +3,7 @@
 	<div class="field">
 		<%= f.text_field :activity, placeholder: "Potluck dinner!" %>
 		<%= f.text_area :invited, placeholder: "friend1@gmail.com, friend2@gmail.com..." %>
-		<%= f.number_field :tilt, placeholder: "# of friends to critical mass (including you)" %>
+		<%= f.number_field :tilt, placeholder: "# of add'l friends to critical mass" %>
 	</div>
 	<%= f.submit "Gather", class: "btn btn-large btn-primary" %>
 <% end %>

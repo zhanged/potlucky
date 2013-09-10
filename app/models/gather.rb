@@ -3,10 +3,8 @@ class Gather < ActiveRecord::Base
 	has_many :invitations, foreign_key: "gathering_id", dependent: :destroy
 	has_many :invitees, through: :invitations
 	before_create do
-		self.invited = (user.email + " " + invited).downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.join(" ")
 		self.invited_yes = user.email
-		self.invited_no = invited.sub(user.email,'')
-		self.num_invited = invitees.count
+		self.invited_no = invited
 	end
 	default_scope -> { order('gathers.created_at DESC') }
 	validates :activity, presence: true, length: { maximum: 80 }
@@ -16,11 +14,31 @@ class Gather < ActiveRecord::Base
 		invitees = invited.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
 		invitees.each do |invitee|
 			if User.where(email: invitee).present?
-				invite!(User.find_by(email: invitee))
+				@user = User.find_by(email: invitee)
+				invite!@user
+				@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: self.id)
+				if @user.phone.present?
+					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+					message = @client.account.sms.messages.create(
+					body: "#{user.name} has invited you to #{activity}! #{tilt} friends to tilt - to join, reply YES#{@invitation.id}",
+				    to: @user.phone,
+				    from: "+14154231000")
+					puts message.from
+				else
+					UserMailer.invitation_email(@user, self, @invitation).deliver
+				end
 			else
 				invite!(User.create!(email: invitee))
+				@user = User.find_by(email: invitee)
+				@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: self.id)
+				UserMailer.invitation_email(@user, self, @invitation).deliver
 			end
 		end
+		
+		self.invited = (user.email + " " + invited).downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.join(" ")
+		invite!user
+		self.num_invited = invitees.count
+
 		invitations.find_by(invitee_id: user.id).update(status: "Yes")
 	end
 
@@ -47,13 +65,13 @@ class Gather < ActiveRecord::Base
 		
 		@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 			
-		if @gather.num_joining == @gather.tilt			 
+		if @gather.num_joining == (@gather.tilt + 1)			 
 			message = @client.account.sms.messages.create(
 				body: "Yes! Your gathering #{@gather.activity} has tilted with #{@gather.invited_yes}!",
 			    to: @gather.user.phone,
 			    from: "+14154231000")
 			puts message.from
-		elsif @gather.num_joining > @gather.tilt
+		elsif @gather.num_joining > (@gather.tilt + 1)
 			message = @client.account.sms.messages.create(
 				body: "Looks like #{@joining_user.email} is also joining your gathering #{@gather.activity}!",
 			    to: @gather.user.phone,
@@ -71,13 +89,9 @@ class Gather < ActiveRecord::Base
 		@gather.update_attributes(invited_no: (@gather.invited_no + " " + @unjoining_user.email))
 		@gather.update_attributes(invited_yes: @gather.invited_yes.sub(@unjoining_user.email,''))
 
-#		account_sid = "ACbb2447b2100021b9e65920128431f756"
-#		auth_token = "2ff59ce4c8f6b6b6eb871c61d9f9fc50"
-#		@client = Twilio::REST::Client.new account_sid, auth_token
 		@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 
-
-		if (@gather.num_joining + 1) >= @gather.tilt			 
+		if @gather.num_joining >= @gather.tilt			 
 			message = @client.account.sms.messages.create(
 				body: "Bad news bears: looks like #{@unjoining_user.email} won't be joining your gathering #{@gather.activity} anymore :(",
 			    to: @gather.user.phone,
@@ -87,8 +101,8 @@ class Gather < ActiveRecord::Base
 	end
 
 	def tilt_must_fall_in_range_of_invited		
-		if tilt < 0 || tilt > (invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.count + 1)
-			errors.add(:tilt, "- Invite #{tilt - invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.count - 1} more people for tilt to be valid")
+		if tilt < 0 || tilt > (invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.count)
+			errors.add(:tilt, "- Invite #{tilt - invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.count} more people for tilt to be valid")
 			# Need to add error message for negative tilt inputs
 		end
 	end
