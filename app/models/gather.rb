@@ -57,14 +57,13 @@ class Gather < ActiveRecord::Base
 	end
 
 	def increase_num_joining!(invitation_id)
-		this_invitation = Invitation.find_by(id: invitation_id)
-		this_gather_id = Gather.find_by(id: this_invitation.gathering_id).id
-		Gather.increment_counter(:num_joining, this_gather_id)
-		@gather = Gather.find_by(id: this_invitation.gathering_id)
-		@joining_user = User.find_by(id: this_invitation.invitee_id)
+		@this_invitation = Invitation.find_by(id: invitation_id)
+		Gather.increment_counter(:num_joining, @this_invitation.gathering_id)
+		@gather = Gather.find_by(id: @this_invitation.gathering_id)
+		@joining_user = User.find_by(id: @this_invitation.invitee_id)
 		@gather.update_attributes(invited_yes: (@gather.invited_yes + " " + @joining_user.email))
 		@gather.update_attributes(invited_no: @gather.invited_no.sub(@joining_user.email,''))
-		
+
 		@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 			
 		if @gather.num_joining == (@gather.tilt + 1)			 
@@ -83,17 +82,14 @@ class Gather < ActiveRecord::Base
 	end
 
 	def decrease_num_joining!(invitation_id)
-		@this_invitation = Invitation.find_by(id: invitation_id)
-		puts 'line 1'
-		@this_gather_id = Gather.find_by(id: @this_invitation.gathering_id).id
-		puts 'line 2'
-		Gather.decrement_counter(:num_joining, @this_gather_id)
-		puts 'line 3'
+		@this_invitation = Invitation.find_by!(id: invitation_id)
+#		@this_gather_id = Gather.find_by!(id: @this_invitation.gathering_id).id
+#		@this_gather_id = Gather.this_invitation.id
+		Gather.decrement_counter(:num_joining, @this_invitation.gathering_id)
 		@gather = Gather.find_by(id: @this_invitation.gathering_id)
 		@unjoining_user = User.find_by(id: @this_invitation.invitee_id)
 		@gather.update_attributes(invited_no: (@gather.invited_no + " " + @unjoining_user.email))
 		@gather.update_attributes(invited_yes: @gather.invited_yes.sub(@unjoining_user.email,''))
-		puts 'line 4'
 
 		@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 
