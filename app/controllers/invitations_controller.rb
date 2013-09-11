@@ -14,14 +14,14 @@ class InvitationsController < ApplicationController
 		end
 	end
 
-	def update_for_text(invitation_id)
+	def update_for_text(invitation_id, texter)
 		@invitation = Invitation.find_by(id: invitation_id)
 		if @invitation.status == "NA"
-			current_user.join!(params["id"])
+			texter.join!(params["id"])
 			Gather.find_by(id: @invitation.gathering_id).increase_num_joining!(params["id"])
 			redirect_to root_url			
 		else
-			current_user.unjoin!(params["id"])
+			texter.unjoin!(params["id"])
 			Gather.find_by(id: @invitation.gathering_id).decrease_num_joining!(params["id"])
 			redirect_to root_url
 		end
