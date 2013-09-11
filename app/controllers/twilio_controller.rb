@@ -28,8 +28,10 @@ class TwilioController < ApplicationController
 
     	else
     		@invitee_id = Invitation.find_by(id: @invitation_id).invitee_id
-    		User.find_by(id: @invitee_id).update_attribute(phone: @formatted_phone)
-    		@user = User.find_by(phone: @formatted_phone)
+    		@user = User.find_by(id: @invitee_id)
+    		@user.phone = @formatted_phone
+    		@user.save(validate: false)
+    		#@user.update_attributes!(phone: @formatted_phone)
 
     		if @invitation.status == "NA"
 				@user.join!(@invitation_id)
