@@ -15,6 +15,13 @@ class TwilioController < ApplicationController
    	    	if @user.phone.blank?
 	   	    	@user.phone = @formatted_phone
 	    		@user.save(validate: false)
+	    	elsif (User.find_by(phone: @formatted_phone) != User.find_by(id: Invitation.find_by(id: @invitation_id).invitee_id))
+		    	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+				message = @client.account.sms.messages.create(
+					body: "Sorry, there has been an error",
+				    to: @from,
+				    from: @to)
+				puts message.from
    	    	end
 			
 			if @invitation.status == "NA"
@@ -52,8 +59,7 @@ class TwilioController < ApplicationController
 			@gather.update_attributes(details: ("#{@gather.details} #{Time.now.to_formatted_s(:db)} #{@user_name_or_email}: #{@body} "))
 
 		elsif (( @body.at(0.1) != "Y" && Invitation.find_by(number_used: @to, invitee_id: User.find_by(phone: @formatted_phone).id).blank? ) || 
-    		( @body.at(0.1) == "Y" && Invitation.find_by(id: @invitation_id).blank? ) || 
-    		( @body.at(0.1) == "Y" && (User.find_by(phone: @formatted_phone) != User.find_by(id: Invitation.find_by(id: @invitation_id).invitee_id)) ))
+    		( @body.at(0.1) == "Y" && Invitation.find_by(id: @invitation_id).blank? ))
     		
 			@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 			message = @client.account.sms.messages.create(
