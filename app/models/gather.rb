@@ -21,9 +21,9 @@ class Gather < ActiveRecord::Base
 				if @user.phone.present?
 					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 					message = @client.account.sms.messages.create(
-					body: "#{user.name} has invited you to #{activity}! #{tilt} friends to tilt - to join, reply YES#{@invitation.id}",
-				    to: @user.phone,
-				    from: "+14154231000")
+						body: "#{user.name} has invited you to #{activity}! #{tilt} friends to tilt - to join, reply Y#{@invitation.id}",
+					    to: @user.phone,
+					    from: "+14154231000")
 					puts message.from
 				else
 					UserMailer.invitation_email(@user, self, @invitation, user).deliver
@@ -63,42 +63,154 @@ class Gather < ActiveRecord::Base
 		@joining_user = User.find_by(id: @this_invitation.invitee_id)
 		@gather.update_attributes(invited_yes: (@gather.invited_yes + " " + @joining_user.email))
 		@gather.update_attributes(invited_no: @gather.invited_no.sub(@joining_user.email,''))
+		invited_yes_array = @gather.invited_yes.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
+		@people_joining_less_user = ""
+		if @joining_user.name.present?
+			@joining_user_name_or_email = @joining_user.name
+		else
+			@joining_user_name_or_email = @joining_user.email
+		end				
 
 		@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 			
-		if @gather.num_joining == (@gather.tilt + 1)			 
+		if @gather.num_joining < (@gather.tilt + 1)
 			message = @client.account.sms.messages.create(
-				body: "Yes! Your gathering #{@gather.activity} has tilted with #{@gather.invited_yes}!",
-			    to: @gather.user.phone,
-			    from: "+14154231000")
+				body: "Great! We've marked you down as joining #{@gather.activity}. Stay tuned - you'll get a text if this tilts...",
+			    to: @joining_user.phone,
+			    from: ENV['TWILIO_MAIN'])
 			puts message.from
+
+			@gather.update_attributes(details: ("#{@gather.details} #{Time.now.to_formatted_s(:db)} To #{@joining_user_name_or_email}: Great! We've marked you down as joining #{@gather.activity}. Stay tuned - you'll get a text if this tilts... "))
+
+		elsif @gather.num_joining == (@gather.tilt + 1)
+			invited_yes_array.each do |n|
+				invited_yes_user = User.find_by(email: n)
+				@invited_yes_user_invitation = Invitation.find_by(gathering_id: @gather.id, invitee_id: invited_yes_user.id)
+				if @invited_yes_user_invitation.number_used.nil?
+					all_numbers_used = invited_yes_user.reverse_invitations.pluck(:number_used)
+					@number_used = (ENV['TWILIO_NUMBERS'].split(" ") - all_numbers_used).sample
+					@invited_yes_user_invitation.update_attributes!(number_used: @number_used)
+				else
+					@number_used = @invited_yes_user_invitation.number_used
+				end
+
+				(invited_yes_array - (invited_yes_user.email.split(" "))).each do |n|
+					if invited_yes_user.name.present?
+						if @people_joining_less_user == ""
+							@people_joining_less_user = invited_yes_user.name
+						else
+							@people_joining_less_user = @people_joining_less_user + ", " + invited_yes_user.name
+						end
+					else
+						if @people_joining_less_user == ""
+							@people_joining_less_user = invited_yes_user.email
+						else
+							@people_joining_less_user = @people_joining_less_user + ", " + invited_yes_user.email
+						end
+					end
+				end
+				
+				message = @client.account.sms.messages.create(
+					body: "Yes! Your gathering #{@gather.activity} has tilted with #{@people_joining_less_user}! Just reply to this text to figure out the details with them",
+				    to: invited_yes_user.phone,
+				    from: @number_used)
+				puts message.from
+			end
+
+			@gather.update_attributes(details: ("#{@gather.details} #{Time.now.to_formatted_s(:db)} Yes! Your gathering #{@gather.activity} has tilted with #{invited_yes_array.join(", ")}! Just reply to this text to figure out the details with them "))
+
 		elsif @gather.num_joining > (@gather.tilt + 1)
+			if @this_invitation.number_used.nil?
+				all_numbers_used = @joining_user.reverse_invitations.pluck(:number_used)
+				@number_used = (ENV['TWILIO_NUMBERS'].split(" ") - all_numbers_used).sample
+				@this_invitation.update_attributes(number_used: @number_used)
+			else
+				@number_used = @this_invitation.number_used
+			end
+
+			(invited_yes_array - @joining_user.email.split(" ")).each do |n|
+				invited_yes_user = User.find_by(email: n)
+				@invited_yes_user_invitation = Invitation.find_by(gathering_id: @gather.id, invitee_id: invited_yes_user.id)
+				
+				message = @client.account.sms.messages.create(
+					body: "Sweet, #{@joining_user_name_or_email} is joining as well! Catch #{@joining_user_name_or_email} up on the details",
+				    to: invited_yes_user.phone,
+				    from: @invited_yes_user_invitation.number_used)
+				puts message.from
+
+				if invited_yes_user.name.present?
+					if @people_joining_less_user == ""
+						@people_joining_less_user = invited_yes_user.name
+					else
+						@people_joining_less_user = @people_joining_less_user + ", " + invited_yes_user.name
+					end
+				else
+					if @people_joining_less_user == ""
+						@people_joining_less_user = invited_yes_user.email
+					else
+						@people_joining_less_user = @people_joining_less_user + ", " + invited_yes_user.email
+					end
+				end
+			end
+
 			message = @client.account.sms.messages.create(
-				body: "Looks like #{@joining_user.email} is also joining your gathering #{@gather.activity}!",
-			    to: @gather.user.phone,
-			    from: "+14154231000")
+				body: "Yay, the gathering #{@gather.activity} has already tipped with #{@people_joining_less_user}! Just reply to this text to get the details from them",
+			    to: @joining_user.phone,
+			    from: @number_used)
 			puts message.from
+
+			@gather.update_attributes(details: ("#{@gather.details} #{Time.now.to_formatted_s(:db)} Yay, the gathering #{@gather.activity} has already tipped with #{@people_joining_less_user}! Just reply to this text to get the details from them "))
+			@gather.update_attributes(details: ("#{@gather.details} #{Time.now.to_formatted_s(:db)} To #{@joining_user_name_or_email}: Yay, the gathering #{@gather.activity} has already tipped with #{@people_joining_less_user}! Just reply to this text to get the details from them "))
+
 		end
 	end
 
 	def decrease_num_joining!(invitation_id)
 		@this_invitation = Invitation.find_by!(id: invitation_id)
-#		@this_gather_id = Gather.find_by!(id: @this_invitation.gathering_id).id
-#		@this_gather_id = Gather.this_invitation.id
 		Gather.decrement_counter(:num_joining, @this_invitation.gathering_id)
 		@gather = Gather.find_by(id: @this_invitation.gathering_id)
 		@unjoining_user = User.find_by(id: @this_invitation.invitee_id)
 		@gather.update_attributes(invited_no: (@gather.invited_no + " " + @unjoining_user.email))
 		@gather.update_attributes(invited_yes: @gather.invited_yes.sub(@unjoining_user.email,''))
 
+		if @unjoining_user.name.present?
+			@unjoining_user_name_or_email = @unjoining_user.name
+		else
+			@unjoining_user_name_or_email = @unjoining_user.email
+		end
+
 		@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 
+		if @gather.num_joining < @gather.tilt
+			from_number = ENV['TWILIO_MAIN']
+		else
+			from_number = @this_invitation.number_used
+		end
+
+		message = @client.account.sms.messages.create(
+			body: "Sad to see you leave! Reply Y#{@this_invitation.id} to rejoin",
+		    to: @unjoining_user.phone,
+		    from: from_number)
+		puts message.from
+
+		@gather.update_attributes(details: ("#{@gather.details} #{Time.now.to_formatted_s(:db)} To #{@unjoining_user_name_or_email}: Sad to see you leave! Reply Y#{@this_invitation.id} to rejoin "))
+
 		if @gather.num_joining >= @gather.tilt			 
-			message = @client.account.sms.messages.create(
-				body: "Bad news bears: looks like #{@unjoining_user.email} won't be joining your gathering #{@gather.activity} anymore :(",
-			    to: @gather.user.phone,
-			    from: "+14154231000")
-			puts message.from
+
+			invited_yes_array = @gather.invited_yes.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
+			invited_yes_array.each do |n|
+				invited_yes_user = User.find_by(email: n)
+				invited_yes_user_invitation = Invitation.find_by(gathering_id: @gather.id, invitee_id: invited_yes_user.id)				
+
+				message = @client.account.sms.messages.create(
+					body: "Bad news bears: looks like #{@unjoining_user_name_or_email} won't be joining anymore :(",
+				    to: invited_yes_user.phone,
+				    from: invited_yes_user_invitation.number_used)
+				puts message.from
+			end
+
+			@gather.update_attributes(details: ("#{@gather.details} #{Time.now.to_formatted_s(:db)} Bad news bears: looks like #{@unjoining_user_name_or_email} won't be joining anymore :( "))
+
 		end
 	end
 

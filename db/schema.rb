@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130905034005) do
+ActiveRecord::Schema.define(version: 20130913054939) do
 
   create_table "gathers", force: true do |t|
     t.string   "activity"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20130905034005) do
     t.string   "status",       default: "NA"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "number_used"
   end
 
   add_index "invitations", ["gathering_id", "invitee_id"], name: "index_invitations_on_gathering_id_and_invitee_id", unique: true
