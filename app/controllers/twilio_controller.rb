@@ -8,18 +8,7 @@ class TwilioController < ApplicationController
     	@body = params[:Body]
     	@invitation_id = @body.split(' ').first.gsub("Y","")
 
-    	if (( @body.at(0.1) != "Y" && Invitation.find_by(number_used: @to, invitee_id: User.find_by(phone: @formatted_phone).id).blank? ) || 
-    		( @body.at(0.1) == "Y" && Invitation.find_by(id: @invitation_id).blank? ) || 
-    		( @body.at(0.1) == "Y" && (User.find_by(phone: @formatted_phone) != User.find_by(id: Invitation.find_by(id: @invitation_id).invitee_id)) ))
-    		
-			@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
-			message = @client.account.sms.messages.create(
-				body: "Sorry, there has been an error",
-			    to: @from,
-			    from: @to)
-			puts message.from
-
-    	elsif @body.at(0.1) == "Y" && Invitation.find_by(id: @invitation_id).present?
+    	if @body.at(0.1) == "Y" && Invitation.find_by(id: @invitation_id).present?
    	    	@invitation = Invitation.find_by(id: @invitation_id)
    	    	@user = User.find_by(id: @invitation.invitee_id)    		
 
@@ -62,8 +51,17 @@ class TwilioController < ApplicationController
 
 			@gather.update_attributes(details: ("#{@gather.details} #{Time.now.to_formatted_s(:db)} #{@user_name_or_email}: #{@body} "))
 
+		elsif (( @body.at(0.1) != "Y" && Invitation.find_by(number_used: @to, invitee_id: User.find_by(phone: @formatted_phone).id).blank? ) || 
+    		( @body.at(0.1) == "Y" && Invitation.find_by(id: @invitation_id).blank? ) || 
+    		( @body.at(0.1) == "Y" && (User.find_by(phone: @formatted_phone) != User.find_by(id: Invitation.find_by(id: @invitation_id).invitee_id)) ))
+    		
+			@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+			message = @client.account.sms.messages.create(
+				body: "Sorry, there has been an error",
+			    to: @from,
+			    from: @to)
+			puts message.from
     	end
-
     	render 'prevent_error.xml.erb', :content_type => 'text/xml'
 	end
 end
