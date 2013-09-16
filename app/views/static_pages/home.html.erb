@@ -23,7 +23,7 @@
 
 		<p>If you're interested in signing up, please submit your email to our waitlist</p>
 
-		<%= form_tag 'localhost:3000/wait_list', :method => :post do %>
+ 		<%= form_tag 'wait_list', :method => :post do %>
 		  <div class="field">
 		    <%= label_tag :email %>
 		    <%= text_field_tag :email, params[:email] %>

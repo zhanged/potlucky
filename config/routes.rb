@@ -6,8 +6,7 @@ Potlucky::Application.routes.draw do
   resources :invitations, only: [:create, :update, :destroy]
   resources :password_resets
   resources :wait_list
-#  root to: 'static_pages#home'
-  root to: 'wait_list#home'
+  root to: 'static_pages#home'
   match '/signup',  to: 'users#new',           via: 'get'
   match '/lets_go',    to: 'users#lets_go',        via: 'get'
   match '/email_redirect', to: 'users#email_redirect',  via: 'get'
