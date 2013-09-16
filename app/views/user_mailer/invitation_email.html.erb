@@ -4,13 +4,13 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h1>Hello from Potlucky!</h1>
+    <h1>Join <%= @gather.user.name %> for <%= @gather.activity %>?</h1>
     <p>
-      <%= @gather.user.name %> has invited you to <%= @gather.activity %>! <%= @gather.tilt %> friends to tilt - to join, text Y<%= @invitation.id %> to 415-423-1000<br/>
+      <%= @gather.tilt %> friends must join for this to happen - to join, just text Y<%= @invitation.id %> to <%= ENV['TWILIO_MAIN'] %> now.
+      <br/>
     </p>
     <p>
-      To login to the site, just follow this link: <%= @url %>.
+      <%= link_to "Join", @url %> <%= @gather.user.name %> on Potlucky and start having more fun with friends!
     </p>
-    <p>Thanks for joining and have a great day!</p>
   </body>
 </html>

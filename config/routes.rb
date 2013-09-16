@@ -1,12 +1,17 @@
 Potlucky::Application.routes.draw do
-  get "twilio/firstsms"
   get "twilio/respond"
   resources :users
   resources :sessions, only: [:new, :create, :destroy]
   resources :gathers,  only: [:create, :update, :destroy]
   resources :invitations, only: [:create, :update, :destroy]
-  root to: 'static_pages#home'
+  resources :password_resets
+  resources :wait_list
+#  root to: 'static_pages#home'
+  root to: 'wait_list#home'
   match '/signup',  to: 'users#new',           via: 'get'
+  match '/lets_go',    to: 'users#lets_go',        via: 'get'
+  match '/email_redirect', to: 'users#email_redirect',  via: 'get'
+  match '/reset', to: 'password_resets#new',  via: 'get'  
   match '/signin',  to: 'sessions#new',        via: 'get'
   match '/signout', to: 'sessions#destroy',    via: 'delete'
   match '/help',    to: 'static_pages#help',   via: 'get'

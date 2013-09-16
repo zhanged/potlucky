@@ -3,16 +3,26 @@ class UserMailer < ActionMailer::Base
 
   def welcome_email(user)
   	@user = user
-  	@url = 'http://example.com/login'
+  	@url = "http://localhost:3000/email_redirect?auth_token=#{@user.auth_token}"
   	mail(to: @user.email, subject: 'Welcome to Potlucky!')
   end
 
-  def invitation_email(user, gather, invitation, invitor) 
+  def password_reset(user)
+  	@user = user
+  	@url = "http://localhost:3000/email_redirect?auth_token=#{@user.auth_token}"
+  	mail(to: @user.email, subject: 'Potlucky Password Reset')
+  end
+
+  def wait_list(email)
+  	mail(to: email, subject: "You've been added to the Potlucky waitlist!")
+  end
+
+  def invitation_email(user, gather, invitation, invitor, email_url) 
   	@user = user
   	@gather = gather
   	@invitation = invitation
   	@invitor = invitor
-  	@url = 'http://example.com/login'
+  	@url = email_url
   	mail(to: @user.email, subject: "You've been invited by #{@invitor.name}!")  	
   end
 end

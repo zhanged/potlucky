@@ -16,11 +16,33 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
+  def lets_go
+    if signed_in?
+      sign_out
+    end
+    if :link_email.present?
+      @user = User.find_by(email: params[:link_email])
+    end
+    UserMailer.welcome_email(@user).deliver
+    flash[:success] = "Check your email now to complete your registration"
+  end
+
+  def email_redirect
+    if User.find_by(auth_token: params[:auth_token]).present?
+      @user = User.find_by(auth_token: params[:auth_token])
+      sign_in @user
+      render 'edit'    
+    else
+      redirect_to 'signin'
+    end
+  end
+
   def edit
   end
 
   def update
     if @user.update_attributes(user_params)
+      @user.update_attributes(auth_token: SecureRandom.urlsafe_base64)
       flash[:success] = "Profile updated"
       sign_in @user
       redirect_to(root_path)
@@ -43,7 +65,7 @@ class UsersController < ApplicationController
 
   def destroy
     User.find(params[:id]).destroy
-    flash[:success] = "User destroyed."
+    flash[:success] = "User destroyed"
     redirect_to users_url
   end
 

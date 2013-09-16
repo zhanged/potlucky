@@ -1,8 +1,6 @@
-Hello from Potlucky!
+Join <%= @gather.user.name %> for <%= @gather.activity %>?
 ===============================================
  
-USER has invited you to ACTIVITY! TILT friends to tilt - to join, text Y<%= @invitation.id %> to 415-423-1000
+<%= @gather.tilt %> friends must join for this to happen - to join, just text Y<%= @invitation.id %> to <%= ENV['TWILIO_MAIN'] %> now.
  
-To login to the site, just follow this link: <%= @url %>.
- 
-Thanks for joining and have a great day!
+<%= link_to "Join", @url %> <%= @gather.user.name %> on Potlucky and start having more fun with friends!

@@ -177,7 +177,7 @@ DEPENDENCIES
   coffee-rails (= 4.0.0)
   factory_girl_rails (= 4.2.1)
   faker (= 1.1.2)
-  figaro
+  figaro (= 0.7.0)
   jbuilder (= 1.0.2)
   jquery-rails (= 2.2.1)
   pg (= 0.15.1)

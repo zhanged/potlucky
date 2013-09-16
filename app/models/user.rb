@@ -10,6 +10,7 @@ class User < ActiveRecord::Base
 		end
 	end
 	before_create :create_remember_token
+	before_create :create_auth_token
 	validates :name, 	presence: true, :on => :update, length: { maximum: 50 }
 	VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 	validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
@@ -36,20 +37,26 @@ class User < ActiveRecord::Base
 	def join!(invitation_id)
 		this_invitation = Invitation.find_by(id: invitation_id)
 		this_invitation.update(status: "Yes")
-#		this_gather_id = Gather.find_by(id: this_invitation.gathering_id).id
-#		Gather.increment_counter(:num_joining, this_gather_id)
 	end
 
 	def unjoin!(invitation_id)
 		this_invitation = Invitation.find_by(id: invitation_id)
 		this_invitation.update(status: "NA")
-#		this_gather_id = Gather.find_by(id: this_invitation.gathering_id).id
-#		Gather.decrement_counter(:num_joining, this_gather_id)
 	end
+
+	def send_password_reset
+		UserMailer.password_reset(self).deliver
+	end
+
+
 
 	private
 
 		def create_remember_token
 			self.remember_token = User.encrypt(User.new_remember_token)
+		end
+
+		def create_auth_token
+			self.auth_token = User.new_remember_token
 		end
 end
