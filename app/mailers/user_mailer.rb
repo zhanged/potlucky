@@ -1,15 +1,16 @@
 class UserMailer < ActionMailer::Base
-  default from: "from@example.com"
+  BASE_URL = "http://serene-journey-3919.herokuapp.com/"
+#  BASE_URL = "http://localhost:3000/"
 
   def welcome_email(user)
   	@user = user
-  	@url = "http://localhost:3000/email_redirect?auth_token=#{@user.auth_token}"
+  	@url = BASE_URL + "email_redirect?auth_token=#{@user.auth_token}"
   	mail(to: @user.email, subject: 'Welcome to Potlucky!')
   end
 
   def password_reset(user)
   	@user = user
-  	@url = "http://localhost:3000/email_redirect?auth_token=#{@user.auth_token}"
+  	@url = BASE_URL + "email_redirect?auth_token=#{@user.auth_token}"
   	mail(to: @user.email, subject: 'Potlucky Password Reset')
   end
 
@@ -17,12 +18,12 @@ class UserMailer < ActionMailer::Base
   	mail(to: email, subject: "You've been added to the Potlucky waitlist!")
   end
 
-  def invitation_email(user, gather, invitation, invitor, email_url) 
+  def invitation_email(user, gather, invitation, invitor) 
   	@user = user
   	@gather = gather
   	@invitation = invitation
   	@invitor = invitor
-  	@url = email_url
+  	@url = BASE_URL + "lets_go?link_email=#{@user.email}"
   	mail(to: @user.email, subject: "You've been invited by #{@invitor.name}!")  	
   end
 end

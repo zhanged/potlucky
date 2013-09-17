@@ -26,16 +26,14 @@ class Gather < ActiveRecord::Base
 					    from: "+14154231000")
 					puts message.from
 				else
-					email_url = "http://localhost:3000/lets_go?link_email=#{@user.email}"
-					UserMailer.invitation_email(@user, self, @invitation, user, email_url).deliver
+					UserMailer.invitation_email(@user, self, @invitation, user).deliver
 				end
 			else
 				first_password = SecureRandom.urlsafe_base64(10)
 				@user = User.create!(email: invitee, password: first_password, password_confirmation: first_password)
 				invite!@user
 				@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: self.id)
-				email_url = "http://localhost:3000/lets_go?link_email=#{@user.email}"
-				UserMailer.invitation_email(@user, self, @invitation, user, email_url).deliver				
+				UserMailer.invitation_email(@user, self, @invitation, user).deliver				
 			end
 		end
 		
