@@ -1,4 +1,5 @@
 class UserMailer < ActionMailer::Base
+  default from: "hello@gpotlucky.com"
   BASE_URL = "http://serene-journey-3919.herokuapp.com/"
 #  BASE_URL = "http://localhost:3000/"
 
