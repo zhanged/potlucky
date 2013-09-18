@@ -17,7 +17,8 @@ html {
 }
 
 body {
-	padding-top: 60px;
+	background: #FAFAFA;
+	font-family: 'proxima-nova',Proxima Nova,'Helvetica Neue',Helvetica,sans-serif;
 }
 
 section {
@@ -39,7 +40,7 @@ textarea {
 /* typography */
 
 h1, h2, h3, h4, h5, h6 {
-	line-height: 1;
+	line-height: 1;	
 }
 
 h1 {
@@ -47,6 +48,7 @@ h1 {
 	letter-spacing: -2px;
 	margin-bottom: 30px;
 	text-align: center;
+	font-weight: normal;
 }
 
 h2 {
@@ -74,12 +76,50 @@ p {
 	text-transform: uppercase;
 	letter-spacing: -1px;
 	padding-top: 9px;
-	font-weight: bold;
+	font-weight: normal;
 	line-height: 1;
 	&:hover {
 		color: #fff;
 		text-decoration: none;
+		letter-spacing: -2px;
+		font-weight: bold;
 	}
+}
+
+.navbar {
+	margin-bottom: 0px;
+}
+.navbar .nav > li > a {
+	color: white;
+	text-shadow: 0 0 0;
+	-webkit-transition: .1s ease-in background-color;
+	-webkit-font-smoothing: antialiased;
+	&:hover {
+			color: #e6e6e6;
+		}
+}
+.navbar .nav li.dropdown > .dropdown-toggle .caret {
+	border-top-color: #FFFFFF;
+	border-bottom-color: #FFFFFF;
+	vertical-align: top;
+	&:hover {
+		color: #e6e6e6;
+	}
+
+}
+.navbar .nav li.dropdown.open.active > .dropdown-toggle {
+	background-color: rgba(228,69,69,1);
+	color: #FFFFFF;
+}
+.navbar .nav li.dropdown.open > .dropdown-toggle {
+	background-color: rgba(228,69,69,1);
+	color: #FFFFFF;	
+}
+.navbar-inner {
+	background-color: rgba(228,69,69,1);
+	background-image: none;
+	background-repeat: no-repeat;
+	filter: none;
 }
 
 
@@ -169,7 +209,6 @@ aside {
 
 .user_avatars {
   overflow: auto;
-  margin-top: 10px;
   .gravatar {
     margin: 1px 1px;
   }
@@ -215,6 +254,114 @@ input {
 	@extend .error;
 }
 
+.btn {
+	border: 0;
+	border-radius: 1px;
+//	padding: .9em 1.8em .8em;
+	box-shadow: none;
+	color: #fff;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin-right: 10px;
+	text-shadow: none;
+	font-size: 18px;
+	line-height: 1;
+	font-weight: normal;
+	-webkit-transition: .1s ease-in background-color;
+	-webkit-font-smoothing: antialiased;
+}
+
+.btn-join {
+	background: rgba(23,129,251,1);
+	margin-top: 5px;
+	border-bottom: 4px solid #0D509E;
+	&:hover {
+		background: #1472DF;
+		border-bottom: 4px solid #0A3D79;
+		color: #fff;
+	}
+}
+
+.btn-joining {
+	background: rgba(212,214,217,1);
+	margin-top: 5px;
+	border-bottom: 4px solid #ABB1B9;	
+	&:hover {
+		background: #B1B3B8;
+		border-bottom: 4px solid #858A91;
+		color: #fff;		
+	}
+}
+
+.btn-invite {
+	background: rgba(228,69,69,1);
+	border-bottom: 4px solid #AF3333;
+	&:hover {
+		background: #C43939;
+		border-bottom: 4px solid #882828;
+		color: #fff;
+	}
+}
+
+.btn-user-large {
+//	display: block;
+	height: 56px;
+	width: 56px;
+	background: rgba(108,196,29,1);	
+	margin-bottom: 10px;
+	border: 0;
+	border-radius: 28px;
+	color: #fff;
+	text-transform: uppercase;
+	font-size: 36px;
+	-webkit-transition: .1s ease-in background-color;
+	-webkit-font-smoothing: antialiased;
+	a {
+		text-decoration: none;	
+		color: #fff;
+	}
+}
+
+.btn-user-small {
+	height: 30px;
+	width: 30px;
+	border-radius: 15px;
+	text-transform: uppercase;
+	font-size: 20px;
+	margin-bottom: 5px;
+	-webkit-transition: .1s ease-in background-color;
+	-webkit-font-smoothing: antialiased;
+	a {
+		text-decoration: none;	
+	}
+}
+
+.btn-yes {
+	background: rgba(108,196,29,1);	
+	border-style: solid;
+	border: 1px;
+	color: rgba(108,196,29,1);	
+	a {
+		color: #fff;
+	}
+}
+
+.btn-no {
+	background: white;	
+	border-style: solid;
+	color: rgba(108,196,29,1);
+	border-color: rgba(108,196,29,1);
+	a {
+		color: rgba(108,196,29,1);
+	}
+}
+
+.caret {
+	vertical-align: middle;
+	border-top: 4px solid rgba(108,196,29,1);	
+	border-right: 4px solid transparent;	
+	border-left: 4px solid transparent;	
+}
 
 /* Users index */
 
@@ -233,21 +380,44 @@ input {
 
 
 /* gathers */
-
+.feed {
+	background: #EEEEEE;
+}
 .gathers {
   list-style: none;
-  margin: 10px 0 0 0;
-
+  margin: 0px 0 0 0;
   li {
-    padding: 10px 0;
-    border-bottom: 1px solid #e8e8e8;
+    margin: 10px 10px 10px 10px;
+    padding: 15px 15px 15px 15px;
+    border-bottom: 3px solid #C7C7C7;
+    border-right: 1px solid #C7C7C7;
+    border-left: 1px solid #E0E0E0;
+    border-top: 1px solid #E0E0E0;
+    background-color: white;
   }
-}
+}  
 .activity {
-  display: block;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: bold;
+	padding-bottom: 5px;
+	display: block;
+	letter-spacing: 0px;
+	font-weight: normal;
+	font-size: 2em;
+	line-height: 1;
+	color: #6C7270;
+	font-family: Helvetica,'proxima-nova',Proxima Nova,'Helvetica Neue',sans-serif;
+	-webkit-transition: .1s ease-in background-color;
+	-webkit-font-smoothing: antialiased;
+}
+.tilt {
+	margin-bottom: 10px;
+	display: block;
+	font-family: Helvetica,'proxima-nova',Proxima Nova,'Helvetica Neue',Helvetica,sans-serif;
+	letter-spacing: 0px;
+	font-weight: normal;
+	font-size: 1em;
+	color: #6E7270;
+	-webkit-transition: .1s ease-in background-color;
+	-webkit-font-smoothing: antialiased;
 }
 .invited {
   display: block;	
@@ -255,19 +425,48 @@ input {
 .details {
   display: block;
 }
-.tilt {
-  display: block;
-}
 .timestamp {
   color: $grayLight;
 }
-.gravatar {
-  float: left;
-  margin-right: 10px;
+.left-side {
+	padding-top: 15px; // matches gathers li padding
 }
 aside {
   textarea {
     height: 80px;
     margin-bottom: 10px;
   }
+}
+.edit_invitation {
+	margin: 0px 0px 0px 0px;
+} // for the joining and join buttons
+.name-big {
+	padding-bottom: 0px;
+	margin-top: 5px;
+	display: block;
+	letter-spacing: 0px;
+	font-weight: normal;
+	font-size: 2em;
+	line-height: 1;
+	color: #6C7270;
+	font-family: Helvetica,'proxima-nova',Proxima Nova,'Helvetica Neue',sans-serif;
+	-webkit-transition: .1s ease-in background-color;
+	-webkit-font-smoothing: antialiased;
+}
+.user-stats {
+	margin-bottom: 10px;
+	display: block;
+	font-family: Helvetica,'proxima-nova',Proxima Nova,'Helvetica Neue',Helvetica,sans-serif;
+	letter-spacing: 0px;
+	font-weight: normal;
+	font-size: 1em;
+	color: #6E7270;
+	-webkit-transition: .1s ease-in background-color;
+	-webkit-font-smoothing: antialiased;
+}
+.user-info-margin {
+	margin-left: 8px;
+}
+.make-white {
+	color: white;
 }

@@ -1,12 +1,18 @@
-<a href="<%= user_path(current_user) %>">
-  <%= gravatar_for current_user, size: 52 %>
-</a>
-<h1>
-  <%= current_user.name %>
-</h1>
-<span>
-  <%= pluralize(current_user.gathers.count, "gathering") %> created
-</span>
-<span>
-  <%= current_user.gatherings.count %> invited to
-</span>
+<div class="row">
+	<div class="span1">
+		<button type="button" class="btn-user-large btn-default">
+			<a href="<%= user_path(current_user) %>">
+				<%= current_user.name.at(0.1) %>
+				<!--   <%= gravatar_for current_user, size: 52 %> -->
+			</a>
+		</button>
+	</div>
+	<div class="span3 user-info-margin">
+		<span class="name-big">
+		  <%= current_user.name %>
+		</span>
+		<span class="user-stats">
+		  <%= pluralize(current_user.gathers.count, "invite") %>, <%= current_user.gatherings.count %> invited
+		</span>
+	</div>
+</div
