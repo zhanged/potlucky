@@ -6,7 +6,7 @@ class GathersController < ApplicationController
 		if current_user.phone.present?
 			@gather = current_user.gathers.build(gather_params)
 			if @gather.save
-				flash[:success] = "Gathering created!"
+#				flash[:success] = "Gathering created!"
 				redirect_to root_url
 			else
 				

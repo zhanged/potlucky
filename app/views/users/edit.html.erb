@@ -1,25 +1,15 @@
 <% provide(:title, "Edit user") %>
 <div class="row">
-  <div class="span4 hero-unit center">
+  <div class="span4 hero-unit-2 center">
 
-    <h1>Your profile</h1>
-    <br>
+    <h1>Your Profile</h1><p></p>
         <%= form_for(@user) do |f| %>
           <%= render 'shared/error_messages', object: f.object %>
 
-<!--           <%= f.label :name %> -->
           <%= f.text_field :name, placeholder: "Name" %>
-
-<!--           <%= f.label :email %> -->
           <%= f.text_field :email, placeholder: "Email" %>
-
-<!--           <%= f.label :phone, "Phone Number" %> -->
           <%= f.text_field :phone, placeholder: "Cell Number" %>
-
-<!--           <%= f.label :password %> -->
           <%= f.password_field :password, placeholder: "Password" %>
-
-<!--           <%= f.label :password_confirmation, "Confirm Password" %> -->
           <%= f.password_field :password_confirmation, placeholder: "Confirm Password" %>
 
           <%= f.submit "Save", class: "btn btn-large btn-invite btn-block" %>

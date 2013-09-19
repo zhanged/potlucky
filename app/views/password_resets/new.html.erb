@@ -1,5 +1,5 @@
 <% provide(:title, 'Forgot Password?') %>
-<div class="center hero-unit">
+<div class="center hero-unit-2 span4">
 	<h2>Enter your email and we'll send you a link to reset your password</h2>
 			<%= form_for(:password_reset, url: password_resets_path) do |f| %>
 				<%= f.text_field :email, placeholder: "Email" %>
