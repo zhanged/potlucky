@@ -14,7 +14,8 @@
 	<span class="invited"><div class="user_avatars">
 	<% feed_item.invitations.each do |invitation| %>
 		<% if invitation.status == "Yes" %>
-			<button type="button" class="btn-user-small btn-yes btn-default">
+<!-- 			<button type="button" class="btn-user-small btn-yes btn-default"> -->
+				<div id="circle-yes">
 					<% if current_page?(root_url) %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>">
@@ -24,19 +25,21 @@
 					<% end %>
 					<% if invitation.invitee == feed_item.user %><b><% end %>
 					<% if invitation.invitee.name.present? %>
-						<%= invitation.invitee.name.at(0.1) %>
+						<%= invitation.invitee.name.at(0.1).upcase %>
 					<% else %>
-						<%= invitation.invitee.email.at(0.1) %>
+						<%= invitation.invitee.email.at(0.1).upcase %>
 					<% end %>
 					<% if invitation.invitee == feed_item.user %></b><% end %>
 				</a>
-			</button>			
+			</div>
+			<!-- </button>			 -->
 		<% end %>
 	<% end %>
 
 	<% feed_item.invitations.each do |invitation| %>
 		<% if invitation.status == "NA" %>
-			<button type="button" class="btn-user-small btn-no btn-default">
+			<!-- <button type="button" class="btn-user-small btn-no btn-default"> -->
+				<div id="circle-no">
 					<% if current_page?(root_url) %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>">
@@ -46,13 +49,14 @@
 					<% end %>
 					<% if invitation.invitee == feed_item.user %><b><% end %>
 					<% if invitation.invitee.name.present? %>
-						<%= invitation.invitee.name.at(0.1) %>
+						<%= invitation.invitee.name.at(0.1).upcase %>
 					<% else %>
-						<%= invitation.invitee.email.at(0.1) %>
+						<%= invitation.invitee.email.at(0.1).upcase %>
 					<% end %>
 					<% if invitation.invitee == feed_item.user %></b><% end %>
 				</a>
-			</button>
+			<!-- </button> -->
+		</div>
 		<% end %>
 		<!-- 		<%= link_to gravatar_for(invitation.invitee, size:30), invitation.invitee %> -->
 	<% end %>
