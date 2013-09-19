@@ -1,20 +1,24 @@
 <% if signed_in? %>
-	<div class="row">
+			<div class="center-span">
+
+<div class="row">
 		<aside class="span4 left-side">
 			<section>
 				<%= render 'shared/user_info' %>
 			</section>
 			<section class="gather-form">
-			<%= render 'shared/gather_form' %>
-		</section>
+				<%= render 'shared/gather_form' %>
+			</section>
 		</aside>
 		<div class="span4 feed">
 			<%= render 'shared/feed' %>
 		</div>
 	</div>
+</div>
 <% else %>
-	<div class="center span4 hero-unit-2">
-		<h1>Welcome to Bloon</h1>
+	<div class="row">
+	<div class="center center-span span4 hero-unit-2">
+		<h1>Welcome to BLOON</h1>
 		
 		<h2>Effortlessly organize activities to spend more time with friends</h2>
 
