@@ -1,7 +1,9 @@
+<!-- COPIED INTO users/show.html.erb so UPDATE CHANGES -->
+
 <div class="row">
 	<div class="span1">
 		<button type="button" class="btn-user-large btn-default">
-			<a href="<%= user_path(current_user) %>">
+			<a href="<%= root_path %>">
 				<%= current_user.name.at(0.1) %>
 				<!--   <%= gravatar_for current_user, size: 52 %> -->
 			</a>
@@ -16,3 +18,4 @@
 		</span>
 	</div>
 </div
+

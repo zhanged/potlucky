@@ -15,7 +15,13 @@
 	<% feed_item.invitations.each do |invitation| %>
 		<% if invitation.status == "Yes" %>
 			<button type="button" class="btn-user-small btn-yes btn-default">
-				<a href="<%= user_path(invitation.invitee) %>">
+					<% if current_page?(root_url) %>
+						<% if invitation.invitee == current_user %>
+							<a href="<%= root_url %>">
+						<% else %>
+							<a href="<%= user_path(invitation.invitee) %>">
+						<% end %>
+					<% end %>
 					<% if invitation.invitee == feed_item.user %><b><% end %>
 					<% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1) %>
@@ -26,9 +32,18 @@
 				</a>
 			</button>			
 		<% end %>
+	<% end %>
+
+	<% feed_item.invitations.each do |invitation| %>
 		<% if invitation.status == "NA" %>
 			<button type="button" class="btn-user-small btn-no btn-default">
-				<a href="<%= user_path(invitation.invitee) %>">
+					<% if current_page?(root_url) %>
+						<% if invitation.invitee == current_user %>
+							<a href="<%= root_url %>">
+						<% else %>
+							<a href="<%= user_path(invitation.invitee) %>">
+						<% end %>
+					<% end %>
 					<% if invitation.invitee == feed_item.user %><b><% end %>
 					<% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1) %>
@@ -42,28 +57,30 @@
 		<!-- 		<%= link_to gravatar_for(invitation.invitee, size:30), invitation.invitee %> -->
 	<% end %>
 
-	<a href="#" onclick="toggle_visibility('gather<%= feed_item.id %>'); return false">
-  		<b class="caret"></b>
-	</a>
-		<div id="gather<%= feed_item.id %>" style="display:none;">
-			<p class="tilt">
-				<% feed_item.invited_yes.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).each do |invitee| %>
-				    <%= invitee %>
-				<% end %>
-				<% feed_item.invited_no.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).each do |invitee| %>
-				    <%= invitee %>
-				<% end %>
-			</p>
-			<p class="tilt">
-				<%= feed_item.details %>
-			</p>
-			<p class="tilt">
-				Created by <%= feed_item.user.name %> <%= time_ago_in_words(feed_item.created_at) %> ago
-					<% if current_user?(feed_item.user) %>
-			  			<%= link_to "delete", feed_item, method: :delete, data: { confirm: "You sure?" }, title: feed_item.activity %>
-			  		<% end %>
-			</p>
-		</div>
+	<% if current_page?(root_url) %>
+		<a href="#" onclick="toggle_visibility('gather<%= feed_item.id %>'); return false">
+	  		<b class="caret"></b>
+		</a>
+			<div id="gather<%= feed_item.id %>" style="display:none;">
+				<p class="tilt">
+					<% feed_item.invited_yes.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).each do |invitee| %>
+					    <%= invitee %>
+					<% end %>
+					<% feed_item.invited_no.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).each do |invitee| %>
+					    <%= invitee %>
+					<% end %>
+				</p>
+				<p class="tilt">
+					<%= feed_item.details %>
+				</p>
+				<p class="tilt">
+					Created by <%= feed_item.user.name %> <%= time_ago_in_words(feed_item.created_at) %> ago
+						<% if current_user?(feed_item.user) %>
+				  			<%= link_to "delete", feed_item, method: :delete, data: { confirm: "You sure?" }, title: feed_item.activity %>
+				  		<% end %>
+				</p>
+			</div>
+	<% end %>
 	</div></span>
 
 	<span><%= render 'shared/join_form', :feed_item => feed_item %>

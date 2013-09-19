@@ -1,21 +1,40 @@
 <% provide(:title, @user.name) %>
-<div class="row">
-  <aside class="span4">
-    <section>
-	    <%= gravatar_for @user %>
-	    <h1><%= @user.name %></h1>      
-		<span>
-		</span>
-		<span>
-		  <%= pluralize(@user.gathers.count, "gathering") %> created
-		</span>
-		<span>
-		  <%= @user.gatherings.count %> invited to
-		</span>
-      
-    </section>
-  </aside>
-	<div class="span8">
+	<div class="row">
+		<aside class="span4 left-side">
+			<section>
+
+<!-- paste in user_info here, change current_user to @user -->
+				<div class="row">
+					<div class="span1">
+						<button type="button" class="btn-user-large btn-default">
+							<a href="<%= user_path(@user) %>">
+								<% if @user.name.present? %>
+									<%= @user.name.at(0.1) %>
+								<% else %>
+									<%= @user.email.at(0.1) %>
+								<% end %>
+								<!--   <%= gravatar_for current_user, size: 52 %> -->
+							</a>
+						</button>
+					</div>
+					<div class="span3 user-info-margin">
+						<span class="name-big">
+					  		<% if @user.name.present? %>
+								<%= @user.name %>
+							<% else %>
+								<%= @user.email %>
+							<% end %>
+						</span>
+						<span class="user-stats">
+						  <%= pluralize(@user.gathers.count, "invite") %>, <%= @user.gatherings.count %> invited
+						</span>
+					</div>
+				</div
+<!-- end paste -->
+
+		    </section>
+		</aside>
+	<div class="span5 feed">
 		
 			<ol class="gathers">
 				<% @userfeed = @user.feed.paginate(page: params[:page]) %>

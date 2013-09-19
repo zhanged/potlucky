@@ -14,11 +14,20 @@ $grayMediumLight: #eaeaea;
 
 html {
 	overflow-y: scroll;
+	height: 100%;
 }
 
 body {
-	background: #FAFAFA;
+//	background: #FAFAFA;
+	background-image: url(https://abs.twimg.com/images/themes/theme13/bg.gif);
+	background-position: left 40px;
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+	background-color: #B2DFDA;
 	font-family: 'proxima-nova',Proxima Nova,'Helvetica Neue',Helvetica,sans-serif;
+	min-height: 100%;
+	color: #6C7270;
+	-webkit-font-smoothing: antialiased;
 }
 
 section {
@@ -49,6 +58,9 @@ h1 {
 	margin-bottom: 30px;
 	text-align: center;
 	font-weight: normal;
+	-webkit-transition: .1s ease-in background-color;
+	-webkit-font-smoothing: antialiased;
+
 }
 
 h2 {
@@ -61,7 +73,7 @@ h2 {
 }
 
 p {
-	font-size: 1.1em;
+	font-size: 1em;
 	line-height: 1.7em;
 }
 
@@ -91,6 +103,7 @@ p {
 }
 .navbar .nav > li > a {
 	color: white;
+	font-size: 18px;
 	text-shadow: 0 0 0;
 	-webkit-transition: .1s ease-in background-color;
 	-webkit-font-smoothing: antialiased;
@@ -138,6 +151,8 @@ footer {
 	}
 	small {
 		float: left;
+		color: white;
+		-webkit-font-smoothing: antialiased;
 	}
 	ul {
 		float: right;
@@ -241,6 +256,10 @@ input {
 	height: auto !important;
 }
 
+.alert {
+	margin-top: 20px;
+}
+
 #error_explanation {
 	color: #f00;
 	ul {
@@ -256,7 +275,7 @@ input {
 
 .btn {
 	border: 0;
-	border-radius: 1px;
+	border-radius: 3px;
 //	padding: .9em 1.8em .8em;
 	box-shadow: none;
 	color: #fff;
@@ -340,7 +359,7 @@ input {
 	background: rgba(108,196,29,1);	
 	border-style: solid;
 	border: 1px;
-	color: rgba(108,196,29,1);	
+	color: white;	
 	a {
 		color: #fff;
 	}
@@ -355,6 +374,23 @@ input {
 		color: rgba(108,196,29,1);
 	}
 }
+// input, textarea, select, .uneditable-input {
+// 	padding: 5px 11px 5px 11px;
+// 	vertical-align: middle;
+// 	color: white;
+// 	background: rgba(228,69,69,1);
+// 	border-top: 0px solid rgba(228,69,69,1);
+// 	border-bottom: 3px solid #AF3333;
+// 	border-radius: 3px;
+// 	box-shadow: none;
+// 	letter-spacing: 0px;
+// 	text-shadow: none;
+// 	font-size: 16px;
+// 	line-height: 1;
+// 	font-weight: normal;
+// 	-webkit-transition: .1s ease-in background-color;
+// 	-webkit-font-smoothing: antialiased;
+//	}
 
 .caret {
 	vertical-align: middle;
@@ -381,7 +417,7 @@ input {
 
 /* gathers */
 .feed {
-	background: #EEEEEE;
+	background: rgba(238,238,238,0.4);
 }
 .gathers {
   list-style: none;
@@ -469,4 +505,22 @@ aside {
 }
 .make-white {
 	color: white;
+}
+.container {
+	width: 700px;
+}
+.hero-unit {
+	margin-top: 30px;
+	background: rgba(238,238,238,0.6);
+	margin-left: auto;
+	margin-right: auto;
+	float: center;
+}
+.forgot-password {
+	font-size: 12px;
+	line-height: 1.2em;
+
+}
+.pagination ul {
+	margin-left: 10px;
 }

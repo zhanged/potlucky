@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 20130916221353) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "details"
+    t.text     "details"
     t.integer  "tilt"
     t.integer  "num_invited"
     t.integer  "num_joining", default: 1

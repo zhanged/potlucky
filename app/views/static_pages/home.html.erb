@@ -14,21 +14,11 @@
 	</div>
 <% else %>
 	<div class="center hero-unit">
-		<h1>Welcome to Potlucky</h1>
+		<h1>Welcome to Bloon</h1>
 		
-		<h2>
-			This is the home page for Potlucky :)
-		</h2>
+		<h2>Effortlessly organize activities to spend more time with friends</h2>
 
-		<p>If you're interested in signing up, please submit your email to our waitlist</p>
-
- 		<%= form_tag 'wait_list', :method => :post do %>
-		  <div class="field">
-		    <%= label_tag :email %>
-		    <%= text_field_tag :email, params[:email] %>
-		  </div>
-		  <div class="actions"><%= submit_tag "Add to waitlist" %></div>
-		<% end %>
-
+		<p>Interested? Get on our waitlist!</p>
+			<%= render 'wait_list/new' %>
 	</div>
 <% end %>
