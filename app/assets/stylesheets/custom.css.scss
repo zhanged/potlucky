@@ -528,3 +528,8 @@ aside {
 .float-center {
 	float: center;
 }
+@media (max-width: 650px) {
+	.span4 {
+		margin-left: 0px;
+	}
+}

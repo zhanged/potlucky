@@ -1,7 +1,5 @@
 <% provide(:title, "Edit user") %>
-<div class="row">
   <div class="span4 hero-unit-2 center">
-
     <h1>Your Profile</h1><p></p>
         <%= form_for(@user) do |f| %>
           <%= render 'shared/error_messages', object: f.object %>
@@ -18,5 +16,5 @@
         <p class="forgot-password">We will never give away your information to 3rd parties. Your cell number will receive text messages to notify you of invitations and to organize activities with friends.</p>
 <!--         <%= gravatar_for(@user) %>
         <a href="http://gravatar.com/emails">change</a>
- -->  </div>
-</div>
+ -->  
+  </div>

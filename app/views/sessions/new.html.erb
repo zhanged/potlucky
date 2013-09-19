@@ -1,9 +1,6 @@
 <% provide(:title, "Sign in") %>
-<div class="row">
-<!-- 	<div class="span4"></div> -->
 	<div class="span4 hero-unit-2 center">
-		<h1>Sign in</h1>
-<br>
+		<h1>Sign in</h1><p></p>
 			<%= form_for(:session, url: sessions_path) do |f| %>
 
 				<%= f.text_field :email, placeholder: "Email" %>
@@ -15,5 +12,3 @@
 <!-- 			<p>New user? <%= link_to "Sign up now!", signup_path %></p> -->
 			<p class="forgot-password"><%= link_to "Forgot your password?", reset_path %></p>
 	</div>
-<!-- 	<div class="span4"></div> -->
-</div>
