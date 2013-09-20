@@ -6,14 +6,14 @@
   <body>
     <h1>Join <%= @gather.user.name %> for <%= @gather.activity %>?</h1>
     <p>
-      <%= @gather.tilt %> friends must join for this to happen - to join, just text Y<%= @invitation.id %> to <%= ENV['TWILIO_MAIN'] %> now.
+      <%= @gather.tilt %> friends must join for this to take off - to join, just <b>text Y<%= @invitation.id %> to <%= ENV['TWILIO_MAIN'] %></b> now.
       <br/>
     </p>
     <p>
-      <%= link_to "Join", @url %> <%= @gather.user.name %> on Potlucky and start having more fun with friends!
+      <%= link_to "Join", @url %> <%= @gather.user.name %> on Bloon and start having more fun with friends!
     </p>
-    <p>
+    <p><small>
       Note: Your cell number will receive text messages to notify you of invitations and to organize activities with friends.
-    </p>
+    </small></p>
   </body>
 </html>

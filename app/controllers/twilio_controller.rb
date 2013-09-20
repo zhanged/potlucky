@@ -58,7 +58,7 @@ class TwilioController < ApplicationController
 				puts message.from
 			end
 
-			@gather.update_attributes(details: ("#{@gather.details} #{Time.now.to_formatted_s(:db)} #{@user_name_or_email}: #{@body} "))
+			@gather.update_attributes(details: ("#{@gather.details} <br>#{Time.now.to_formatted_s(:db)} #{@user_name_or_email}: #{@body} "))
 
 		elsif (( @body.at(0.1) != "Y" && Invitation.find_by(number_used: @to, invitee_id: User.find_by(phone: @formatted_phone).id).blank? ) || 
     		( @body.at(0.1) == "Y" && Invitation.find_by(id: @invitation_id).blank? ))

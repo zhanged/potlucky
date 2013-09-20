@@ -79,32 +79,40 @@ p {
 
 
 /* header */
-
 #logo {
+	font-family: 'Knewave',Helvetica,'proxima-nova',Proxima Nova,'Helvetica Neue',sans-serif;
 	float: left;
 	margin-right: 10px;
-	font-size: 1.7em;
+	font-size: 2.2em;
 	color: #fff;
-	text-transform: uppercase;
-	letter-spacing: -1px;
-	padding-top: 9px;
+	text-transform: none;
+	letter-spacing: 0px;
+	padding-top: 4px;
 	font-weight: normal;
 	line-height: 1;
 	&:hover {
 		color: #fff;
 		text-decoration: none;
-		letter-spacing: -2px;
-		font-weight: bold;
+		padding-top: 3px;
 	}
 }
-
+.logo-front {
+	color: #e44545;
+	text-shadow: -1px -1px 0px #FDFFFE;
+	letter-spacing: 0px;
+	margin-top: 0px;
+	font-size: 5em;
+	font-family: 'Knewave',Helvetica,'proxima-nova',Proxima Nova,'Helvetica Neue',sans-serif;
+}
 .navbar {
 	margin-bottom: 0px;
 }
 .navbar .nav > li > a {
 	color: white;
+	font-weight: 200;
 	font-size: 18px;
 	text-shadow: 0 0 0;
+	padding: 10px 0px 10px;
 	-webkit-transition: .1s ease-in background-color;
 	-webkit-font-smoothing: antialiased;
 	&:hover {
@@ -256,7 +264,7 @@ input {
 	height: auto !important;
 }
 .gather-form {
-	margin: 0px 10px 20px 10px;
+	margin: 0px 10px 0px 10px;
 }
 
 .alert {
@@ -324,65 +332,17 @@ input {
 		color: #fff;
 	}
 }
-
-.btn-user-large {
-//	display: block;
-	height: 56px;
-	width: 56px;
-	background: rgba(108,196,29,1);	
-	margin-bottom: 10px;
-	border: 0;
-	border-radius: 8px;
-	color: #fff;
-	text-transform: uppercase;
-	font-size: 36px;
-	-webkit-transition: .1s ease-in background-color;
-	-webkit-font-smoothing: antialiased;
-	a {
-		text-decoration: none;	
-		color: #fff;
-	}
-}
-
-.btn-user-small {
-	height: 30px;
-	width: 30px;
-	border-radius: 5px;
-	text-transform: uppercase;
-	font-size: 20px;
-	margin-bottom: 5px;
-	-webkit-transition: .1s ease-in background-color;
-	-webkit-font-smoothing: antialiased;
-	a {
-		text-decoration: none;	
-	}
-}
-
-.btn-yes {
-	background: rgba(108,196,29,1);	
-	border-style: solid;
-	border: 1px;
-	color: white;	
-	a {
-		color: #fff;
-	}
-}
-
-.btn-no {
-	background: white;	
-	border-style: solid;
-	color: rgba(108,196,29,1);
-	border-color: rgba(108,196,29,1);
-	a {
-		color: rgba(108,196,29,1);
-	}
-}
-
 .caret {
 	vertical-align: middle;
 	border-top: 4px solid rgba(108,196,29,1);	
 	border-right: 4px solid transparent;	
 	border-left: 4px solid transparent;	
+}
+.no-link-decoration {
+	display: inline-block;
+	a {
+		text-decoration: none;	
+	}	
 }
 
 /* Users index */
@@ -422,7 +382,7 @@ input {
 	padding-bottom: 5px;
 	display: block;
 	letter-spacing: 0px;
-	font-weight: normal;
+	font-weight: 100;
 	font-size: 1.7em;
 	line-height: 1;
 	color: #6C7270;
@@ -435,7 +395,7 @@ input {
 	display: block;
 	font-family: Helvetica,'proxima-nova',Proxima Nova,'Helvetica Neue',Helvetica,sans-serif;
 	letter-spacing: 0px;
-	font-weight: normal;
+	font-weight: 100;
 	font-size: 1em;
 	color: #6E7270;
 	-webkit-transition: .1s ease-in background-color;
@@ -467,7 +427,7 @@ aside {
 	margin-top: 5px;
 	display: block;
 	letter-spacing: 0px;
-	font-weight: normal;
+	font-weight: 200;
 	font-size: 2em;
 	line-height: 1;
 	color: #6C7270;
@@ -487,13 +447,23 @@ aside {
 	-webkit-font-smoothing: antialiased;
 }
 .user-info-margin {
-	margin-left: 8px;
+	margin-left: 10px;
 }
 .make-white {
 	color: white;
 }
-.container {
-//	width: 700px;
+.desc-front {
+	color: #6C7270;
+	margin-bottom: 25px;
+	letter-spacing: 0px;
+}
+.welcome-front{
+	font-weight: bold;
+	margin-bottom: 0px;
+}
+.waitlist-front {
+	margin-bottom: 0px;
+	letter-spacing: 0px;
 }
 .hero-unit {
 	margin-top: 30px;
@@ -528,12 +498,6 @@ aside {
 .float-center {
 	float: center;
 }
-@media (max-width: 650px) {
-	.span4 {
-		margin-left: 0px;
-	}
-}
-
 #circle-big {
 	width: 50px;
 	height: 50px;
@@ -598,5 +562,40 @@ aside {
 	margin-right: auto; 
 }
 .row {
-	margin-left: auto
+	margin-left: auto;
+}
+
+@media (max-width: 360px) {   // large screen Androids
+	.container-fluid {
+	padding-right: 30px;
+	padding-left: 30px;
+	}
+	.span4or8 {
+		width: 300px;
+	}
+	[class*="span"] {
+		margin-left: 0px;
+	}
+}
+@media (max-width: 320px) {   // iPhone
+	.container-fluid {
+	padding-right: 10px;
+	padding-left: 10px;
+	}
+	.span4or8 {
+		width: 300px;
+	}
+	[class*="span"] {
+		margin-left: 0px;
+	}
+}
+@media (min-width: 361px) {  // desktop, tablets
+	.span4or8 {
+		width: 640px;
+	}
+	.left-side {
+		[class*="span"] {
+			margin-left: 0px;
+		}
+	}
 }

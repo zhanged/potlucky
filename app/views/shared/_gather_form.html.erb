@@ -2,7 +2,7 @@
 	<%= render 'shared/error_messages', object: f.object %>
 	<div class="field">
 		<%= f.text_field :activity, placeholder: "Activity" %>
-		<%= f.number_field :tilt, placeholder: "# of add'l friends to lift off" %>
+		<%= f.number_field :tilt, placeholder: "# of add'l friends to critical mass" %>
 		<%= f.text_area :invited, placeholder: "friend1@gmail.com, friend2@gmail.com..." %>
 	</div>
 	<%= f.submit "Invite", class: "btn btn-large btn-block btn-invite" %>

@@ -14,7 +14,6 @@
 	<span class="invited"><div class="user_avatars">
 	<% feed_item.invitations.each do |invitation| %>
 		<% if invitation.status == "Yes" %>
-<!-- 			<button type="button" class="btn-user-small btn-yes btn-default"> -->
 				<div id="circle-yes">
 					<% if current_page?(root_url) %>
 						<% if invitation.invitee == current_user %>
@@ -32,13 +31,11 @@
 					<% if invitation.invitee == feed_item.user %></b><% end %>
 				</a>
 			</div>
-			<!-- </button>			 -->
 		<% end %>
 	<% end %>
 
 	<% feed_item.invitations.each do |invitation| %>
 		<% if invitation.status == "NA" %>
-			<!-- <button type="button" class="btn-user-small btn-no btn-default"> -->
 				<div id="circle-no">
 					<% if current_page?(root_url) %>
 						<% if invitation.invitee == current_user %>
@@ -55,18 +52,17 @@
 					<% end %>
 					<% if invitation.invitee == feed_item.user %></b><% end %>
 				</a>
-			<!-- </button> -->
 		</div>
 		<% end %>
 		<!-- 		<%= link_to gravatar_for(invitation.invitee, size:30), invitation.invitee %> -->
 	<% end %>
 
 	<% if current_page?(root_url) %>
-		&nbsp<a href="#" onclick="toggle_visibility('gather<%= feed_item.id %>'); return false">
+		&nbsp<div class="no-link-decoration"><a href="#" onclick="toggle_visibility('gather<%= feed_item.id %>'); return false">
 	  		<b class="caret"></b>
-		</a>
+		</a></div>
 			<div id="gather<%= feed_item.id %>" style="display:none;">
-				<p class="tilt">
+				<p class="tilt">Invited: 
 					<% feed_item.invited_yes.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).each do |invitee| %>
 					    <%= invitee %>
 					<% end %>
@@ -75,18 +71,25 @@
 					<% end %>
 				</p>
 				<p class="tilt">
-					<%= feed_item.details %>
+					<% if feed_item.details.present? %>
+						<% feed_item.details.split("<br>").each do |message| %>
+							<%= message %><br>
+						<% end %>
+					<% end %>
 				</p>
-				<p class="tilt">
+				<p class="tilt"><small>
 					Created by <%= feed_item.user.name %> <%= time_ago_in_words(feed_item.created_at) %> ago
 						<% if current_user?(feed_item.user) %>
 				  			<%= link_to "delete", feed_item, method: :delete, data: { confirm: "You sure?" }, title: feed_item.activity %>
 				  		<% end %>
-				</p>
+				</p></small>
 			</div>
 	<% end %>
 	</div></span>
 
-	<span><%= render 'shared/join_form', :feed_item => feed_item %>
+	<span>
+		<% if feed_item.tilt.present? %>
+			<%= render 'shared/join_form', :feed_item => feed_item %>
+		<% end %>
 	</span>
 </li>

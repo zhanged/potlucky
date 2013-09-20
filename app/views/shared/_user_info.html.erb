@@ -2,18 +2,16 @@
 
 <div class="row">
 	<div class="span1">
-<!-- 		<button type="button" class="btn-user-large btn-default"> -->
-			<div id="circle-big"><a href="<%= root_path %>">
+			<div id="circle-big" class="user-info-margin"><a href="<%= root_path %>">
 				<%= current_user.name.at(0.1) %>
 				<!--   <%= gravatar_for current_user, size: 52 %> -->
 			</a></div>
-		<!-- </button> -->
 	</div>
-	<div class="span3 user-info-margin">
-		<span class="name-big">
+	<div class="span3">
+		<span class="name-big user-info-margin">
 		  <%= current_user.name %>
 		</span>
-		<span class="user-stats">
+		<span class="user-stats user-info-margin">
 		  <%= pluralize(current_user.gathers.count, "invite") %>, <%= current_user.gatherings.count %> invited
 		</span>
 	</div>

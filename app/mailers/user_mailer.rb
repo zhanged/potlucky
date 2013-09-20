@@ -6,17 +6,17 @@ class UserMailer < ActionMailer::Base
   def welcome_email(user)
   	@user = user
   	@url = BASE_URL + "email_redirect?auth_token=#{@user.auth_token}"
-  	mail(to: @user.email, subject: 'Welcome to Potlucky!')
+  	mail(to: @user.email, subject: 'Welcome to Bloon!')
   end
 
   def password_reset(user)
   	@user = user
   	@url = BASE_URL + "email_redirect?auth_token=#{@user.auth_token}"
-  	mail(to: @user.email, subject: 'Potlucky Password Reset')
+  	mail(to: @user.email, subject: 'Bloon Password Reset')
   end
 
   def wait_list(email)
-  	mail(to: email, subject: "You've been added to the Potlucky waitlist!")
+  	mail(to: email, subject: "You've been added to the Bloon waitlist!")
   end
 
   def invitation_email(user, gather, invitation, invitor) 

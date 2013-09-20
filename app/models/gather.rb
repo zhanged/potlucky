@@ -11,6 +11,7 @@ class Gather < ActiveRecord::Base
 	validates :activity, presence: true, length: { maximum: 80 }
 	validates :user_id, presence: true
 	validate :tilt_must_fall_in_range_of_invited, unless: "tilt.nil?"
+	validate :when_tilt_is_nil
 	after_create do
 		invitees = invited.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
 		invitees.each do |invitee|
@@ -21,7 +22,7 @@ class Gather < ActiveRecord::Base
 				if @user.phone.present?
 					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 					message = @client.account.sms.messages.create(
-						body: "#{user.name} has invited you to #{activity}! #{tilt} friends to tilt - to join, reply Y#{@invitation.id}",
+						body: "#{user.name} has invited you to #{activity}! #{tilt} friends for critical mass - to join, reply Y#{@invitation.id}",
 					    to: @user.phone,
 					    from: "+14154231000")
 					puts message.from
@@ -76,12 +77,12 @@ class Gather < ActiveRecord::Base
 			
 		if @gather.num_joining < (@gather.tilt + 1)
 			message = @client.account.sms.messages.create(
-				body: "Great! We've marked you down as joining #{@gather.activity}. Stay tuned - you'll get a text if this tilts...",
+				body: "Great! We've marked you down as joining #{@gather.activity}. Stay tuned - you'll get a text if this takes off...",
 			    to: @joining_user.phone,
 			    from: ENV['TWILIO_MAIN'])
 			puts message.from
 
-			@gather.update_attributes(details: ("#{@gather.details} #{Time.now.to_formatted_s(:db)} To #{@joining_user_name_or_email}: Great! We've marked you down as joining #{@gather.activity}. Stay tuned - you'll get a text if this tilts... "))
+			@gather.update_attributes(details: ("#{@gather.details} <br>#{Time.now.to_formatted_s(:db)} To #{@joining_user_name_or_email}: Great! We've marked you down as joining #{@gather.activity}. Stay tuned - you'll get a text if this takes off... "))
 
 		elsif @gather.num_joining == (@gather.tilt + 1)
 			invited_yes_array.each do |n|
@@ -112,13 +113,13 @@ class Gather < ActiveRecord::Base
 				end
 				
 				message = @client.account.sms.messages.create(
-					body: "Yes! Your gathering #{@gather.activity} has tilted with #{@people_joining_less_user}! Just reply to this text to figure out the details with them",
+					body: "Yes! Your Bloon #{@gather.activity} has taken off with #{@people_joining_less_user}! Just reply to this text to figure out the details with them",
 				    to: invited_yes_user.phone,
 				    from: @number_used)
 				puts message.from
 			end
 
-			@gather.update_attributes(details: ("#{@gather.details} #{Time.now.to_formatted_s(:db)} Yes! Your gathering #{@gather.activity} has tilted with #{invited_yes_array.join(", ")}! Just reply to this text to figure out the details with them "))
+			@gather.update_attributes(details: ("#{@gather.details} <br>#{Time.now.to_formatted_s(:db)} Yes! Your Bloon #{@gather.activity} has tilted with #{invited_yes_array.join(", ")}! Just reply to this text to figure out the details with them "))
 
 		elsif @gather.num_joining > (@gather.tilt + 1)
 			if @this_invitation.number_used.nil?
@@ -155,13 +156,13 @@ class Gather < ActiveRecord::Base
 			end
 
 			message = @client.account.sms.messages.create(
-				body: "Yay, the gathering #{@gather.activity} has already tipped with #{@people_joining_less_user}! Just reply to this text to get the details from them",
+				body: "Yay, the Bloon #{@gather.activity} has already taken off with #{@people_joining_less_user}! Just reply to this text to get the details from them",
 			    to: @joining_user.phone,
 			    from: @number_used)
 			puts message.from
 
-			@gather.update_attributes(details: ("#{@gather.details} #{Time.now.to_formatted_s(:db)} Yay, the gathering #{@gather.activity} has already tipped with #{@people_joining_less_user}! Just reply to this text to get the details from them "))
-			@gather.update_attributes(details: ("#{@gather.details} #{Time.now.to_formatted_s(:db)} To #{@joining_user_name_or_email}: Yay, the gathering #{@gather.activity} has already tipped with #{@people_joining_less_user}! Just reply to this text to get the details from them "))
+			@gather.update_attributes(details: ("#{@gather.details} <br>#{Time.now.to_formatted_s(:db)} Yay, the Bloon #{@gather.activity} has already taken off with #{@people_joining_less_user}! Just reply to this text to get the details from them "))
+			@gather.update_attributes(details: ("#{@gather.details} <br>#{Time.now.to_formatted_s(:db)} To #{@joining_user_name_or_email}: Yay, the Bloon #{@gather.activity} has already taken off with #{@people_joining_less_user}! Just reply to this text to get the details from them "))
 
 		end
 	end
@@ -194,7 +195,7 @@ class Gather < ActiveRecord::Base
 		    from: from_number)
 		puts message.from
 
-		@gather.update_attributes(details: ("#{@gather.details} #{Time.now.to_formatted_s(:db)} To #{@unjoining_user_name_or_email}: Sad to see you leave! Reply Y#{@this_invitation.id} to rejoin "))
+		@gather.update_attributes(details: ("#{@gather.details} <br>#{Time.now.to_formatted_s(:db)} To #{@unjoining_user_name_or_email}: Sad to see you leave! Reply Y#{@this_invitation.id} to rejoin "))
 
 		if @gather.num_joining >= @gather.tilt			 
 
@@ -210,15 +211,22 @@ class Gather < ActiveRecord::Base
 				puts message.from
 			end
 
-			@gather.update_attributes(details: ("#{@gather.details} #{Time.now.to_formatted_s(:db)} Bad news bears: looks like #{@unjoining_user_name_or_email} won't be joining anymore :( "))
+			@gather.update_attributes(details: ("#{@gather.details} <br>#{Time.now.to_formatted_s(:db)} Bad news bears: looks like #{@unjoining_user_name_or_email} won't be joining anymore :( "))
 
 		end
 	end
 
 	def tilt_must_fall_in_range_of_invited		
-		if tilt < 0 || tilt > (invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.count)
-			errors.add(:tilt, "- Invite #{tilt - invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.count} more people for tilt to be valid")
-			# Need to add error message for negative tilt inputs
+		if tilt > (invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.count)
+			errors.add(:tilt, "- Invite #{tilt - invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.count} more people for lift off number to be valid")
+		elsif tilt < 0
+			errors.add(:tilt, "- Can't lift off with negative people...")
+		end
+	end
+
+	def when_tilt_is_nil
+		if tilt == nil && invited.present?
+				errors.add(:tilt, "- Can't invite anyone if you don't enter a lift off number")
 		end
 	end
 

@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
-  before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
+  before_action :signed_in_user, only: [:edit, :update, :destroy]
   before_action :correct_user,   only: [:edit, :update]
-  before_action :admin_user,     only: :destroy
+  before_action :admin_user,     only: [:destroy, :index]
 
   def index
     @users = User.paginate(page: params[:page])
@@ -20,11 +20,13 @@ class UsersController < ApplicationController
     if signed_in?
       sign_out
     end
-    if :link_email.present?
+    if :link_email.present? && User.find_by(email: params[:link_email]).present?
       @user = User.find_by(email: params[:link_email])
+      UserMailer.welcome_email(@user).deliver
+      flash[:success] = "Check your email now to complete your registration"
+    else
+      redirect_to(root_path)
     end
-    UserMailer.welcome_email(@user).deliver
-    flash[:success] = "Check your email now to complete your registration"
   end
 
   def email_redirect
@@ -33,7 +35,7 @@ class UsersController < ApplicationController
       sign_in @user
       render 'edit'    
     else
-      redirect_to 'signin'
+      redirect_to '/signin'
     end
   end
 
@@ -56,7 +58,7 @@ class UsersController < ApplicationController
     if @user.save
       sign_in @user
       UserMailer.welcome_email(@user).deliver
-      flash[:success] = "Welcome to Potlucky!"
+      flash[:success] = "Welcome to Bloon!"
       redirect_to(root_path)
     else
       render 'new'

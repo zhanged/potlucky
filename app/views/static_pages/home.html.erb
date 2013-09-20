@@ -1,9 +1,9 @@
 <% if signed_in? %>
-			<div class="center-span">
 
 <div class="row">
+	<div class="span4or8 center-span">
 		<aside class="span4 left-side">
-			<section>
+			<section >
 				<%= render 'shared/user_info' %>
 			</section>
 			<section class="gather-form">
@@ -16,13 +16,15 @@
 	</div>
 </div>
 <% else %>
-	<div class="row">
+<div class="row">
 	<div class="center center-span span4 hero-unit-2">
-		<h1>Welcome to BLOON</h1>
+		<h2 class="welcome-front">Welcome to</h2>
+		<h1 class="logo-front">Bloon</h1>
 		
-		<h2>Effortlessly organize activities to spend more time with friends</h2>
+		<h2 class="desc-front">Effortlessly organize activities to spend more time with friends</h2>
 
-		<p>Interested? Get on our waitlist!</p>
+		<p class="waitlist-front">Interested? Get on our waitlist!</p>
 			<%= render 'wait_list/new' %>
 	</div>
+</div>
 <% end %>
