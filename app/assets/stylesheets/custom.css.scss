@@ -19,11 +19,11 @@ html {
 
 body {
 //	background: #FAFAFA;
-	background-image: url(https://abs.twimg.com/images/themes/theme13/bg.gif);
+	background-image: url("background.png"); //url(https://abs.twimg.com/images/themes/theme13/bg.gif);
 	background-position: left 40px;
 	background-attachment: fixed;
 	background-repeat: no-repeat;
-	background-color: #B2DFDA;
+	background-color: #cce3f7;//#B2DFDA;
 	font-family: 'proxima-nova',Proxima Nova,'Helvetica Neue',Helvetica,sans-serif;
 	min-height: 100%;
 	color: #6C7270;
@@ -84,7 +84,8 @@ p {
 	float: left;
 	margin-right: 10px;
 	font-size: 2.2em;
-	color: #fff;
+	color: rgba(204,227,247,1);//#fff;
+	text-shadow: 1px 1px 0 rgba(23,129,251,1);	
 	text-transform: none;
 	letter-spacing: 0px;
 	padding-top: 4px;
@@ -97,8 +98,10 @@ p {
 	}
 }
 .logo-front {
-	color: #e44545;
-	text-shadow: -1px -1px 0px #FDFFFE;
+	// color: #e44545;
+	// text-shadow: -1px -1px 0px #FDFFFE;
+	color: #77b4ea ;//#fff;
+	text-shadow: 1px 1px 0 rgba(23,129,251,1);
 	letter-spacing: 0px;
 	margin-top: 0px;
 	font-size: 5em;
@@ -129,7 +132,7 @@ p {
 
 }
 .navbar .nav li.dropdown.open.active > .dropdown-toggle {
-	background-color: rgba(228,69,69,1);
+	background-color: #77b4ea;//rgba(228,69,69,1);
 	color: #FFFFFF;
 }
 .navbar .nav li.dropdown.open > .dropdown-toggle {
@@ -137,10 +140,12 @@ p {
 	color: #FFFFFF;	
 }
 .navbar-inner {
-	background-color: rgba(228,69,69,1);
+	background-color: #77b4ea;//rgba(228,69,69,1);
 	background-image: none;
 	background-repeat: no-repeat;
 	filter: none;
+	border-radius: 0px;
+	border-bottom: 2px solid rgba(116,167,224,1)
 }
 
 
