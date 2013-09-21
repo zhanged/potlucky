@@ -9,22 +9,12 @@ class TwilioController < ApplicationController
     	@invitation_id = @body.split(' ').first.gsub("Y","")
 
     	if @body.at(0.1) == "Y" && Invitation.find_by(id: @invitation_id).present?
-   	    	if (User.find_by(phone: @formatted_phone) != User.find_by(id: Invitation.find_by(id: @invitation_id).invitee_id))
-		    	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
-				message = @client.account.sms.messages.create(
-					body: "Sorry, there has been an error",
-				    to: @from,
-				    from: @to)
-				puts message.from
-   	    	else
-	   	    	@invitation = Invitation.find_by(id: @invitation_id)
-	   	    	@user = User.find_by(id: @invitation.invitee_id)    		
+   	    	@invitation = Invitation.find_by(id: @invitation_id)
+   	    	@user = User.find_by(id: @invitation.invitee_id)    		
 
-	   	    	if @user.phone.blank?
-		   	    	@user.phone = @formatted_phone
-		    		@user.save(validate: false)
-		    	end
-				
+   	    	if @user.phone.blank?
+	   	    	@user.phone = @formatted_phone
+	    		@user.save(validate: false)
 				if @invitation.status == "NA"
 					@user.join!(@invitation_id)
 					Gather.find_by(id: @invitation.gathering_id).increase_num_joining!(@invitation_id)
@@ -32,6 +22,23 @@ class TwilioController < ApplicationController
 					@user.unjoin!(@invitation_id)
 					Gather.find_by(id: @invitation.gathering_id).decrease_num_joining!(@invitation_id)
 				end
+			else
+	   	    	if (User.find_by(phone: @formatted_phone) != User.find_by(id: Invitation.find_by(id: @invitation_id).invitee_id))
+			    	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+					message = @client.account.sms.messages.create(
+						body: "Sorry, there has been an error",
+					    to: @from,
+					    from: @to)
+					puts message.from
+	   	    	else					
+					if @invitation.status == "NA"
+						@user.join!(@invitation_id)
+						Gather.find_by(id: @invitation.gathering_id).increase_num_joining!(@invitation_id)
+					else
+						@user.unjoin!(@invitation_id)
+						Gather.find_by(id: @invitation.gathering_id).decrease_num_joining!(@invitation_id)
+					end
+		    	end
 			end
 
 		elsif Invitation.find_by(number_used: @to, invitee_id: User.find_by(phone: @formatted_phone).id).present?

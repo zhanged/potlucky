@@ -24,7 +24,7 @@ class Gather < ActiveRecord::Base
 					message = @client.account.sms.messages.create(
 						body: "#{user.name} has invited you to #{activity}! #{tilt} friends for critical mass - to join, reply Y#{@invitation.id}",
 					    to: @user.phone,
-					    from: "+14154231000")
+					    from: ENV['TWILIO_MAIN'])
 					puts message.from
 				else
 					UserMailer.invitation_email(@user, self, @invitation, user).deliver
@@ -90,7 +90,14 @@ class Gather < ActiveRecord::Base
 				@invited_yes_user_invitation = Invitation.find_by(gathering_id: @gather.id, invitee_id: invited_yes_user.id)
 				if @invited_yes_user_invitation.number_used.nil?
 					all_numbers_used = invited_yes_user.reverse_invitations.pluck(:number_used)
-					@number_used = (ENV['TWILIO_NUMBERS'].split(" ") - all_numbers_used).sample
+					@number_used = (Tnumber.pluck(:tphone) - all_numbers_used).sample
+					if @number_used.blank?
+						@numbers = @client.account.available_phone_numbers.get('US').local.list(:area_code => "415")
+						@number_used = @numbers[0].phone_number
+						@number = @client.account.incoming_phone_numbers.create(:phone_number => @number_used)	# Purchase the number
+						Tnumber.create!(tphone: @number_used)
+						@number.update(:sms_method => "GET", :sms_url => "http://bloon.us/twilio/respond")
+					end
 					@invited_yes_user_invitation.update_attributes!(number_used: @number_used)
 				else
 					@number_used = @invited_yes_user_invitation.number_used
@@ -124,7 +131,14 @@ class Gather < ActiveRecord::Base
 		elsif @gather.num_joining > (@gather.tilt + 1)
 			if @this_invitation.number_used.nil?
 				all_numbers_used = @joining_user.reverse_invitations.pluck(:number_used)
-				@number_used = (ENV['TWILIO_NUMBERS'].split(" ") - all_numbers_used).sample
+				@number_used = (Tnumber.pluck(:tphone) - all_numbers_used).sample
+					if @number_used.blank?
+						@numbers = @client.account.available_phone_numbers.get('US').local.list(:area_code => "415")
+						@number_used = @numbers[0].phone_number
+						@number = @client.account.incoming_phone_numbers.create(:phone_number => @number_used)	# Purchase the number
+						Tnumber.create!(tphone: @number_used)
+						@number.update(:sms_method => "GET", :sms_url => "http://bloon.us/twilio/respond")
+					end
 				@this_invitation.update_attributes(number_used: @number_used)
 			else
 				@number_used = @this_invitation.number_used
