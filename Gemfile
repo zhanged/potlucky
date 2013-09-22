@@ -10,6 +10,7 @@ gem 'bootstrap-will_paginate', '0.0.9'
 gem 'sinatra', '1.4.3'
 gem 'twilio-ruby', '3.10.1'
 gem 'figaro', '0.7.0' # Installed figaro gem: http://railsapps.github.io/rails-environment-variables.html
+gem 'newrelic_rpm'
 
 group :development, :test do
   gem 'sqlite3', '1.3.7'
