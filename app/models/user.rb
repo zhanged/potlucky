@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
 	end
 	before_create :create_remember_token
 	before_create :create_auth_token
-	validates :name, 	presence: true, :on => :update, length: { maximum: 50 }
+	validates :name, 	presence: true, :on => :update, length: { maximum: 22 }
 	VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 	validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
 	validates :phone, presence: true, :on => :update, length: { is: 10 }
