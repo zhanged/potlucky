@@ -11,7 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130921071932) do
+ActiveRecord::Schema.define(version: 20130923012529) do
+
+  create_table "friendships", force: true do |t|
+    t.integer  "friender_id"
+    t.integer  "friended_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "friendships", ["friended_id"], name: "index_friendships_on_friended_id"
+  add_index "friendships", ["friender_id", "friended_id"], name: "index_friendships_on_friender_id_and_friended_id", unique: true
+  add_index "friendships", ["friender_id"], name: "index_friendships_on_friender_id"
 
   create_table "gathers", force: true do |t|
     t.string   "activity"

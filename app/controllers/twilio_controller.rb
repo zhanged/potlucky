@@ -1,5 +1,5 @@
 class TwilioController < ApplicationController
-	BASE_URL = "http://serene-journey-3919.herokuapp.com/twilio/respond"
+	BASE_URL = "http://bloon.us/twilio/respond"
   
     def respond
     	@from = params[:From]

@@ -1,9 +1,9 @@
 <%= form_for(@gather) do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 	<div class="field">
-		<%= f.text_field :activity, placeholder: "Activity, e.g. Watch the Niners play at my place" %>
+ 		<%= f.text_field :activity, placeholder: "Activity, e.g. Dinner party on Saturday?" %>
+		<textarea id="tags" name="gather[invited]" placeholder="steve@email.com, tim@email.com..." size="40"></textarea>
 		<%= f.number_field :tilt, placeholder: "# of add'l friends to critical mass" %>
-		<%= f.text_area :invited, placeholder: "friend1@gmail.com, friend2@gmail.com..." %>
 	</div>
 	<%= f.submit "Invite", class: "btn btn-large btn-block btn-invite" %>
 <% end %>

@@ -1,6 +1,6 @@
 class UserMailer < ActionMailer::Base
-  default from: "hello@gpotlucky.com"
-  BASE_URL = "http://serene-journey-3919.herokuapp.com/"
+  default from: "hello@bloon.us"
+  BASE_URL = "http://bloon.us/"
 #  BASE_URL = "http://localhost:3000/"
 
   def welcome_email(user)

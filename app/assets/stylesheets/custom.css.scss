@@ -251,22 +251,46 @@ aside {
 /* forms */
 
 input, textarea, select, .uneditable-input {
-	border: 1px solid #bbb;
+	border: 0px solid #bbb;
 	width: 100%;
 	margin-bottom: 15px;
 	@include box_sizing;
 }
 
-input, select, .uneditable-input {
-	padding: 10px;
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+.uneditable-input {
+  background-color: white;
+  border: 0px solid #cccccc;
+  padding: 10px 10px 10px 10px;
+  border-radius: 2px;
 }
 
-textarea {
-	padding: 5px;
+input, select, .uneditable-input {
+	padding: 10px;
+	border-radius: 2px;
+	margin-bottom: 8px;
+	.invited {
+		height: 60px;
+	}
 }
 
 input {
 	height: auto !important;
+
 }
 .gather-form {
 	margin: 0px 10px 0px 10px;

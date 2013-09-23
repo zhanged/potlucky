@@ -39,6 +39,16 @@ class Gather < ActiveRecord::Base
 		end
 		
 		self.update_attributes(invited: (user.email + " " + invited))
+		invitees = invited.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
+		invitees.each do |invitee|
+			@user = User.find_by(email: invitee)
+			invitees.each do |n|
+				other_user = User.find_by(email: n)
+				if @user != other_user && @user.not_friend?(other_user)
+					@user.friend!(other_user)
+				end
+			end
+		end
 		self.update_attributes(num_invited: invitees.count + 1)
 		invite!user
 		invitations.find_by(invitee_id: user.id).update(status: "Yes")

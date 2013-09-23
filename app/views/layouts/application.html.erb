@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link href='http://fonts.googleapis.com/css?family=Knewave' rel='stylesheet' type='text/css'>
-  <title><%= full_title(yield(:title)) %></title>
-  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- <link href="assets/stylesheets/bootstrap-responsive.css" rel="stylesheet"> -->
-  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
-  <%= csrf_meta_tags %>
-  <%= render 'layouts/shim' %>
+	<link href='http://fonts.googleapis.com/css?family=Knewave' rel='stylesheet' type='text/css'>
+	<title><%= full_title(yield(:title)) %></title>
+	<%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+	<%= csrf_meta_tags %>
+	<%= render 'layouts/shim' %>
+	<%= render 'layouts/autocomplete' if (current_page?(root_url) && signed_in?)  %>
+	<%= render 'layouts/googleanalytics' if Rails.env.production? %>
 </head>
+
 	<body>
 		<%= render 'layouts/header' %>
 		<div class="container-fluid">
@@ -20,6 +22,5 @@
 			<%= render 'layouts/footer' %>
 			<%= debug(params) if Rails.env.development? %>
 		</div>
-		<%= render 'layouts/googleanalytics' if Rails.env.production? %>
 	</body>
 </html>

@@ -3,6 +3,8 @@ class User < ActiveRecord::Base
 	belongs_to :invitation, foreign_key: "invitee_id"
 	has_many :reverse_invitations, foreign_key: "invitee_id", class_name: "Invitation"
 	has_many :gatherings, through: :reverse_invitations
+	has_many :friendships, foreign_key: "friender_id"
+	has_many :friended_users, through: :friendships, source: :friended
 	before_save { self.email = email.downcase }
 	before_validation do 
 		if self.phone != nil
@@ -48,7 +50,17 @@ class User < ActiveRecord::Base
 		UserMailer.password_reset(self).deliver
 	end
 
+	def not_friend?(other_user)
+		friendships.find_by(friender_id: self.id, friended_id: other_user.id).blank?
+	end
 
+	def friend!(other_user)
+		friendships.create!(friender_id: self.id, friended_id: other_user.id)
+	end
+
+	def friends
+		current_user.friended_users.pluck(:email)
+	end
 
 	private
 
