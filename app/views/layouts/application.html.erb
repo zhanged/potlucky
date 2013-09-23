@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<%= favicon_link_tag 'favicon.ico' %>
-	<title><%= full_title(yield(:title)) %></title>
-	<link href='http://fonts.googleapis.com/css?family=Knewave' rel='stylesheet' type='text/css'>
-	<link rel="apple-touch-icon-precomposed" sizes="120x120" href="/touch-icon-iphone-retina.png" />
-	<link rel="apple-touch-icon-precomposed" sizes="152x152" href="/touch-icon-ipad-retina.png" />
+	<%= render '/analytics.js.coffee' if Rails.env.production? %>
 	<%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+	<%= favicon_link_tag 'favicon.ico' %>
+	<title><%= full_title(yield(:title)) %></title>
+	<link href='http://fonts.googleapis.com/css?family=Knewave' rel='stylesheet' type='text/css'>
+	<link rel="apple-touch-icon-precomposed" sizes="120x120" href="touch-icon-iphone-retina.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="152x152" href="touch-icon-ipad-retina.png" />
 	<%= csrf_meta_tags %>
 	<%= render 'layouts/shim' %>
 	<%= render 'layouts/autocomplete' if (current_page?(root_url) && signed_in?)  %>
