@@ -25,6 +25,6 @@ class UserMailer < ActionMailer::Base
   	@invitation = invitation
   	@invitor = invitor
   	@url = BASE_URL + "lets_go?link_email=#{@user.email}"
-  	mail(to: @user.email, subject: "You've been invited by #{@invitor.name}!")  	
+  	mail(to: @user.email, subject: "#{@gather.activity}?")  	
   end
 end

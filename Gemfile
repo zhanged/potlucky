@@ -8,7 +8,7 @@ gem 'faker', '1.1.2'
 gem 'will_paginate', '3.0.4'
 gem 'bootstrap-will_paginate', '0.0.9'
 gem 'sinatra', '1.4.3'
-gem 'twilio-ruby', '3.10.1'
+gem 'twilio-ruby', '3.11.0' #'3.10.1'
 gem 'figaro', '0.7.0' # Installed figaro gem: http://railsapps.github.io/rails-environment-variables.html
 gem 'newrelic_rpm'
 

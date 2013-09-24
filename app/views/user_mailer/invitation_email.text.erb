@@ -1,8 +1,17 @@
-Join <%= @gather.user.name %> for <%= @gather.activity %>?
-===============================================
+<%= @gather.activity %>?
+
+<%= @gather.user.name %> has invited <%= @gather.invited.sub(@user.email,"").split(' ').join(', ') %>
+<% if @gather.invited.sub(@user.email,"").split(' ').join(', ') != "" %>
+	<%= "and you - at least " %><%= @gather.tilt %><%= " of you" %>
+<% else %>
+	<%= "you - you" %>
+<% end %>
+must join <%= @gather.user.name.split(' ').first %> for this activity to tip. 
+
+To join, just <b>text Y<%= @invitation.id %> to <%= ENV['TWILIO_MAIN'].sub('+1',"").unpack('A3A3A4').join('-') %></b> now.
  
-<%= @gather.tilt %> friends must join for this to take off - to join, just text Y<%= @invitation.id %> to <%= ENV['TWILIO_MAIN'] %> now.
- 
-<%= link_to "Join", @url %> <%= @gather.user.name %> on Bloon and start having more fun with friends!
+
+—
+Organized via Bloon. <%= link_to "Join", @url %> <%= @gather.user.name.split(' ').first %> on Bloon and effortlessly organize more fun with friends.
 
 Note: Your cell number will receive text messages to notify you of invitations and to organize activities with friends.

@@ -1,8 +1,46 @@
+<% activity_placeholder = [
+	"Dinner party on Saturday",
+	"3-on-3 basketball at 3pm on Saturday",
+	"Game night on Friday",
+	"Michael's thing on Saturday",
+	"The Black Keys concert",
+	"Dinner tonight",
+	"Happy hour on Thursday",
+	"Watch the Niners game at my place",
+	"Pregame before the bday party",
+	"Sunday brunch",
+	"Watch Monsters U",
+	"Oyster shucking at Tomales Bay",
+	"Hike Mt. TAM",
+	"Art gallery opening",
+	"18 holes at the Presidio Golf Course",
+	"BBQ at Crissy Fields on Sunday at noon",
+	"Game of Thrones viewing party at my place"
+	] %>
+<% invited_placeholder = [
+	"steve@email.com, woz@email.com...",
+	"barack@email.com, michelle@email.com...",
+	"larry@email.com, sergei@email.com...",
+	"batman@email.com, robin@email.com...",
+	"ben@email.com, jerry@email.com...",
+	"mickey@email.com, minnie@email.com...",
+	"ricky@email.com, lucy@email.com...",
+	"itchy@email.com, scratchy@email.com...",
+	"lewis@email.com, clark@email.com...",
+	"bert@email.com, ernie@email.com...",
+	"hova@email.com, bey@email.com...",
+	"tom@email.com, huck@email.com...",
+	"tom@email.com, jerry@email.com...",
+	"maryk@email.com, ashleyo@email.com...",
+	"pinky@email.com, brain@email.com...",
+	"mario@email.com, luigi@email.com"
+	] %>
+
 <%= form_for(@gather) do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 	<div class="field">
- 		<%= f.text_field :activity, placeholder: "Activity, e.g. Dinner party on Saturday?" %>
-		<textarea id="tags" name="gather[invited]" placeholder="steve@email.com, tim@email.com..." size="40"></textarea>
+ 		<%= f.text_field :activity, placeholder: activity_placeholder.sample %>
+		<textarea id="tags" name="gather[invited]" placeholder="<%= invited_placeholder.sample %>" size="40"></textarea>
 		<%= f.number_field :tilt, placeholder: "# of add'l friends to critical mass" %>
 	</div>
 	<%= f.submit "Invite", class: "btn btn-large btn-block btn-invite" %>

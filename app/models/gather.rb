@@ -3,7 +3,7 @@ class Gather < ActiveRecord::Base
 	has_many :invitations, foreign_key: "gathering_id", dependent: :destroy
 	has_many :invitees, through: :invitations
 	before_create do
-		self.invited = invited.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.join(" ")
+		self.invited = invited.downcase.sub(user.email,"").scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.join(" ")
 		self.invited_yes = user.email
 		self.invited_no = invited
 	end
@@ -22,7 +22,7 @@ class Gather < ActiveRecord::Base
 				if @user.phone.present?
 					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 					message = @client.account.messages.create(
-						body: "#{activity}? #{user.name} invited you. #{invitees.count}/#{tilt} invited must join to tip. REPLY Y#{@invitation.id} to join",
+						body: "#{activity}? #{user.name} invited you via bloon.us, #{invitees.count}/#{tilt} invited must join to tip. REPLY Y#{@invitation.id} to join",
 					    to: @user.phone,
 					    from: ENV['TWILIO_MAIN'])
 					puts message.from
@@ -113,7 +113,9 @@ class Gather < ActiveRecord::Base
 					@number_used = @invited_yes_user_invitation.number_used
 				end
 
+				@people_joining_less_user = ""
 				(invited_yes_array - (invited_yes_user.email.split(" "))).each do |m|
+					m = User.find_by(email: m)
 					if m.name.present?
 						if @people_joining_less_user == ""
 							@people_joining_less_user = m.name.split(' ').first
@@ -164,6 +166,7 @@ class Gather < ActiveRecord::Base
 				    from: @invited_yes_user_invitation.number_used)
 				puts message.from
 
+				@people_joining_less_user = ""
 				if invited_yes_user.name.present?
 					if @people_joining_less_user == ""
 						@people_joining_less_user = invited_yes_user.name.split(' ').first

@@ -4,13 +4,27 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h1>Join <%= @gather.user.name %> for <%= @gather.activity %>?</h1>
+    <h2>
+      <%= @gather.activity %>?
+    </h2>
     <p>
-      <%= @gather.tilt %> friends must join for this to take off - to join, just <b>text Y<%= @invitation.id %> to <%= ENV['TWILIO_MAIN'] %></b> now.
-      <br/>
+      <%= @gather.user.name %> has invited <%= @gather.invited.sub(@user.email,"").split(' ').join(', ') %>
+      <% if @gather.invited.sub(@user.email,"").split(' ').join(', ') != "" %>
+        <%= "and you - at least " %><%= @gather.tilt %><%= " of you" %>
+      <% else %>
+        <%= "you - you" %>
+      <% end %>
+      must join <%= @gather.user.name.split(' ').first %> for this activity to tip.
+    </p>
+    <p>      
+      To join, just <b>text Y<%= @invitation.id %> to <%= ENV['TWILIO_MAIN'].sub('+1',"").unpack('A3A3A4').join('-') %></b> now.
+      <br>
+      <br>
     </p>
     <p>
-      <%= link_to "Join", @url %> <%= @gather.user.name %> on Bloon and start having more fun with friends!
+      &#8212;
+      <br>
+      Organized via Bloon. <%= link_to "Join", @url %> <%= @gather.user.name.split(' ').first %> on Bloon and effortlessly organize more fun with friends.
     </p>
     <p><small>
       Note: Your cell number will receive text messages to notify you of invitations and to organize activities with friends.

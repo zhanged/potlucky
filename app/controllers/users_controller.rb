@@ -23,9 +23,10 @@ class UsersController < ApplicationController
     if :link_email.present? && User.find_by(email: params[:link_email]).present?
       @user = User.find_by(email: params[:link_email])
       UserMailer.welcome_email(@user).deliver
-      flash[:success] = "Check your email now to complete your registration"
+      flash[:notice] = "Check your email now to complete your registration"
+      redirect_to(root_url)
     else
-      redirect_to(root_path)
+      redirect_to(root_url)
     end
   end
 
@@ -47,7 +48,7 @@ class UsersController < ApplicationController
       @user.update_attributes(auth_token: SecureRandom.urlsafe_base64)
       flash[:success] = "Profile updated"
       sign_in @user
-      redirect_to(root_path)
+      redirect_to(root_url)
     else
       render 'edit'
     end
@@ -59,7 +60,7 @@ class UsersController < ApplicationController
       sign_in @user
       UserMailer.welcome_email(@user).deliver
       flash[:success] = "Welcome to Bloon!"
-      redirect_to(root_path)
+      redirect_to(root_url)
     else
       render 'new'
     end
@@ -82,10 +83,10 @@ class UsersController < ApplicationController
 
     def correct_user
       @user = User.find(params[:id])
-      redirect_to(root_path) unless current_user?(@user)
+      redirect_to(root_url) unless current_user?(@user)
     end
 
     def admin_user
-      redirect_to(root_path) unless current_user.admin?
+      redirect_to(root_url) unless current_user.admin?
     end
 end
