@@ -1,5 +1,5 @@
 class UserMailer < ActionMailer::Base
-  default from: "hello@bloon.us"
+  default from: "Bloon <joinbloon@gmail.com>"
   BASE_URL = "http://bloon.us/"
 #  BASE_URL = "http://localhost:3000/"
 
@@ -24,7 +24,8 @@ class UserMailer < ActionMailer::Base
   	@gather = gather
   	@invitation = invitation
   	@invitor = invitor
+    @from = "#{@invitor.name} via Bloon <joinbloon@gmail.com>"
   	@url = BASE_URL + "lets_go?link_email=#{@user.email}"
-  	mail(to: @user.email, subject: "#{@gather.activity}?")  	
+  	mail(to: @user.email, from: @from, subject: "#{@gather.activity}?")  	
   end
 end

@@ -6,7 +6,7 @@ class GathersController < ApplicationController
 		if current_user.phone.present?
 			@gather = current_user.gathers.build(gather_params)
 			if @gather.save
-#				flash[:success] = "Gathering created!"
+				flash[:success] = "Activity created!"
 				redirect_to root_url
 			else				
 				@feed_items = current_user.feed.paginate(page: params[:page], per_page: 10) #Also in static_pages_controller, needed here so show feed during error

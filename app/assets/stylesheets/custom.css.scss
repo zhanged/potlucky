@@ -342,12 +342,12 @@ input {
 }
 
 .btn-joining {
-	background: rgba(212,214,217,1);
+	background: rgba(108,196,29,1); //rgba(212,214,217,1);
 	margin-top: 5px;
-	border-bottom: 4px solid #ABB1B9;	
+	border-bottom: 4px solid rgba(65, 117, 18, 1); //#ABB1B9;	
 	&:hover {
-		background: #B1B3B8;
-		border-bottom: 4px solid #858A91;
+		background: rgba(88, 161, 22, 1); //#B1B3B8;
+		border-bottom: 4px solid rgba(48, 87, 13, 1); //#858A91;
 		color: #fff;		
 	}
 }

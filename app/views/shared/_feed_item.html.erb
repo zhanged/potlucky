@@ -4,9 +4,9 @@
 		<% if feed_item.tilt == nil %>
 		<% else %>
 			<% if (feed_item.num_joining - 1) >= feed_item.tilt %>
-				<b><%= "It's on!" %></b>
+				<b><%= "It's taken off!" %></b>
 			<% else %>
-			<%= feed_item.tilt - feed_item.num_joining + 1 %> more to lift off
+			<%= feed_item.tilt - feed_item.num_joining + 1 %> more to take off
 			<% end %>
 		<% end %> 
 	</span>

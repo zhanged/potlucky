@@ -22,7 +22,7 @@ class Gather < ActiveRecord::Base
 				if @user.phone.present?
 					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 					message = @client.account.messages.create(
-						body: "#{activity}? #{user.name} invited you via bloon.us, #{tilt}/#{invitees.count} invited must join to tip. REPLY Y#{@invitation.id} to join",
+						body: "#{activity}? #{user.name} invited you via bloon.us, #{tilt}/#{invitees.count} invited must join to take off. REPLY Y#{@invitation.id} to join",
 					    to: @user.phone,
 					    from: ENV['TWILIO_MAIN'])
 					puts message.from
@@ -87,12 +87,12 @@ class Gather < ActiveRecord::Base
 			
 		if @gather.num_joining < (@gather.tilt + 1)
 			message = @client.account.messages.create(
-				body: "Great, we've marked you down as joining #{@gather.activity[0,1].downcase + @gather.activity[1..-1]} on bloon.us. You'll get a text if this tips",
+				body: "Great, we've marked you down as interested in #{@gather.activity[0,1].downcase + @gather.activity[1..-1]} on bloon.us. You'll get a text if this takes off",
 			    to: @joining_user.phone,
 			    from: ENV['TWILIO_MAIN'])
 			puts message.from
 
-			@gather.update_attributes(details: ("#{@gather.details} <br>To #{@joining_user_name_or_email}: Great, we've marked you down as joining #{@gather.activity[0,1].downcase + @gather.activity[1..-1]} on bloon.us. You'll get a text if this tips (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
+			@gather.update_attributes(details: ("#{@gather.details} <br>To #{@joining_user_name_or_email}: Great, we've marked you down as interested in #{@gather.activity[0,1].downcase + @gather.activity[1..-1]} on bloon.us. You'll get a text if this takes off (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
 
 		elsif @gather.num_joining == (@gather.tilt + 1)
 			invited_yes_array.each do |n|
@@ -132,13 +132,13 @@ class Gather < ActiveRecord::Base
 				end
 				
 				message = @client.account.messages.create(
-					body: "#{@gather.activity} is happening with #{@people_joining_less_user}! Reply to this group text to plan the details together",
+					body: "Bloon: #{@gather.activity} has taken off with #{@people_joining_less_user}! Reply to this group text to plan the details together",
 				    to: invited_yes_user.phone,
 				    from: @number_used)
 				puts message.from
 			end
 
-			@gather.update_attributes(details: ("#{@gather.details} <br>Group: #{@gather.activity} is happening with #{@people_joining_less_user}! Reply to this group text to plan the details together (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
+			@gather.update_attributes(details: ("#{@gather.details} <br>Bloon: #{@gather.activity} has taken off with #{@people_joining_less_user}! Reply to this group text to plan the details together (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
 
 		elsif @gather.num_joining > (@gather.tilt + 1)
 			if @this_invitation.number_used.nil?
@@ -161,7 +161,7 @@ class Gather < ActiveRecord::Base
 				@invited_yes_user_invitation = Invitation.find_by(gathering_id: @gather.id, invitee_id: invited_yes_user.id)
 				
 				message = @client.account.messages.create(
-					body: "Sweet, #{@joining_user_name_or_email} is joining too and has been added to this group text! Catch #{@joining_user_name_or_email} up on the details",
+					body: "Bloon: #{@joining_user_name_or_email} has joined too and has been added to this group text! Catch #{@joining_user_name_or_email} up on the details",
 				    to: invited_yes_user.phone,
 				    from: @invited_yes_user_invitation.number_used)
 				puts message.from
@@ -183,13 +183,13 @@ class Gather < ActiveRecord::Base
 			end
 
 			message = @client.account.messages.create(
-				body: "#{@gather.activity} has already tipped with #{@people_joining_less_user}! Reply to this group text to get the details from them",
+				body: "Bloon: #{@gather.activity} has already tipped with #{@people_joining_less_user}! Reply to this group text to get the details from them",
 			    to: @joining_user.phone,
 			    from: @number_used)
 			puts message.from
 
-			@gather.update_attributes(details: ("#{@gather.details} <br>To #{@joining_user_name_or_email}: #{@gather.activity} has already tipped with #{@people_joining_less_user}! Reply to this group text to get the details from them (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
-			@gather.update_attributes(details: ("#{@gather.details} <br>Group: Sweet, #{@joining_user_name_or_email} is joining too and has been added to this group text! Catch #{@joining_user_name_or_email} up on the details (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
+			@gather.update_attributes(details: ("#{@gather.details} <br>To #{@joining_user_name_or_email}: Bloon: #{@gather.activity} has already tipped with #{@people_joining_less_user}! Reply to this group text to get the details from them (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
+			@gather.update_attributes(details: ("#{@gather.details} <br>Bloon: #{@joining_user_name_or_email} has joined too and has been added to this group text! Catch #{@joining_user_name_or_email} up on the details (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
 
 		end
 	end
@@ -224,6 +224,8 @@ class Gather < ActiveRecord::Base
 
 		@gather.update_attributes(details: ("#{@gather.details} <br>To #{@unjoining_user_name_or_email}: Sad to see you leave! Reply Y#{@this_invitation.id} to rejoin (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
 
+		@this_invitation.update_attributes(number_used: nil)
+
 		if @gather.num_joining >= @gather.tilt			 
 
 			invited_yes_array = @gather.invited_yes.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
@@ -232,13 +234,13 @@ class Gather < ActiveRecord::Base
 				invited_yes_user_invitation = Invitation.find_by(gathering_id: @gather.id, invitee_id: invited_yes_user.id)				
 
 				message = @client.account.messages.create(
-					body: "Bad news bears: looks like #{@unjoining_user_name_or_email} won't be joining anymore and is now off the group text :(",
+					body: "Bloon: Unfortunately #{@unjoining_user_name_or_email} won't be joining anymore and is now off the group text :(",
 				    to: invited_yes_user.phone,
 				    from: invited_yes_user_invitation.number_used)
 				puts message.from
 			end
 
-			@gather.update_attributes(details: ("#{@gather.details} <br>Group: Bad news bears: looks like #{@unjoining_user_name_or_email} won't be joining anymore :( (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
+			@gather.update_attributes(details: ("#{@gather.details} <br>Bloon: Unfortunately #{@unjoining_user_name_or_email} won't be joining anymore and is now off the group texts :( (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
 
 		end
 	end
