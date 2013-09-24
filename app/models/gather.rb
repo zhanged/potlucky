@@ -22,7 +22,7 @@ class Gather < ActiveRecord::Base
 				if @user.phone.present?
 					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 					message = @client.account.messages.create(
-						body: "#{activity}? #{user.name} invited you via bloon.us, #{invitees.count}/#{tilt} invited must join to tip. REPLY Y#{@invitation.id} to join",
+						body: "#{activity}? #{user.name} invited you via bloon.us, #{tilt}/#{invitees.count} invited must join to tip. REPLY Y#{@invitation.id} to join",
 					    to: @user.phone,
 					    from: ENV['TWILIO_MAIN'])
 					puts message.from
