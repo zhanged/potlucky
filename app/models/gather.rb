@@ -156,6 +156,7 @@ class Gather < ActiveRecord::Base
 				@number_used = @this_invitation.number_used
 			end
 
+			@people_joining_less_user = ""
 			(invited_yes_array - @joining_user.email.split(" ")).each do |n|
 				invited_yes_user = User.find_by(email: n)
 				@invited_yes_user_invitation = Invitation.find_by(gathering_id: @gather.id, invitee_id: invited_yes_user.id)
@@ -166,7 +167,6 @@ class Gather < ActiveRecord::Base
 				    from: @invited_yes_user_invitation.number_used)
 				puts message.from
 
-				@people_joining_less_user = ""
 				if invited_yes_user.name.present?
 					if @people_joining_less_user == ""
 						@people_joining_less_user = invited_yes_user.name.split(' ').first
