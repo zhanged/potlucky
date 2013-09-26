@@ -36,7 +36,7 @@ class UsersController < ApplicationController
       sign_in @user
       render 'edit'    
     else
-      redirect_to '/signin'
+      redirect_to signin_url
     end
   end
 

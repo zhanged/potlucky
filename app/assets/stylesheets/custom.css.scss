@@ -485,6 +485,7 @@ aside {
 	color: #6C7270;
 	margin-bottom: 15px;
 	letter-spacing: 0px;
+	font-size: 1.5em;
 }
 .welcome-front{
 	font-weight: bold;
@@ -502,7 +503,7 @@ aside {
 	float: center;
 }
 .hero-unit-2 {
-	padding: 20px 40px 20px 40px;
+	padding: 20px 35px 20px 35px;
 	margin-top: 30px;
 	margin-left: auto;
 	margin-right: auto;
@@ -595,15 +596,30 @@ aside {
 
 @media (max-width: 360px) {   // large screen Androids
 	.container-fluid {
-	padding-right: 30px;
-	padding-left: 30px;
+		padding-right: 30px;
+		padding-left: 30px;
 	}
 	.span4or8 {
+		width: 300px;
+	}
+	.span4or9 {
 		width: 300px;
 	}
 	[class*="span"] {
 		margin-left: 0px;
 	}
+	.span3a {
+		margin-left: 0px;
+		margin-right: 0px;
+		margin-bottom: 20px;
+	}
+	.span2aor3a {
+		width: 230px;
+	}
+	.span3aor4 {
+		width: 230px;
+	}
+
 }
 @media (max-width: 320px) {   // iPhone
 	.container-fluid {
@@ -613,17 +629,72 @@ aside {
 	.span4or8 {
 		width: 300px;
 	}
+	.span4or9 {
+		width: 300px;
+	}
 	[class*="span"] {
 		margin-left: 0px;
+	}
+	.span3a {
+		margin-left: 0px;
+		margin-right: 0px;
+		margin-bottom: 20px;
+	}
+	.span2aor3a {
+		width: 230px;
+	}
+	.span3aor4 {
+		width: 230px;
 	}
 }
 @media (min-width: 361px) {  // desktop, tablets
 	.span4or8 {
 		width: 640px;
 	}
+	.span4or9 {
+		width: 720px;
+	}
 	.left-side {
 		[class*="span"] {
 			margin-left: 0px;
 		}
 	}
+	.span3a {
+		margin-left: 5px;
+		margin-right: 5px;
+	}
+	.span2aor3a {
+		width: 145px;
+	}
+	.span3aor4 {
+		width: 350px;
+	}
+}
+.span3a {
+	width: 230px;
+	background: white;
+	font-weight: 200;
+	line-height: 30px;
+	border-radius: 5px;
+
+	h1 {
+		font-size: 1.6em;
+		letter-spacing: -1px;
+
+	}
+	h2 {
+		margin-bottom: 15px;
+		padding-left: 2px;
+		padding-right: 2px;
+		-webkit-font-smoothing: antialiased;
+
+	}
+	img {
+		padding-left: 2px;
+		padding-right: 2px;
+		padding-top: 2px;
+	}
+}
+.span2a {
+	width: 160px;
 }

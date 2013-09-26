@@ -17,11 +17,17 @@
 </div>
 <% else %>
 <div class="row">
-	<div class="center center-span span4 hero-unit-2">
-		<h2 class="welcome-front">Welcome to</h2>
+	<div class="center center-span span4or9 hero-unit-2">
+<!-- 		<h2 class="welcome-front">Welcome to</h2> -->
 		<h1 class="logo-front">Bloon</h1>
-		<h2 class="desc-front">Effortlessly organize casual activities to spend more time with friends</h2>
-
+		<h2 class="desc-front">Effortlessly organize casual activities to hang out more with friends
+		<br><br><br>
+		<b>How it works:</b>
+		</h2>
+		<section >
+			<%= render 'static_pages/how' %>
+		</section>
+		<br>
 		<p class="waitlist-front">Interested? Get on our waitlist!</p>
 			<%= render 'wait_list/new' %>
 	</div>
