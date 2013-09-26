@@ -6,7 +6,7 @@
           <%= render 'shared/error_messages', object: f.object %>
 
           <%= f.text_field :name, placeholder: "Name" %>
-          <%= f.text_field :email, placeholder: "Email" %>
+          <%= f.text_field :email, placeholder: "Email", readonly: true %>
           <%= f.text_field :phone, placeholder: "Cell Number" %>
           <%= f.password_field :password, placeholder: "Password" %>
           <%= f.password_field :password_confirmation, placeholder: "Confirm Password" %>

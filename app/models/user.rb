@@ -11,6 +11,13 @@ class User < ActiveRecord::Base
 		self.phone = phone.gsub(/\D/,'')
 		end
 	end
+	before_validation do
+		inputted_email = self.email.downcase
+		if inputted_email.split('@').last == "gmail.com"
+			inputted_email = inputted_email.split('@').first.gsub(".","") + "@" + inputted_email.split('@').last
+			self.email = inputted_email
+		end
+	end
 	before_create :create_remember_token
 	before_create :create_auth_token
 	validates :name, 	presence: true, :on => :update, length: { maximum: 22 }

@@ -5,7 +5,6 @@ class Gather < ActiveRecord::Base
 	before_create do
 		self.invited = invited.downcase.sub(user.email,"").scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.join(" ")
 		self.invited_yes = user.email
-		self.invited_no = invited
 	end
 	default_scope -> { order('gathers.created_at DESC') }
 	validates :activity, presence: true, length: { maximum: 72 }
@@ -15,8 +14,13 @@ class Gather < ActiveRecord::Base
 	after_create do
 		invitees = invited.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
 		invitees.each do |invitee|
-			if User.find_by(email: invitee).present?
-				@user = User.find_by(email: invitee)
+			email_name = invitee.split(/[.@]/).first.capitalize
+			formatted_email = invitee
+			if invitee.split('@').last == "gmail.com"
+				formatted_email = invitee.split('@').first.gsub(".","") + "@" + invitee.split('@').last
+			end
+			if User.find_by(email: formatted_email).present?
+				@user = User.find_by(email: formatted_email)
 				invite!@user
 				@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: self.id)
 				if @user.phone.present?
@@ -31,14 +35,22 @@ class Gather < ActiveRecord::Base
 				end
 			else
 				first_password = SecureRandom.urlsafe_base64(10)
-				@user = User.create!(email: invitee, password: first_password, password_confirmation: first_password)
+				@user = User.create!(name: email_name, email: formatted_email, password: first_password, password_confirmation: first_password)
 				invite!@user
 				@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: self.id)
 				UserMailer.invitation_email(@user, self, @invitation, user).deliver				
 			end
 		end
 		
-		self.update_attributes(invited: (user.email + " " + invited))
+		formatted_invited = invited
+		invitees.each do |invitee|
+			if invitee.split('@').last == "gmail.com"
+				formatted_invitee = invitee.split('@').first.gsub(".","") + "@" + invitee.split('@').last
+				formatted_invited = formatted_invited.gsub(invitee,formatted_invitee)
+			end
+		end
+		self.update_attributes(invited_no: formatted_invited)
+		self.update_attributes(invited: (user.email + " " + formatted_invited))
 		invitees = invited.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
 		invitees.each do |invitee|
 			@user = User.find_by(email: invitee)
@@ -53,7 +65,6 @@ class Gather < ActiveRecord::Base
 		invite!user
 		invitations.find_by(invitee_id: user.id).update(status: "Yes")
 		self.update_attributes(num_joining: 1)
-
 	end
 
 	def invited_already?(other_user)
