@@ -11,6 +11,7 @@ Potlucky::Application.routes.draw do
   root to: 'static_pages#home'
 #  match '/signup',  to: 'users#new',           via: 'get'
   match '/lets_go',    to: 'users#lets_go',        via: 'get'
+  match '/welcome',    to: 'static_pages#welcome',        via: 'get'
   match '/email_redirect', to: 'users#email_redirect',  via: 'get'
   match '/reset', to: 'password_resets#new',  via: 'get'  
   match '/signin',  to: 'sessions#new',        via: 'get'

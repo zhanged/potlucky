@@ -1,0 +1,24 @@
+<div class="row">
+	<div class="center center-span span4or9 hero-unit-2">
+		<h2 class="welcome-front">Welcome to</h2>
+		<h1 class="logo-front">Bloon</h1>
+		<h2 class="desc-front">Effortlessly organize casual activities to hang out more with friends
+		<br><br><br>
+		<% if signed_in? %>
+			<h2><%= link_to "Continue on to join #{User.find_by(id: Gather.find_by(id: (Invitation.where(invitee_id: current_user.id).last.gathering_id)).user_id).name} for #{Gather.find_by(id: (Invitation.where(invitee_id: current_user.id).last.gathering_id)).activity} >>", edit_user_path(current_user) %></h2>
+		<br>
+		<% end %>
+		<h2 class="desc-front"><b>How it works:</b></h2>
+		</h2>
+		<section >
+			<%= render 'static_pages/how' %>
+		</section>
+		<% if signed_in? %>
+			<h2><%= link_to "Continue >>", edit_user_path(current_user) %></h2>
+		<% else %>
+			<br>
+			<p class="waitlist-front">Interested? Get on our waitlist!</p>
+			<%= render 'wait_list/new' %>
+		<% end %>
+	</div>
+</div>

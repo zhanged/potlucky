@@ -34,7 +34,11 @@ class UsersController < ApplicationController
     if User.find_by(auth_token: params[:auth_token]).present?
       @user = User.find_by(auth_token: params[:auth_token])
       sign_in @user
-      render 'edit'    
+      if @user.phone.present?
+        render 'edit'            
+      else
+        redirect_to welcome_path
+      end
     else
       redirect_to signin_url
     end
