@@ -1,6 +1,11 @@
 class GathersController < ApplicationController
 	before_action :signed_in_user,  only: [:create, :update, :destroy]
 	before_action :correct_user, 	only: :destroy
+	before_action :admin_user,     only: [:destroy, :index]
+
+	def index
+		@gathers = Gather.paginate(page: params[:page])
+	end
 
 	def create
 		if current_user.phone.present?
@@ -34,4 +39,9 @@ class GathersController < ApplicationController
 			@gather = current_user.gathers.find_by(id: params[:id])
 			redirect_to root_url if @gather.nil?
 		end
+
+	    def admin_user
+	    	redirect_to(root_url) unless current_user.admin?
+    	end
+
 end

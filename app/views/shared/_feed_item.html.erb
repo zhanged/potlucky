@@ -15,7 +15,7 @@
 	<% feed_item.invitations.each do |invitation| %>
 		<% if invitation.status == "Yes" %>
 				<div id="circle-yes">
-					<% if current_page?(root_url) %>
+					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>">
 						<% else %>
@@ -37,7 +37,7 @@
 	<% feed_item.invitations.each do |invitation| %>
 		<% if invitation.status == "NA" %>
 				<div id="circle-no">
-					<% if current_page?(root_url) %>
+					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>">
 						<% else %>
@@ -57,7 +57,7 @@
 		<!-- 		<%= link_to gravatar_for(invitation.invitee, size:30), invitation.invitee %> -->
 	<% end %>
 
-	<% if current_page?(root_url) %>
+	<% if current_page?(root_url) || current_page?('/gathers') %>
 		&nbsp<div class="no-link-decoration"><a href="#" onclick="toggle_visibility('gather<%= feed_item.id %>'); return false">
 	  		&nbsp<b class="caret"></b>&nbsp&nbsp
 		</a></div>

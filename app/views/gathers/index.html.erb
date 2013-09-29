@@ -1,0 +1,9 @@
+<% provide(:title, 'All activities') %>
+<h1>All activities</h1>
+
+<div class="row">
+	<ol class="gathers span4 feed">
+		<%= render partial: 'shared/feed_item', collection: @gathers %>
+	</ol>
+	<%= will_paginate @feed_items %>
+</div>
