@@ -47,6 +47,22 @@ class TwilioController < ApplicationController
 		    	end
 			end
 
+		elsif @body.downcase == "e" && Invitation.find_by(number_used: @to, invitee_id: User.find_by(phone: @formatted_phone).id).present?
+    		@invitation = Invitation.find_by(number_used: @to, invitee_id: User.find_by(phone: @formatted_phone).id)
+    		@gather = Gather.find_by(id: @invitation.gathering_id)
+			@gather.update_attributes(expire: Time.now)
+			Invitation.where(gathering_id: @gather.id, status: "Yes").pluck(:id).each do |i|
+				expiring_invitation = Invitation.find_by(id: i)
+
+		    	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+				message = @client.account.messages.create(
+					body: "Bloon: This group chat has been extended by 7 days",
+				    to: User.find_by(id: expiring_invitation.invitee_id).phone,
+				    from: expiring_invitation.number_used)
+				puts message.from
+			end
+			@gather.update_attributes(details: ("#{@gather.details} <br>Bloon: This group chat has been extended by 7 days (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
+
 		elsif Invitation.find_by(number_used: @to, invitee_id: User.find_by(phone: @formatted_phone).id).present?
     		# To and From match a conversation: add text to convo and text back out to everyone
     		@invitation = Invitation.find_by(number_used: @to, invitee_id: User.find_by(phone: @formatted_phone).id)

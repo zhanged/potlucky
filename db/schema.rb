@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130923012529) do
+ActiveRecord::Schema.define(version: 20130929015446) do
 
   create_table "friendships", force: true do |t|
     t.integer  "friender_id"
@@ -39,6 +39,8 @@ ActiveRecord::Schema.define(version: 20130923012529) do
     t.integer  "num_joining", default: 1
     t.string   "invited_yes"
     t.string   "invited_no"
+    t.string   "expire"
+    t.datetime "completed"
   end
 
   add_index "gathers", ["user_id", "created_at"], name: "index_gathers_on_user_id_and_created_at"

@@ -698,3 +698,22 @@ aside {
 .span2a {
 	width: 160px;
 }
+.completed {
+	background: gray;
+	margin-top: 5px;
+	border-bottom: 4px solid gray;
+	border: 0;
+	border-radius: 3px;
+//	padding: .9em 1.8em .8em;
+	box-shadow: none;
+	color: #fff;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin-right: 10px;
+	text-shadow: none;
+	font-size: 18px;
+	line-height: 1;
+	font-weight: normal;
+	-webkit-transition: .1s ease-in background-color;
+	-webkit-font-smoothing: antialiased	
+}

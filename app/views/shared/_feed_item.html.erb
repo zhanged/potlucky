@@ -59,7 +59,7 @@
 
 	<% if current_page?(root_url) %>
 		&nbsp<div class="no-link-decoration"><a href="#" onclick="toggle_visibility('gather<%= feed_item.id %>'); return false">
-	  		<b class="caret"></b>
+	  		&nbsp<b class="caret"></b>&nbsp&nbsp
 		</a></div>
 			<div id="gather<%= feed_item.id %>" style="display:none;">
 				<p class="tilt">Invited: 
@@ -87,9 +87,11 @@
 	<% end %>
 	</div></span>
 
-	<span>
-		<% if feed_item.tilt.present? %>
-			<%= render 'shared/join_form', :feed_item => feed_item %>
+	
+		<% if feed_item.tilt.present? && feed_item.completed.blank? %>
+			<span><%= render 'shared/join_form', :feed_item => feed_item %></span>
 		<% end %>
-	</span>
+		<% if feed_item.completed.present? %>
+			<span class="completed">Completed</span>
+		<% end %>
 </li>
