@@ -699,21 +699,21 @@ aside {
 	width: 160px;
 }
 .completed {
-	background: gray;
+	background: rgb(189, 189, 189);
 	margin-top: 5px;
-	border-bottom: 4px solid gray;
-	border: 0;
+	border-bottom: 4px solid rgb(180, 180, 180);
 	border-radius: 3px;
-//	padding: .9em 1.8em .8em;
 	box-shadow: none;
 	color: #fff;
 	text-transform: uppercase;
 	letter-spacing: 1px;
-	margin-right: 10px;
 	text-shadow: none;
 	font-size: 18px;
 	line-height: 1;
 	font-weight: normal;
+	display: block;
+	text-align: center;
+	padding: 11px 19px;
 	-webkit-transition: .1s ease-in background-color;
 	-webkit-font-smoothing: antialiased	
 }

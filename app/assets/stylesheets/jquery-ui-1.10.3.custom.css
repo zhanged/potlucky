@@ -219,7 +219,7 @@
 .ui-widget-content .ui-state-focus,
 .ui-widget-header .ui-state-focus {
 	border: 0px solid #999999;
-	background: #FFFFFF; /* background color of autocomplete on hover */
+	background: #BFCEB2; /* background color of autocomplete on hover */
 	font-weight: normal;
 	color: #212121;
 }
