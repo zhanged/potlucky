@@ -105,6 +105,12 @@ class Gather < ActiveRecord::Base
 
 			@gather.update_attributes(details: ("#{@gather.details} <br>To #{@joining_user_name_or_email}: Great, we've marked you down as interested in #{@gather.activity[0,1].downcase + @gather.activity[1..-1]} on bloon.us. You'll get a text if this takes off (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
 
+			message = @client.account.messages.create(
+				body: "#{@joining_user.name} just joined you for #{@gather.activity[0,1].downcase + @gather.activity[1..-1]} on bloon.us",
+			    to: User.find_by(id: user_id).phone,
+			    from: ENV['TWILIO_MAIN'])
+			puts message.from
+
 		elsif @gather.num_joining == (@gather.tilt + 1)
 
 			# Expire existing Gather numbers?

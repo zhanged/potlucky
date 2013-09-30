@@ -15,8 +15,8 @@
     </p>
        <h2><%= @gather.activity %></h2>
     <p>   
-      The activity will only take off if at least <%= @gather.tilt + 1 %> friends join. 
-      If you're interested, <%= link_to "join #{@gather.user.name.split(' ').first} on Bloon", @url %> or <b>text Y<%= @invitation.id %> </b>to<b> <a href=<%="sms:"+ENV['TWILIO_MAIN'].sub('+1',"").unpack('A3A3A4').join('-')%>> <%= ENV['TWILIO_MAIN'].sub('+1',"").unpack('A3A3A4').join('-') %></a></b> so we can notify you if this activity takes off.
+      This will only take off if at least <%= @gather.tilt + 1 %> friends join. 
+      If you're interested in the activity, <%= link_to "join #{@gather.user.name.split(' ').first} on Bloon", @url %> or <b>text Y<%= @invitation.id %> </b>to<b> <a href=<%="sms:"+ENV['TWILIO_MAIN'].sub('+1',"").unpack('A3A3A4').join('-')%>> <%= ENV['TWILIO_MAIN'].sub('+1',"").unpack('A3A3A4').join('-') %></a></b> so we can notify you if this activity takes off.
       <br>
       <br>
     </p>

@@ -16,7 +16,7 @@ class UserMailer < ActionMailer::Base
   end
 
   def wait_list(email)
-  	mail(to: email, subject: "You've been added to the Bloon waitlist!")
+  	mail(to: email, bcc: 'joinbloon+waitlist@gmail.com', subject: "You've been added to the Bloon waitlist!")
   end
 
   def invitation_email(user, gather, invitation, invitor) 
