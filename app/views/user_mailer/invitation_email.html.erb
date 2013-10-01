@@ -3,20 +3,15 @@
   <head>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
-  <body>
+  <body style="font-family: helvetica; font-size: 1em;">
     <p>
-      <%= @gather.user.name.split(' ').first %> has invited <%= @gather.invited.sub(@user.email,"").split(' ').join(', ') %>
-      <% if @gather.invited.sub(@user.email,"").split(' ').join(', ') != "" %>
-        <%= "and you" %>
-      <% else %>
-        <%= "you" %>
-      <% end %>
-      to:
+      <%= @gather.user.name.split(' ').first %> has invited <%= @to_invitees %> to:
     </p>
-       <h2><%= @gather.activity %></h2>
+    <h2><%= link_to @gather.activity, @url, {:style => 'background: rgba(23,129,251,1); color: white; text-decoration: none; padding: 10px 20px; border-bottom: 4px solid #0D509E; border-radius: 3px; font-family: helvetica; -webkit-font-smoothing: antialiased; line-height: 2.5em;'} %>
+    </h2> 
     <p>   
-      This will only take off if at least <%= @gather.tilt + 1 %> friends join. 
-      If you're interested in the activity, <%= link_to "join #{@gather.user.name.split(' ').first} on Bloon", @url %> or <b>text Y<%= @invitation.id %> </b>to<b> <a href=<%="sms:"+ENV['TWILIO_MAIN'].sub('+1',"").unpack('A3A3A4').join('-')%>> <%= ENV['TWILIO_MAIN'].sub('+1',"").unpack('A3A3A4').join('-') %></a></b> so we can notify you if this activity takes off.
+      This will only take off if at least <%= @gather.tilt %> of <%= @gather.num_invited %> friends invited join. 
+      If you're interested in the activity, <b><%= link_to "join on Bloon", @url %> or text 'Y<%= @invitation.id %>' to <a href=<%="sms:"+ENV['TWILIO_MAIN'].sub('+1',"").unpack('A3A3A4').join('-')%>> <%= ENV['TWILIO_MAIN'].sub('+1',"").unpack('A3A3A4').join('-') %></a></b> so we can notify you if this activity takes off.
       <br>
       <br>
     </p>

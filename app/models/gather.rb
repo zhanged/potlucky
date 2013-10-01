@@ -13,12 +13,43 @@ class Gather < ActiveRecord::Base
 	validate :when_tilt_is_nil
 	after_create do
 		invitees = invited.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
+		self.update_attributes(num_invited: invitees.count)
 		invitees.each do |invitee|
 			email_name = invitee.split(/[.@]/).first.capitalize
 			formatted_email = invitee
 			if invitee.split('@').last == "gmail.com"
 				formatted_email = invitee.split('@').first.gsub(".","") + "@" + invitee.split('@').last
 			end
+			
+			@to_invitees = ""
+			invitees.each do |i|
+				if i.split('@').last == "gmail.com"
+					i_email = i.split('@').first.gsub(".","") + "@" + i.split('@').last
+				else
+					i_email = i
+				end
+				if formatted_email != i_email
+					if @to_invitees == ""
+						if User.find_by(email: i_email).present?
+							@to_invitees = User.find_by(email: i_email).name
+						else
+							@to_invitees = i.split(/[.@]/).first.capitalize
+						end
+					else
+						if User.find_by(email: i_email).present?
+							@to_invitees = User.find_by(email: i_email).name + ", " + @to_invitees
+						else
+							@to_invitees = i.split(/[.@]/).first.capitalize + ", " + @to_invitees
+						end
+					end
+				end
+			end
+			if @to_invitees == ""
+				@to_invitees = "you"
+			else
+				@to_invitees = @to_invitees + " and you"
+			end
+
 			if User.find_by(email: formatted_email).present?
 				@user = User.find_by(email: formatted_email)
 				invite!@user
@@ -26,19 +57,19 @@ class Gather < ActiveRecord::Base
 				if @user.phone.present?
 					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 					message = @client.account.messages.create(
-						body: "#{activity}? #{user.name} invited you via bloon.us, #{tilt}/#{invitees.count} invited must join to take off. REPLY 'Y#{@invitation.id}' to join",
+						body: "#{activity}? #{user.name} invited you - #{tilt}/#{invitees.count} invitees must join for activity to take off. REPLY 'Y#{@invitation.id}' to join or go to bloon.us for details",
 					    to: @user.phone,
 					    from: ENV['TWILIO_MAIN'])
 					puts message.from
 				else
-					UserMailer.invitation_email(@user, self, @invitation, user).deliver
+					UserMailer.invitation_email(@user, self, @invitation, user, @to_invitees).deliver
 				end
 			else
 				first_password = SecureRandom.urlsafe_base64(10)
 				@user = User.create!(name: email_name, email: formatted_email, password: first_password, password_confirmation: first_password)
 				invite!@user
 				@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: self.id)
-				UserMailer.invitation_email(@user, self, @invitation, user).deliver				
+				UserMailer.invitation_email(@user, self, @invitation, user, @to_invitees).deliver				
 			end
 		end
 		
@@ -61,7 +92,6 @@ class Gather < ActiveRecord::Base
 				end
 			end
 		end
-		self.update_attributes(num_invited: invitees.count + 1)
 		invite!user
 		invitations.find_by(invitee_id: user.id).update(status: "Yes")
 		self.update_attributes(num_joining: 1)
@@ -177,7 +207,7 @@ class Gather < ActiveRecord::Base
 				end
 				
 				message = @client.account.messages.create(
-					body: "Bloon: #{@gather.activity} has taken off with #{@people_joining_less_user}! Reply to this group text to plan the details together",
+					body: "Bloon: #{@gather.activity} has taken off with #{@people_joining_less_user} and you! Reply to this group text to plan the details together",
 				    to: invited_yes_user.phone,
 				    from: @number_used)
 				puts message.from
@@ -228,12 +258,12 @@ class Gather < ActiveRecord::Base
 			end
 
 			message = @client.account.messages.create(
-				body: "Bloon: #{@gather.activity} has already tipped with #{@people_joining_less_user}! Reply to this group text to get the details from them",
+				body: "Bloon: #{@gather.activity} is on! You're joining #{@people_joining_less_user} in this group chat (chat history is on bloon.us)",
 			    to: @joining_user.phone,
 			    from: @number_used)
 			puts message.from
 
-			@gather.update_attributes(details: ("#{@gather.details} <br>To #{@joining_user_name_or_email}: Bloon: #{@gather.activity} has already tipped with #{@people_joining_less_user}! Reply to this group text to get the details from them (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
+			@gather.update_attributes(details: ("#{@gather.details} <br>To #{@joining_user_name_or_email}: Bloon: #{@gather.activity} is on! You're joining #{@people_joining_less_user} in this group chat (chat history is on bloon.us) (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
 			@gather.update_attributes(details: ("#{@gather.details} <br>Bloon: #{@joining_user_name_or_email} has joined too and has been added to this group text! Catch #{@joining_user_name_or_email} up on the details (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
 
 		end

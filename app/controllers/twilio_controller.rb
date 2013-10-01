@@ -96,7 +96,7 @@ class TwilioController < ApplicationController
     		# Y# doesn't match an invitation: Error
 			@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 			message = @client.account.messages.create(
-				body: "Sorry, please enter the right code. For more help, email hello@bloon.us",
+				body: "Sorry, you are not a part of this activity. For more help, email hello@bloon.us",
 			    to: @from,
 			    from: @to)
 			puts message.from

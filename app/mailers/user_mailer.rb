@@ -19,13 +19,15 @@ class UserMailer < ActionMailer::Base
   	mail(to: email, bcc: 'joinbloon+waitlist@gmail.com', subject: "You've been added to the Bloon waitlist!")
   end
 
-  def invitation_email(user, gather, invitation, invitor) 
+  def invitation_email(user, gather, invitation, invitor, to_invitees) 
   	@user = user
   	@gather = gather
   	@invitation = invitation
   	@invitor = invitor
+    @to_invitees = to_invitees
     @from = "#{@invitor.name} via Bloon <joinbloon@gmail.com>"
   	@url = BASE_URL + "email_redirect?auth_token=#{@user.auth_token}" # "lets_go?link_email=#{@user.email}"
+#    attachments.inline['background.png'] = File.read('background.png')
   	mail(to: @user.email, from: @from, subject: "#{@gather.activity}?")  	
   end
 end
