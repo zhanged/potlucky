@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130929015446) do
+ActiveRecord::Schema.define(version: 20131001165435) do
 
   create_table "friendships", force: true do |t|
     t.integer  "friender_id"
@@ -26,7 +26,7 @@ ActiveRecord::Schema.define(version: 20130929015446) do
 
   create_table "gathers", force: true do |t|
     t.string   "activity"
-    t.string   "invited"
+    t.text     "invited"
     t.string   "location"
     t.string   "date"
     t.string   "time"
@@ -37,8 +37,8 @@ ActiveRecord::Schema.define(version: 20130929015446) do
     t.integer  "tilt"
     t.integer  "num_invited"
     t.integer  "num_joining", default: 1
-    t.string   "invited_yes"
-    t.string   "invited_no"
+    t.text     "invited_yes"
+    t.text     "invited_no"
     t.string   "expire"
     t.datetime "completed"
   end
