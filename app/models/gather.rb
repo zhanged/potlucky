@@ -136,7 +136,7 @@ class Gather < ActiveRecord::Base
 			@gather.update_attributes(details: ("#{@gather.details} <br>To #{@joining_user_name_or_email}: Great, we've marked you down as interested in #{@gather.activity[0,1].downcase + @gather.activity[1..-1]} on bloon.us. You'll get a text if this takes off (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
 
 			message = @client.account.messages.create(
-				body: "#{@joining_user.name} just joined you for #{@gather.activity[0,1].downcase + @gather.activity[1..-1]} on bloon.us",
+				body: "#{@joining_user.name} just joined you for #{@gather.activity[0,1].downcase + @gather.activity[1..-1]} on bloon.us. If #{@gather.tilt + 1 - @gather.num_joining} more join, you will be put in a group chat",
 			    to: User.find_by(id: user_id).phone,
 			    from: ENV['TWILIO_MAIN'])
 			puts message.from
@@ -152,20 +152,20 @@ class Gather < ActiveRecord::Base
 					Invitation.where(gathering_id: expiring_gather.id, status: "Yes").pluck(:id).each do |i|
 						Invitation.find_by(id: i).update_attributes(number_used: nil)
 					end
-				elsif expiring_gather.expire.at(0.1) != "Y" && ( ( Time.now - Time.parse(expiring_gather.expire) ) > 60*60*24*7 )
-					# if it's been > 7 days since tilting
+				elsif expiring_gather.expire.at(0.1) != "Y" && ( ( Time.now - Time.parse(expiring_gather.expire) ) > 60*60*24*6 )
+					# if it's been > 6 days since tilting
 					add_y = "Y" + Time.now.to_s
 					expiring_gather.update_attributes(expire: add_y)
 					Invitation.where(gathering_id: expiring_gather.id, status: "Yes").pluck(:id).each do |i|
 						expiring_invitation = Invitation.find_by(id: i)
 
 						message = @client.account.messages.create(
-							body: "Bloon: This group text will expire in 24 hours. If you'd like to extend it, reply 'E'",
+							body: "Bloon: Group text for #{expiring_gather.activity} expires in 24 hrs. Reply 'E' to extend. Organizer can end group texts anytime by replying 'X'",
 						    to: User.find_by(id: expiring_invitation.invitee_id).phone,
 						    from: expiring_invitation.number_used)
 						puts message.from
 					end
-					expiring_gather.update_attributes(details: ("#{expiring_gather.details} <br>Bloon: This group text will expire in 24 hours. If you'd like to extend it, reply 'E' (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
+					expiring_gather.update_attributes(details: ("#{expiring_gather.details} <br>Bloon: Group text for #{expiring_gather.activity} expires in 24 hrs. Reply 'E' to extend. Organizer can end group texts anytime by replying 'X' (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
 				end
 			end
 			@gather.update_attributes(expire: Time.now)

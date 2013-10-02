@@ -84,12 +84,12 @@ class TwilioController < ApplicationController
 
 			    	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 					message = @client.account.messages.create(
-						body: "Bloon: This group chat has been closed. Visit bloon.us to create another activity!",
+						body: "Bloon: The group chat for #{expiring_invitation.activity} has been closed. Visit bloon.us to create another activity!",
 					    to: User.find_by(id: expiring_invitation.invitee_id).phone,
 					    from: expiring_invitation.number_used)
 					puts message.from
 				end
-				expiring_gather.update_attributes(details: ("#{expiring_gather.details} <br>Bloon: This group chat has been closed. Visit bloon.us to create another activity! (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
+				expiring_gather.update_attributes(details: ("#{expiring_gather.details} <br>Bloon: This group chat for #{expiring_invitation.activity} has been closed. Visit bloon.us to create another activity! (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
 
 				expiring_gather.update_attributes(expire: nil, completed: Time.now)
 				Invitation.where(gathering_id: expiring_gather.id, status: "Yes").pluck(:id).each do |i|
