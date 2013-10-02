@@ -5,7 +5,11 @@
         <%= form_for(@user) do |f| %>
           <%= render 'shared/error_messages', object: f.object %>
 
-          <%= f.text_field :name, placeholder: "Name" %>
+          <% if @user.phone.blank?  %>
+            <%= f.text_field :name, placeholder: "Name", value: "" %>
+          <% else %>
+            <%= f.text_field :name, placeholder: "Name" %>
+          <% end %>
           <%= f.text_field :email, placeholder: "Email", readonly: true %>
           <%= f.text_field :phone, placeholder: "Cell Number" %>
           <%= f.password_field :password, placeholder: "Password" %>

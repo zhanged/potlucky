@@ -5,7 +5,7 @@
   </head>
   <body style="font-family: helvetica; font-size: 1em;">
     <p>
-      <%= @gather.user.name.split(' ').first %> has invited <%= @to_invitees %> to:
+      <%= @gather.user.name %> invited <%= @to_invitees %> to:
     </p>
     <h2><%= link_to @gather.activity, @url, {:style => 'background: rgba(23,129,251,1); color: white; text-decoration: none; padding: 10px 20px; border-bottom: 4px solid #0D509E; border-radius: 3px; font-family: helvetica; -webkit-font-smoothing: antialiased; line-height: 2.5em;'} %>
     </h2> 

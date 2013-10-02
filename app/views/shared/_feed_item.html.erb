@@ -62,16 +62,17 @@
 	  		&nbsp<b class="caret"></b>&nbsp&nbsp
 		</a></div>
 			<div id="gather<%= feed_item.id %>" style="display:none;">
-				<p class="tilt">Invited: 
+				<p class="tilt"><u>Invited</u><br> 
 					<% feed_item.invited_yes.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).each do |invitee| %>
 					    <%= invitee %>
 					<% end %>
-					<% feed_item.invited_no.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).each do |invitee| %>
+					<i><% feed_item.invited_no.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).each do |invitee| %>
 					    <%= invitee %>
-					<% end %>
+					<% end %></i>
 				</p>
-				<p class="tilt">
+				<p class="tilt"> 
 					<% if feed_item.details.present? %>
+						<u>Conversation</u>
 						<% feed_item.details.split("<br>").each do |message| %>
 							<%= message %><br>
 						<% end %>

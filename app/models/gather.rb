@@ -31,13 +31,13 @@ class Gather < ActiveRecord::Base
 				if formatted_email != i_email
 					if @to_invitees == ""
 						if User.find_by(email: i_email).present?
-							@to_invitees = User.find_by(email: i_email).name
+							@to_invitees = User.find_by(email: i_email).name.split(' ').first
 						else
 							@to_invitees = i.split(/[.@]/).first.capitalize
 						end
 					else
 						if User.find_by(email: i_email).present?
-							@to_invitees = User.find_by(email: i_email).name + ", " + @to_invitees
+							@to_invitees = User.find_by(email: i_email).name.split(' ').first + ", " + @to_invitees
 						else
 							@to_invitees = i.split(/[.@]/).first.capitalize + ", " + @to_invitees
 						end
