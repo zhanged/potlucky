@@ -17,7 +17,7 @@ class Update < ActiveRecord::Base
 				if invite.number_used.present?
 				# Joining, so text				
 					message = @client.account.messages.create(
-						body: "Update from #{user.name}: #{self.content}",
+						body: "Update from #{responder.name}: #{self.content}",
 					    to: user.phone,
 					    from: invite.number_used)
 					puts message.from
@@ -49,7 +49,7 @@ class Update < ActiveRecord::Base
 				else
 					# Not joining but has phone, send text through main
 					message = @client.account.messages.create(
-						body: "#{user.name} has an update for #{gather.activity}: #{self.content}",
+						body: "#{responder.name} has an update for #{gather.activity}: #{self.content}",
 					    to: user.phone,
 					    from: ENV['TWILIO_MAIN'])
 					puts message.from
