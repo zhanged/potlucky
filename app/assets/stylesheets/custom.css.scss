@@ -279,6 +279,68 @@ input[type="color"],
   border-radius: 2px;
 }
 
+.field-in-gather-org {
+	textarea,
+	input[type="text"],
+	input[type="password"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="date"],
+	input[type="month"],
+	input[type="time"],
+	input[type="week"],
+	input[type="number"],
+	input[type="email"],
+	input[type="url"],
+	input[type="search"],
+	input[type="tel"],
+	input[type="color"],
+	.uneditable-input {
+		background-color: rgba(224, 243, 208, 1);
+	}
+	input, textarea, select, .uneditable-input {
+	border: 0px solid #bbb;
+	width: 100%;
+	margin-bottom: 0px;
+	background: rgba(224, 243, 208, 1);
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
+	border-top-left-radius: 2px;
+	border-top-right-radius: 2px;
+	@include box_sizing;
+	}
+}
+.field-in-gather-no {
+	textarea,
+	input[type="text"],
+	input[type="password"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="date"],
+	input[type="month"],
+	input[type="time"],
+	input[type="week"],
+	input[type="number"],
+	input[type="email"],
+	input[type="url"],
+	input[type="search"],
+	input[type="tel"],
+	input[type="color"],
+	.uneditable-input {
+		background-color: rgb(231, 236, 240);
+	}
+	input, textarea, select, .uneditable-input {
+	border: 0px solid #bbb;
+	width: 100%;
+	margin-bottom: 0px;
+	background: #DBEEFF;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
+	border-top-left-radius: 2px;
+	border-top-right-radius: 2px;
+	@include box_sizing;
+	}
+}
 input, select, .uneditable-input {
 	padding: 10px;
 	border-radius: 2px;
@@ -358,6 +420,36 @@ input {
 	&:hover {
 		background: #C43939;
 		border-bottom: 4px solid #882828;
+		color: #fff;
+	}
+}
+.btn-update-org {
+	background: rgba(156, 211, 107, 1);
+	border-bottom: 0px solid #AF3333;
+	font-size: 14px;
+	padding: 8px;
+	border-bottom-left-radius: 2px;
+	border-bottom-right-radius: 2px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+	&:hover {
+		background: rgba(134, 201, 75, 1);
+		border-bottom: 0px solid #882828;
+		color: #fff;
+	}
+}
+.btn-update-no {
+	background: #77C2FF;
+	border-bottom: 0px solid #AF3333;
+	font-size: 14px;
+	padding: 8px;
+	border-bottom-left-radius: 2px;
+	border-bottom-right-radius: 2px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+	&:hover {
+		background: #47ACFF;
+		border-bottom: 0px solid #882828;
 		color: #fff;
 	}
 }

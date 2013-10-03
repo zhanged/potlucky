@@ -2,6 +2,7 @@ class Gather < ActiveRecord::Base
 	belongs_to :user
 	has_many :invitations, foreign_key: "gathering_id", dependent: :destroy
 	has_many :invitees, through: :invitations
+	has_many :updates, dependent: :destroy
 	before_create do
 		self.invited = invited.downcase.sub(user.email,"").scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.join(" ")
 		self.invited_yes = user.email

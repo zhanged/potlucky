@@ -30,4 +30,16 @@ class UserMailer < ActionMailer::Base
 #    attachments.inline['background.png'] = File.read('background.png')
   	mail(to: @user.email, from: @from, subject: "#{@gather.activity}?")  	
   end
+
+  def update_email(user, update, gather, already_joining, responder, invite)
+    @user = user
+    @update = update
+    @gather = gather
+    @already_joining = already_joining
+    @organizer = responder
+    @invitation = invite
+    @from = "#{@organizer.name} via Bloon <joinbloon@gmail.com>"
+    @url = BASE_URL + "email_redirect?auth_token=#{@user.auth_token}"
+    mail(to: @user.email, from: @from, subject: "Update: #{@gather.activity}?")   
+  end
 end

@@ -1,5 +1,9 @@
 <li id="<%= feed_item.id %>">
-	<span class="activity"><%= feed_item.activity %></span>
+<% if current_page?(root_url) || current_page?('/gathers') %>
+	<div class="no-link-decoration"><a href="#" onclick="toggle_visibility('gather<%= feed_item.id %>'); return false">
+  			<span class="activity"><%= feed_item.activity %></span>
+	</a></div>
+<% end %>	
 	<span class="tilt">
 		<% if feed_item.tilt == nil %>
 		<% else %>
@@ -17,9 +21,9 @@
 				<div id="circle-yes">
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
-							<a href="<%= root_url %>">
+							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
 						<% else %>
-							<a href="<%= user_path(invitation.invitee) %>">
+							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
 					<% if invitation.invitee == feed_item.user %><b><% end %>
@@ -39,9 +43,9 @@
 				<div id="circle-no">
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
-							<a href="<%= root_url %>">
+							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
 						<% else %>
-							<a href="<%= user_path(invitation.invitee) %>">
+							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
 					<% if invitation.invitee == feed_item.user %><b><% end %>
@@ -57,35 +61,69 @@
 		<!-- 		<%= link_to gravatar_for(invitation.invitee, size:30), invitation.invitee %> -->
 	<% end %>
 
-	<% if current_page?(root_url) || current_page?('/gathers') %>
-		&nbsp<div class="no-link-decoration"><a href="#" onclick="toggle_visibility('gather<%= feed_item.id %>'); return false">
-	  		&nbsp<b class="caret"></b>&nbsp&nbsp
-		</a></div>
-			<div id="gather<%= feed_item.id %>" style="display:none;">
-				<p class="tilt"><u>Invited</u><br> 
-					<% feed_item.invited_yes.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).each do |invitee| %>
-					    <%= invitee %>
-					<% end %>
-					<i><% feed_item.invited_no.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).each do |invitee| %>
-					    <%= invitee %>
-					<% end %></i>
-				</p>
-				<p class="tilt"> 
-					<% if feed_item.details.present? %>
-						<u>Conversation</u>
-						<% feed_item.details.split("<br>").each do |message| %>
-							<%= message %><br>
-						<% end %>
-					<% end %>
-				</p>
-				<p class="tilt"><small>
-					Created by <%= feed_item.user.name %> <%= time_ago_in_words(feed_item.created_at) %> ago
-						<% if current_user?(feed_item.user) %>
-				  			<%= link_to "delete", feed_item, method: :delete, data: { confirm: "You sure?" }, title: feed_item.activity %>
-				  		<% end %>
-				</p></small>
-			</div>
-	<% end %>
+	
+	<div id="gather<%= feed_item.id %>" style="display:none;">
+	<br>	
+		<p class="tilt"><u>Invited</u><br> 
+			<% feed_item.invited_yes.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).each do |invitee| %>
+			    <%= invitee %>
+			<% end %>
+			<i><% feed_item.invited_no.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).each do |invitee| %>
+			    <%= invitee %>
+			<% end %></i>
+		</p>
+		<p class="tilt"> 
+			<% if feed_item.updates.present? %>
+				<u>Updates</u><br>
+				<% feed_item.updates.pluck(:id).each do |i| %>
+					<%= User.find_by(id: Update.find_by(id: i).user_id).name.split(' ').first %>: <%= Update.find_by(id: i).content %><br>
+				<% end %>
+			<% end %>
+		</p>
+		<p class="tilt"> 
+			<% if feed_item.details.present? %>
+				<u>Conversation</u>
+				<% feed_item.details.split("<br>").each do |message| %>
+					<%= message %><br>
+				<% end %>
+			<% end %>
+		</p>
+		<p class="tilt"><small>
+			Created by <%= feed_item.user.name %> <%= time_ago_in_words(feed_item.created_at) %> ago
+				<% if current_user?(feed_item.user) %>
+		  			<%= link_to "delete", feed_item, method: :delete, data: { confirm: "You sure?" }, title: feed_item.activity %>
+		  		<% end %>
+		</p></small>
+
+				<% if feed_item.completed.blank? %>
+			<% if feed_item.user == current_user %>
+				<%= form_for(Update.new) do |f| %>
+					<%= render 'shared/error_messages', object: f.object %>
+					<div class="field-in-gather-org">
+						<%= f.hidden_field :user_id, :value => current_user.id %>
+						<%= f.hidden_field :gather_id, :value => feed_item.id %>
+						<textarea id="tags" name="update[content]" placeholder="Update, e.g. Tix are running out, respond within next hour" size="40"></textarea>
+					</div>
+					<%= f.submit "Send update to all", class: "btn btn-block btn-update-org" %>
+				<% end %>
+			<% elsif feed_item.invitations.find_by(invitee_id: current_user.id).status == "NA" %>
+				<%= form_for(Update.new) do |f| %>
+					<%= render 'shared/error_messages', object: f.object %>
+					<div class="field-in-gather-no">
+						<%= f.hidden_field :user_id, :value => current_user.id %>
+						<%= f.hidden_field :gather_id, :value => feed_item.id %>
+						<textarea id="tags" name="update[content]" placeholder="Can't make it bc..." size="40"></textarea>
+					</div>
+					<%= f.submit "Respond to organizer", class: "btn btn-block btn-update-no" %>
+				<% end %>
+
+			<% end %>
+		<% end %>
+
+
+	</div>
+	
+	
 	</div></span>
 
 	

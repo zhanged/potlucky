@@ -29,6 +29,10 @@ class GathersController < ApplicationController
 		redirect_to root_url
 	end
 
+	def show
+		@updates = @gather.updates
+	end
+
 	private
 
 		def gather_params

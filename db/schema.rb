@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131001165435) do
+ActiveRecord::Schema.define(version: 20131003034630) do
 
   create_table "friendships", force: true do |t|
     t.integer  "friender_id"
@@ -63,6 +63,16 @@ ActiveRecord::Schema.define(version: 20131001165435) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "updates", force: true do |t|
+    t.text     "content"
+    t.integer  "user_id"
+    t.integer  "gather_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "updates", ["gather_id", "created_at"], name: "index_updates_on_gather_id_and_created_at"
 
   create_table "users", force: true do |t|
     t.string   "name"
