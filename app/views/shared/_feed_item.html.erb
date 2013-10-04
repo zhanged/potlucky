@@ -70,25 +70,27 @@
 	
 	<div id="gather<%= feed_item.id %>" style="display:none;">
 
-		<p class="tilt"> 
-			<% if feed_item.updates.present? %>
-				<br>	
+		<p class="tilt"></p>
+		<% if feed_item.updates.present? %>
+			<p class="tilt"> 		
 				<u>Updates</u><br>
 				<% feed_item.updates.pluck(:id).each do |i| %>
 					<%= User.find_by(id: Update.find_by(id: i).user_id).name.split(' ').first %>: <%= Update.find_by(id: i).content %><br>
 				<% end %>
-			<% end %>
-		</p>
-		<p class="tilt"> 
-			<% if feed_item.details.present? %>
+			</p>
+		<% end %>
+
+		<% if feed_item.details.present? %>
+			<p class="tilt"> 
 				<u>Conversation</u>
 				<% feed_item.details.split("<br>").each do |message| %>
 					<%= message %><br>
 				<% end %>
-			<% end %>
-		</p>
+			</p>
+		<% end %>
+
 		<p class="tilt"><small>
-			Created by <%= feed_item.user.name %> <%= time_ago_in_words(feed_item.created_at) %> ago
+			Organized by <%= feed_item.user.name %> <%= time_ago_in_words(feed_item.created_at) %> ago
 				<% if current_user?(feed_item.user) %>
 		  			<%= link_to "delete", feed_item, method: :delete, data: { confirm: "You sure?" }, title: feed_item.activity %>
 		  		<% end %>
