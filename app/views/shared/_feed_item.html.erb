@@ -61,6 +61,8 @@
 		<!-- 		<%= link_to gravatar_for(invitation.invitee, size:30), invitation.invitee %> -->
 	<% end %>
 
+	<a href="#rebloon" onclick="reBloon(<%= feed_item.invited.to_json %>, 'tags')"><img src='rebloon-s.png' onmouseover="this.src='rebloon-h.png'"
+         onmouseout="this.src='rebloon-s.png'" title="rebloon" width="25" style= 'vertical-align: top;'></a>
 	
 	<div id="gather<%= feed_item.id %>" style="display:none;">
 	<br>	
