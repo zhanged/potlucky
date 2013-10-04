@@ -1,7 +1,9 @@
 <li id="<%= feed_item.id %>">
 <% if current_page?(root_url) || current_page?('/gathers') %>
 	<div class="no-link-decoration"><a href="#" onclick="toggle_visibility('gather<%= feed_item.id %>'); return false">
+<% end %>
   			<span class="activity"><%= feed_item.activity %></span>
+<% if current_page?(root_url) || current_page?('/gathers') %>
 	</a></div>
 <% end %>	
 	<span class="tilt">
@@ -61,21 +63,16 @@
 		<!-- 		<%= link_to gravatar_for(invitation.invitee, size:30), invitation.invitee %> -->
 	<% end %>
 
-	<a href="#rebloon" onclick="reBloon(<%= feed_item.invited.to_json %>, 'tags')"><img src='rebloon-s.png' onmouseover="this.src='rebloon-h.png'"
-         onmouseout="this.src='rebloon-s.png'" title="rebloon" width="25" style= 'vertical-align: top;'></a>
+	<% if current_page?(root_url) %>
+		<a href="#rebloon" onclick="reBloon(<%= feed_item.invited.to_json %>, 'tags')"><img src='rebloon-s.png' onmouseover="this.src='rebloon-h.png'"
+	         onmouseout="this.src='rebloon-s.png'" title="rebloon" width="25" style= 'vertical-align: top;'></a>
+	<% end %>
 	
 	<div id="gather<%= feed_item.id %>" style="display:none;">
-	<br>	
-		<p class="tilt"><u>Invited</u><br> 
-			<% feed_item.invited_yes.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).each do |invitee| %>
-			    <%= invitee %>
-			<% end %>
-			<i><% feed_item.invited_no.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).each do |invitee| %>
-			    <%= invitee %>
-			<% end %></i>
-		</p>
+
 		<p class="tilt"> 
 			<% if feed_item.updates.present? %>
+				<br>	
 				<u>Updates</u><br>
 				<% feed_item.updates.pluck(:id).each do |i| %>
 					<%= User.find_by(id: Update.find_by(id: i).user_id).name.split(' ').first %>: <%= Update.find_by(id: i).content %><br>
@@ -97,7 +94,8 @@
 		  		<% end %>
 		</p></small>
 
-				<% if feed_item.completed.blank? %>
+	<% if current_page?(root_url) %>
+		<% if feed_item.completed.blank? %>
 			<% if feed_item.user == current_user %>
 				<%= form_for(Update.new) do |f| %>
 					<%= render 'shared/error_messages', object: f.object %>
@@ -118,10 +116,9 @@
 					</div>
 					<%= f.submit "Respond to organizer", class: "btn btn-block btn-update-no" %>
 				<% end %>
-
 			<% end %>
 		<% end %>
-
+	<% end %>
 
 	</div>
 	
