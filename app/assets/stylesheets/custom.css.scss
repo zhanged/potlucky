@@ -154,8 +154,8 @@ p {
 footer {
 	margin-top: 45px;
 	padding-top: 5px;
-	border-top: 1px solid $grayMediumLight;
-	color: $grayLight;
+	border-top: 1px solid #555;
+	color: #555;
 	a {
 		color: #555;
 		&:hover {
@@ -164,7 +164,7 @@ footer {
 	}
 	small {
 		float: left;
-		color: white;
+		color: #555;
 		-webkit-font-smoothing: antialiased;
 	}
 	ul {
@@ -252,9 +252,8 @@ aside {
 
 input, textarea, select, .uneditable-input {
 	border: 0px solid #bbb;
-	width: 100%;
 	margin-bottom: 15px;
-	@include box_sizing;
+	@include box_sizing;	
 }
 
 textarea,
@@ -262,11 +261,8 @@ input[type="text"],
 input[type="password"],
 input[type="datetime"],
 input[type="datetime-local"],
-input[type="date"],
 input[type="month"],
-input[type="time"],
 input[type="week"],
-input[type="number"],
 input[type="email"],
 input[type="url"],
 input[type="search"],
@@ -277,7 +273,31 @@ input[type="color"],
   border: 0px solid #cccccc;
   padding: 10px 10px 10px 10px;
   border-radius: 2px;
+  width: 100%;
 }
+
+input[type="number"],
+.uneditable-input {
+  background-color: white;
+  border: 0px solid #cccccc;
+  padding: 10px 10px 10px 10px;
+  border-radius: 2px;
+  width: 84%;
+}
+input[type="time"],
+input[type="date"],
+.uneditable-input {
+  background-color: white;
+  border: 0px solid #cccccc;
+  padding: 10px 10px 10px 10px;
+  border-radius: 2px;
+  width: 49%;
+}
+input[type="time"],
+.uneditable-input {
+  float: right;
+}
+
 
 .field-in-gather-org {
 	textarea,
@@ -522,6 +542,18 @@ input {
 	-webkit-transition: .1s ease-in background-color;
 	-webkit-font-smoothing: antialiased;
 }
+.tilt-real {
+	margin-bottom: 10px;
+	display: block;
+	font-family: Helvetica,'proxima-nova',Proxima Nova,'Helvetica Neue',Helvetica,sans-serif;
+	letter-spacing: 0px;
+	font-weight: 100;
+	font-size: 1.2em;
+	color: #6E7270;
+	-webkit-transition: .1s ease-in background-color;
+	-webkit-font-smoothing: antialiased;
+}
+
 .invited {
   display: block;	
 }
@@ -676,6 +708,30 @@ aside {
 		color: rgba(108,196,29,1);
 		text-decoration: none;	
 	}
+}
+#expand-form {
+	display: inline-block;
+	margin-bottom: 10px;
+	vertical-align: middle;
+	width: 40px;
+	height: 40px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	text-align: center;
+	font-size: 40px;
+	line-height: 30px;
+	background: white;	
+	color: #cce3f7;
+	float: right;
+	a {
+		color: white;
+		text-decoration: none;	
+	}
+	&:hover {
+		text-decoration: none;			
+	}
+
 }
 .center-span { 
 	float: none;

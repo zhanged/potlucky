@@ -56,12 +56,31 @@ class Gather < ActiveRecord::Base
 				invite!@user
 				@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: self.id)
 				if @user.phone.present?
+					@dtl = ""
+					if self.date.present? 
+						@dtl = "on " + self.date.strftime("%a, %b %e") 
+						if self.time.present? 
+							@dtl = @dtl + " " + self.time.strftime("%l:%M%p")
+						end
+					elsif self.time.present? 
+						@dtl = "at " + self.time.strftime("%l:%M%p")
+					end 
+					if self.location.present?
+						@dtl = @dtl + " at " + self.location
+					end
+					if self.more_details.present?						
+						@det = "where " + @user.name.split(' ').first + " has provided more details"
+					else
+						@det = "for details"
+					end
 					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 					message = @client.account.messages.create(
-						body: "#{activity}? #{user.name} invited you - #{tilt}/#{invitees.count} invitees must join for activity to take off. REPLY 'Y#{@invitation.id}' to join or go to bloon.us for details",
+						body: "#{activity} #{@dtl}? #{user.name} invited you - #{tilt}/#{invitees.count} invitees must join for activity to take off. REPLY 'Y#{@invitation.id}' to join or go to bloon.us #{@det}",
 					    to: @user.phone,
 					    from: ENV['TWILIO_MAIN'])
 					puts message.from
+					puts message.to
+					puts message.body
 				else
 					UserMailer.invitation_email(@user, self, @invitation, user, @to_invitees).deliver
 				end

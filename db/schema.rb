@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131003034630) do
+ActiveRecord::Schema.define(version: 20131004195556) do
 
   create_table "friendships", force: true do |t|
     t.integer  "friender_id"
@@ -27,20 +27,21 @@ ActiveRecord::Schema.define(version: 20131003034630) do
   create_table "gathers", force: true do |t|
     t.string   "activity"
     t.text     "invited"
-    t.string   "location"
-    t.string   "date"
-    t.string   "time"
+    t.text     "location"
+    t.date     "date",         limit: 255
+    t.time     "time",         limit: 255
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "details"
     t.integer  "tilt"
     t.integer  "num_invited"
-    t.integer  "num_joining", default: 1
+    t.integer  "num_joining",              default: 1
     t.text     "invited_yes"
     t.text     "invited_no"
     t.string   "expire"
     t.datetime "completed"
+    t.text     "more_details"
   end
 
   add_index "gathers", ["user_id", "created_at"], name: "index_gathers_on_user_id_and_created_at"

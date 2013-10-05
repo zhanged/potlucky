@@ -41,7 +41,14 @@
 	<div class="field">
  		<%= f.text_field :activity, placeholder: activity_placeholder.sample %>
 		<textarea id="tags" name="gather[invited]" placeholder="<%= invited_placeholder.sample %>" size="40"></textarea>
-		<%= f.number_field :tilt, placeholder: "# of add'l friends to critical mass" %>
+		<%= f.number_field :tilt, placeholder: "# add'l friends to critical mass" %> 
+		<a href="#" onclick="toggle_visibility('optional'); return false" id="expand-form"><b>+</b><a>
+		<div id="optional" style="display:none;">
+			<%= f.date_field :date, placeholder: "Date" %>
+			<%= f.time_field :time, placeholder: "Time" %>
+			<%= f.text_field :location, placeholder: "Location" %>
+			<%= f.text_area :more_details, placeholder: "Details" %>
+		</div>			
 	</div>
 	<%= f.submit "Invite", class: "btn btn-large btn-block btn-invite" %>
 <% end %>

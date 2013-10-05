@@ -2,11 +2,22 @@
 <% if current_page?(root_url) || current_page?('/gathers') %>
 	<div class="no-link-decoration"><a href="#" onclick="toggle_visibility('gather<%= feed_item.id %>'); return false">
 <% end %>
-  			<span class="activity"><%= feed_item.activity %></span>
+  	<span class="activity"><%= feed_item.activity %></span>
 <% if current_page?(root_url) || current_page?('/gathers') %>
 	</a></div>
 <% end %>	
-	<span class="tilt">
+	<% if feed_item.date.present? || feed_item.time.present? || feed_item.location.present? %>
+		<span class="tilt">
+			<%= feed_item.date.strftime("%A, %b %e") if feed_item.date.present? %>
+			<% if feed_item.time.present? && feed_item.date.present? %>@<% end %>
+			<%= feed_item.time.strftime("%l:%M%p") if feed_item.time.present? %>
+			<% if feed_item.location.present? && (feed_item.date.present? || feed_item.time.present?) %><br><%end%>
+			<% if feed_item.location.present? %>
+				<img src="location.png" width="11"> <%= feed_item.location %>
+			<% end %>
+		</span>
+	<% end %> 
+	<span class="tilt-real">
 		<% if feed_item.tilt == nil %>
 		<% else %>
 			<% if (feed_item.num_joining - 1) >= feed_item.tilt %>
@@ -71,6 +82,13 @@
 	<div id="gather<%= feed_item.id %>" style="display:none;">
 
 		<p class="tilt"></p>
+		<% if feed_item.more_details.present? %>
+			<p class="tilt"> 		
+				<u>Details</u><br>
+				<%= feed_item.more_details %>
+			</p>
+		<% end %>
+
 		<% if feed_item.updates.present? %>
 			<p class="tilt"> 		
 				<u>Updates</u><br>

@@ -1,7 +1,7 @@
 class GathersController < ApplicationController
 	before_action :signed_in_user,  only: [:create, :update, :destroy]
 	before_action :correct_user, 	only: :destroy
-	before_action :admin_user,     only: [:destroy, :index]
+	before_action :admin_user,     only: [:index]
 
 	def index
 		@gathers = Gather.paginate(page: params[:page])
@@ -36,7 +36,7 @@ class GathersController < ApplicationController
 	private
 
 		def gather_params
-			params.require(:gather).permit(:activity, :invited, :location, :date, :time, :details, :tilt)
+			params.require(:gather).permit(:activity, :invited, :location, :date, :time, :details, :tilt, :more_details)
 		end
 
 		def correct_user

@@ -9,6 +9,21 @@
     </p>
     <h2><%= link_to @gather.activity, @url, {:style => 'background: rgba(23,129,251,1); color: white; text-decoration: none; padding: 10px 20px; border-bottom: 4px solid #0D509E; border-radius: 3px; font-family: helvetica; -webkit-font-smoothing: antialiased; line-height: 2.5em;'} %>
     </h2> 
+    <% if @gather.date.present? || @gather.time.present? || @gather.location.present? || @gather.more_details.present? %>
+      <p>
+        <br>
+        <% if @gather.date.present? || @gather.time.present? %>When: <%end%>
+        <%= @gather.date.strftime("%A, %b %e") if @gather.date.present? %>
+        <% if @gather.time.present? && @gather.date.present? %>@<% end %>
+        <%= @gather.time.strftime("%l:%M%p") if @gather.time.present? %>
+        <% if @gather.location.present? && (@gather.date.present? || @gather.time.present?) %><br><%end%>
+        <%= "Where: " + @gather.location if @gather.location.present? %>
+        <% if @gather.more_details.present? %>
+          <br>
+          <%= "Details: " + @gather.more_details %>      
+        <% end %>
+      </p>
+      <% end %>
     <p>   
       This will only take off if at least <%= @gather.tilt %> of <%= @gather.num_invited %> friends invited join. 
       If you're interested in the activity, <b><%= link_to "join on Bloon", @url %> or text 'Y<%= @invitation.id %>' to <a href=<%="sms:"+ENV['TWILIO_MAIN'].sub('+1',"").unpack('A3A3A4').join('-')%>> <%= ENV['TWILIO_MAIN'].sub('+1',"").unpack('A3A3A4').join('-') %></a></b> so we can notify you if this activity takes off.
