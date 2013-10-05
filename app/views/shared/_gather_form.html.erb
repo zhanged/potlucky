@@ -50,5 +50,5 @@
 			<%= f.text_area :more_details, placeholder: "Details" %>
 		</div>			
 	</div>
-	<%= f.submit "Invite", class: "btn btn-large btn-block btn-invite" %>
+	<%= f.submit "Invite", :disable_with => "Please wait...", class: "btn btn-large btn-block btn-invite" %>
 <% end %>
