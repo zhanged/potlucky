@@ -69,7 +69,7 @@ class Gather < ActiveRecord::Base
 						@dtl = @dtl + " at " + self.location
 					end
 					if self.more_details.present?						
-						@det = "where " + @user.name.split(' ').first + " has provided more details"
+						@det = "where " + user.name.split(' ').first + " has provided more details"
 					else
 						@det = "for details"
 					end
