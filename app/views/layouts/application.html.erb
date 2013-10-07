@@ -22,7 +22,7 @@
 				<div class="center alert alert-<%= key %>"><%= value %></div>
 			<% end %>
 			<%= yield %>
-			<%= render 'layouts/footer' %>
+			<!-- render 'layouts/footer'  -->
 			<%= debug(params) if Rails.env.development? %>
 		</div>
 		<%= render 'layouts/googleanalytics' if Rails.env.production? %>
