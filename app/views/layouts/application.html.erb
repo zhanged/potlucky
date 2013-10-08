@@ -12,7 +12,7 @@
 	<link rel="apple-touch-icon-precomposed" sizes="152x152" href="touch-icon-ipad-retina.png" />
 	<%= csrf_meta_tags %>
 	<%= render 'layouts/shim' %>
-	<%= render 'layouts/autocomplete' if (current_page?(root_url) && signed_in?)  %>
+	<%= render 'layouts/autocomplete' if signed_in?  %>
 </head>
 
 	<body>

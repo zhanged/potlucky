@@ -13,7 +13,7 @@
 			<%= feed_item.time.strftime("%l:%M%p") if feed_item.time.present? %>
 			<% if feed_item.location.present? && (feed_item.date.present? || feed_item.time.present?) %><br><%end%>
 			<% if feed_item.location.present? %>
-				<img src="location.png" width="11"> <%= feed_item.location %>
+				<img src="/location.png" width="11"> <%= feed_item.location %>
 			<% end %>
 		</span>
 	<% end %> 
@@ -76,7 +76,7 @@
 
 	<% if current_page?(root_url) %>
 		<a href="#rebloon" onclick="reBloon(<%= feed_item.invited.to_json %>, 'tags')"><img src='rebloon-s.png' onmouseover="this.src='rebloon-h.png'"
-	         onmouseout="this.src='rebloon-s.png'" title="rebloon" width="25" style= 'vertical-align: top;'></a>
+	         onmouseout="this.src='rebloon-s.png'" title="Use this group in a new activity" width="25" style= 'vertical-align: top;'></a>
 	<% end %>
 	
 	<div id="gather<%= feed_item.id %>" style="display:none;">

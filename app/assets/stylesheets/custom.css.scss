@@ -301,7 +301,12 @@ input[type="time"],
   float: right;
   height: 40px;
 }
-
+#datepicker {
+	  width: 49%;
+}
+#timepicker {
+	  width: 49%;
+}
 .field-in-gather-org {
 	textarea,
 	input[type="text"],
