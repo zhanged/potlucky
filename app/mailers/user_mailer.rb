@@ -1,5 +1,5 @@
 class UserMailer < ActionMailer::Base
-  default from: "Bloon <joinbloon@gmail.com>"
+  default from: "Bloon <hello@bloon.us>"
   BASE_URL = "http://bloon.us/"
 #  BASE_URL = "http://localhost:3000/"
 
@@ -16,7 +16,7 @@ class UserMailer < ActionMailer::Base
   end
 
   def wait_list(email)
-  	mail(to: email, bcc: 'joinbloon+waitlist@gmail.com', subject: "You've been added to the Bloon waitlist!")
+  	mail(to: email, bcc: 'hello+waitlist@bloon.us', subject: "You've been added to the Bloon waitlist!")
   end
 
   def invitation_email(user, gather, invitation, invitor, to_invitees) 
@@ -25,7 +25,7 @@ class UserMailer < ActionMailer::Base
   	@invitation = invitation
   	@invitor = invitor
     @to_invitees = to_invitees
-    @from = "#{@invitor.name} via Bloon <joinbloon@gmail.com>"
+    @from = "#{@invitor.name} via Bloon <hello@bloon.us>"
   	@url = BASE_URL + "email_redirect?auth_token=#{@user.auth_token}" # "lets_go?link_email=#{@user.email}"
 #    attachments.inline['background.png'] = File.read('background.png')
   	mail(to: @user.email, from: @from, subject: "#{@gather.activity}?")  	
@@ -38,7 +38,7 @@ class UserMailer < ActionMailer::Base
     @already_joining = already_joining
     @organizer = responder
     @invitation = invite
-    @from = "#{@organizer.name} via Bloon <joinbloon@gmail.com>"
+    @from = "#{@organizer.name} via Bloon <hello@bloon.us>"
     @url = BASE_URL + "email_redirect?auth_token=#{@user.auth_token}"
     mail(to: @user.email, from: @from, subject: "Update: #{@gather.activity}?")   
   end
