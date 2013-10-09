@@ -7,7 +7,7 @@ class Gather < ActiveRecord::Base
 		self.invited = invited.downcase.sub(user.email,"").scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.join(" ")
 		self.invited_yes = user.email
 	end
-	default_scope -> { order('gathers.created_at DESC') }
+	default_scope -> { order('gathers.updated_at DESC') }
 	validates :activity, presence: true, length: { maximum: 72 }
 	validates :user_id, presence: true
 	validate :tilt_must_fall_in_range_of_invited, unless: "tilt.nil?"

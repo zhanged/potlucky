@@ -26,9 +26,10 @@ class UserMailer < ActionMailer::Base
   	@invitor = invitor
     @to_invitees = to_invitees
     @from = "#{@invitor.name} via Bloon <hello@bloon.us>"
+    @reply_to = @invitor.email
   	@url = BASE_URL + "email_redirect?auth_token=#{@user.auth_token}" # "lets_go?link_email=#{@user.email}"
 #    attachments.inline['background.png'] = File.read('background.png')
-  	mail(to: @user.email, from: @from, subject: "#{@gather.activity}?")  	
+  	mail(to: @user.email, from: @from, reply_to: @reply_to, subject: "#{@gather.activity}?")  	
   end
 
   def update_email(user, update, gather, already_joining, responder, invite)
@@ -39,7 +40,8 @@ class UserMailer < ActionMailer::Base
     @organizer = responder
     @invitation = invite
     @from = "#{@organizer.name} via Bloon <hello@bloon.us>"
+    @reply_to = @organizer.email
     @url = BASE_URL + "email_redirect?auth_token=#{@user.auth_token}"
-    mail(to: @user.email, from: @from, subject: "Update: #{@gather.activity}?")   
+    mail(to: @user.email, from: @from, reply_to: @reply_to, subject: "Update: #{@gather.activity}?")   
   end
 end
