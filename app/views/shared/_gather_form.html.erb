@@ -39,7 +39,7 @@
 <%= form_for(@gather) do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 	<div class="field">
-		<a href="#" onclick="toggle_visibility('gather_form'); return false" >
+		<a href="#" onclick="make_visible('gather_form'); return false" >
  		<%= f.text_field :activity, placeholder: activity_placeholder.sample %>
  		<a>
 		<div id="gather_form" style="display:none;">
