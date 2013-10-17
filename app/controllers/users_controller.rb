@@ -37,7 +37,7 @@ class UsersController < ApplicationController
       if @user.phone.present?
         render 'edit'            
       else
-        redirect_to welcome_path
+        redirect_to(root_url) #redirect_to welcome_path
       end
     else
       redirect_to signin_url

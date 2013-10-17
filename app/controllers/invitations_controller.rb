@@ -15,7 +15,7 @@ class InvitationsController < ApplicationController
 			end
 		else
 			@user = current_user
-			flash.now[:error] = "You must complete your profile before joining your friends"
+			flash.now[:error] = "Please complete your profile to join your friends"
 			render 'users/edit'
 		end
 

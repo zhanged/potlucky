@@ -28,7 +28,8 @@ class UserMailer < ActionMailer::Base
     @from = "#{@invitor.name} via Bloon <hello@bloon.us>"
     @reply_to = @invitor.email
   	@url = BASE_URL + "email_redirect?auth_token=#{@user.auth_token}" # "lets_go?link_email=#{@user.email}"
-#    attachments.inline['background.png'] = File.read('background.png')
+#    attachments.inline['organized_by_bloon.png'] = File.read('public/organized_by_bloon.png')
+    attachments.inline['bloon-logo.png'] = File.read('public/bloon-logo.png')
   	mail(to: @user.email, from: @from, reply_to: @reply_to, subject: "#{@gather.activity}?")  	
   end
 

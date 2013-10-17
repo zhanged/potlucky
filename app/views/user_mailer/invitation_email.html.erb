@@ -1,42 +1,87 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html>
   <head>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body style="font-family: helvetica; font-size: 1em;">
-    <p>
-      <%= @gather.user.name %> invited <%= @to_invitees %> to:
-    </p>
-    <h2><%= link_to @gather.activity, @url, {:style => 'background: rgba(23,129,251,1); color: white; text-decoration: none; padding: 10px 20px; border-bottom: 4px solid #0D509E; border-radius: 3px; font-family: helvetica; -webkit-font-smoothing: antialiased; line-height: 2.5em;'} %>
-    </h2> 
-    <% if @gather.date.present? || @gather.time.present? || @gather.location.present? || @gather.more_details.present? %>
-      <p>
-        <br>
-        <% if @gather.date.present? || @gather.time.present? %>When: <%end%>
-        <%= @gather.date.strftime("%A, %b %e") if @gather.date.present? %>
-        <% if @gather.time.present? && @gather.date.present? %>@<% end %>
-        <%= @gather.time.strftime("%l:%M%p") if @gather.time.present? %>
-        <% if @gather.location.present? && (@gather.date.present? || @gather.time.present?) %><br><%end%>
-        <%= "Where: " + @gather.location if @gather.location.present? %>
-        <% if @gather.more_details.present? %>
-          <br>
-          <%= "Details: " + @gather.more_details %>      
-        <% end %>
+
+  <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" style="margin:0;padding:0;height:100%;width:100%;background:#cce3f7;font-family:helvetica"><tbody><tr><td align="center" valign="top"><tr>
+<!--     <table border="0" cellpadding="0" cellspacing="0" style="padding:0; margin:0; width:100%;height:100%; background:#cce3f7; font-family:helvetica"><tbody><tr> -->
+      <td align="center" style="border-collapse:collapse; padding: 0 15px 0 15px;">
+      <table border="0px" cellpadding="0" cellspacing="0" width="450" style="background:#fff;border:0px solid #e44556;max-width:450px; color: #505050;">
+        <tbody>
+          <tr>
+            <td align="center" height="20px" style="border-collapse:collapse;background:#cce3f7">
+            </td>
+          </tr>
+          <tr>
+            <td align="left" height="31px" style="color:#e44556; padding: 15px 20px 15px 20px; background:#fff">
+              <%= image_tag attachments['bloon-logo.png'].url, alt: 'bloon', height: '31px' -%>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" height="1px" style="border-collapse:collapse;background:#cce3f7; padding: 0px 20px 0px 20px;">
+            </td>
+          </tr>
+          <tr>
+            <td align="left" style="border-collapse:collapse;background:#fff;padding: 20px 20px 20px 20px; font-size: 16px; line-height: 150%; text-align:left">
+              <i>Hey there, <%= @gather.user.name %> wants to hang out with you!</i>
+              <br><br>
+              Want to <a href="<%= @url %>" style="text-decoration:none; color:#F3253B;" target="_blank"><b><%= @gather.activity %></b></a> with <%= @to_invitees %><%= "?" if @gather.date.blank? && @gather.time.blank? && @gather.location.blank? %>
+              <% if @gather.date.present? %>  
+                <%= " on " + @gather.date.strftime("%A, %b %e") %><%= "?" if @gather.time.blank? && @gather.location.blank? %>
+              <% end %>
+              <% if @gather.time.present? %>
+                <%= " @ " + @gather.time.strftime("%l:%M%p") %><%= "?" if @gather.location.blank? %>
+              <% end%>
+              <%= " at " + @gather.location + "?" if @gather.location.present? %>
+              <%= " " + @gather.more_details + "." if @gather.more_details.present? %>
+              <br><br>
+              We'll only do it if at least <b><%= 1 + @gather.tilt %></b> of us join (Bloon lets us know if we reach this). If you’re interested, <a href="<%= @url %>" style="text-decoration:none; color:#F3253B;" target="_blank">join here!</a>
+              <br><br>
+              Looking forward to it,
+              <br>
+              <%= @gather.user.name.split(' ').first %>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 0px 20px 20px 20px">
+              <a style="background-color:#F3253B;color:#ffffff;display:inline-block;text-align:center;text-decoration:none;padding:10px 30px;font-size:18px;font-weight:bold" href="<%= @url %>" target="_blank">Check it out!</a>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" height="4px" style="border-collapse:collapse;background:#D6D7DB">
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="background:#cce3f7;border-collapse:collapse;padding: 15px 10px 15px 10px">
+              <p style="font-size:12px;color:black">
+                <b>How does Bloon work?</b>
+                <br>
+                1. <%= @gather.user.name.split(' ').first %> invited <%= @gather.num_invited %> friends to <%= @gather.activity %>
+                <br>
+                2. If you're interested, let <%= @gather.user.name.split(' ').first %> know through <%= link_to "Bloon", @url %>
+                <br>
+                3. If <%= @gather.tilt %>+ people join <%= @gather.user.name.split(' ').first %>, they will be notified and put in a group text where they can figure out the details without bothering others
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="background:#cce3f7;border-collapse:collapse;">
+              <p style="margin:0;padding:0;font-size:11px;color:#9a9a9a">
+    <%= link_to "Join", @url %> <%= @gather.user.name.split(' ').first %> on Bloon and effortlessly organize more fun with friends.
+    <br>&copy; 2013 Bloon Inc. San Francisco, CA | <a href="mailto:hello@bloon.us" style="font-weight:normal;text-decoration:none;" target="_blank">hello@bloon.us</a><br><br>
       </p>
-      <% end %>
-    <p>   
-      This will only take off if at least <%= @gather.tilt %> of <%= @gather.num_invited %> friends invited join. 
-      If you're interested in the activity, <b><%= link_to "join on Bloon", @url %> or text 'Y<%= @invitation.id %>' to <a href=<%="sms:"+ENV['TWILIO_MAIN'].sub('+1',"").unpack('A3A3A4').join('-')%>> <%= ENV['TWILIO_MAIN'].sub('+1',"").unpack('A3A3A4').join('-') %></a></b> so we can notify you if this activity takes off.
-      <br>
-      <br>
-    </p>
-    <p>
-      &#8212;
-      <br>
-      Organized via Bloon. <%= link_to "Join", @url %> <%= @gather.user.name.split(' ').first %> on Bloon and effortlessly organize more fun with friends.
-    </p>
-    <p><small>
-      Note: Your cell number will receive text messages to notify you of invitations and to organize activities with friends.
-    </small></p>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+      </td>
+<!--     </tr></tbody></table> -->
+  </tbody></tr></td></tr></table>
   </body>
 </html>
+
+
+

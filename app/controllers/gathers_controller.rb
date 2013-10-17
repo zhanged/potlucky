@@ -19,7 +19,7 @@ class GathersController < ApplicationController
 			end
 		else
 			@user = current_user
-			flash[:error] = "You must complete your profile before joining activities"
+			flash[:error] = "Please complete your profile before creating activities"
 			render 'users/edit'
 		end
 	end

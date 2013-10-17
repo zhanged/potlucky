@@ -1,7 +1,12 @@
 <% provide(:title, "Edit user") %>
 <div class="row">
   <div class="span4 hero-unit-2 center center-span">
-    <h1>Your Profile</h1><p></p>
+    <p class="page_heading">Profile for <%= current_user.email %></p>
+    <% if @user.phone.blank?  %>
+      <p id="why-put-in-number">
+        We'll let you know via text when an activity you've joined takes off (reaches critical mass) and when you get invited to new activites
+      </p>
+    <% end %>
         <%= form_for(@user) do |f| %>
           <%= render 'shared/error_messages', object: f.object %>
 
@@ -10,10 +15,10 @@
           <% else %>
             <%= f.text_field :name, placeholder: "Name" %>
           <% end %>
-          <%= f.text_field :email, placeholder: "Email", readonly: true %>
+<!--           <%= f.text_field :email, placeholder: "Email", readonly: true %> -->
           <%= f.text_field :phone, placeholder: "Cell Number" %>
           <%= f.password_field :password, placeholder: "Password" %>
-          <%= f.password_field :password_confirmation, placeholder: "Confirm Password" %>
+<!--           <%= f.password_field :password_confirmation, placeholder: "Confirm Password" %> -->
 
           <%= f.submit "Save", class: "btn btn-large btn-invite btn-block" %>
         <% end %>

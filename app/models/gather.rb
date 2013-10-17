@@ -46,9 +46,9 @@ class Gather < ActiveRecord::Base
 				end
 			end
 			if @to_invitees == ""
-				@to_invitees = "you"
+				@to_invitees = "me"
 			else
-				@to_invitees = @to_invitees + " and you"
+				@to_invitees = @to_invitees + " and me"
 			end
 
 			if User.find_by(email: formatted_email).present?

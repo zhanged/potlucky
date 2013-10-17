@@ -1,21 +1,21 @@
 <% activity_placeholder = [
-	"Activity details: Dinner party on Sat",
-	"Activity details: 3on3 bball on Sat @3pm",
-	"Activity details: Game night on Fri",
-	"Activity details: Mike's thing on Sat",
-	"Activity details: Jay Z concert on 11/3",
-	"Activity details: Dinner tonight",
-	"Activity details: Sat night partying",
-	"Activity details: HH on Thurs @Palomino",
-	"Activity details: Niners game @ my place Sunday",
-	"Activity details: Pregame before Fri party",
-	"Activity details: Sunday brunch at Plow",
-	"Activity details: Monsters U tonight",
-	"Activity details: Hike Mt. TAM this month",
-	"Activity details: Golf Sun morning",
-	"Activity details: BBQ Sat noon at my place ",
-	"Activity details: GOT Sunday viewing party at my place",
-	"Activity details: Art gallery opening"
+	"Create activity: Dinner party on Sat",
+	"Create activity: 3on3 bball on Sat @3pm",
+	"Create activity: Game night on Fri",
+	"Create activity: Mike's thing on Sat",
+	"Create activity: Jay Z concert on 11/3",
+	"Create activity: Dinner tonight",
+	"Create activity: Sat night partying",
+	"Create activity: HH on Thurs @Palomino",
+	"Create activity: Niners game @ my place Sunday",
+	"Create activity: Pregame before Fri party",
+	"Create activity: Sunday brunch at Plow",
+	"Create activity: Monsters U tonight",
+	"Create activity: Hike Mt. TAM this month",
+	"Create activity: Golf Sun morning",
+	"Create activity: BBQ Sat noon at my place ",
+	"Create activity: GOT Sunday viewing party at my place",
+	"Create activity: Art gallery opening"
 	] %>
 <% invited_placeholder = [
 	"Friends e.g. steve@email.com, woz@email.com...",
@@ -39,7 +39,10 @@
 <%= form_for(@gather) do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 	<div class="field">
+		<a href="#" onclick="toggle_visibility('gather_form'); return false" >
  		<%= f.text_field :activity, placeholder: activity_placeholder.sample %>
+ 		<a>
+		<div id="gather_form" style="display:none;">
 		<textarea id="tags" name="gather[invited]" placeholder="<%= invited_placeholder.sample %>" size="40"></textarea>
 		<input type="number" name="gather[tilt]" placeholder="# add'l friends to critical mass" title="Minimum number of friends needed to join you before this activity takes off">
 <!-- 		 f.number_field :tilt, placeholder: "# add'l friends to critical mass" %>  -->
@@ -54,5 +57,7 @@
 			<%= f.text_area :more_details, placeholder: "Details" %>
 		</div>			
 	</div>
-	<%= f.submit "Invite", :disable_with => "Please wait...", class: "btn btn-large btn-block btn-invite" %>
+	<%= f.submit "Organize Activity", :disable_with => "Please wait...", class: "btn btn-large btn-block btn-invite" %>
+
 <% end %>
+</div>

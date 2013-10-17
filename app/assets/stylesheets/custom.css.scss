@@ -2,7 +2,52 @@
 
 /* mixins, variables, etc. */
 
-$grayMediumLight: #eaeaea;
+$joinColor: #F3253B;
+$joinColorBorder: #AF3333;
+$joinColorHover: #FF001B;
+$joinColorHoverBorder: #9d2d2d;
+
+$joiningColor: #EBA8AF;
+$joiningColorBorder: #E5939B;
+$joiningColorHover: #d3979d;
+$joiningColorHoverBorder: #ce848b;
+
+$inviteColor: #2DA3FF;
+$inviteColorBorder: #999999;
+$inviteColorHover: #008FFF;
+$inviteColorHoverBorder: #6f6f6f;
+
+$circleColor: #F3253B;
+$navbarColor: rgba(242, 248, 255, 1);
+$navbarborderColor: #ADCEFF;
+$logofrontColor: #F3253B;
+$logonavbarColor: #F3253B;
+$activityColor: #474747;
+$bgColor: #F7F7F7;
+$feedbgColor: rgba(218, 218, 218, 0.5);
+$leftbgColor: rgba(255, 255, 255, 0.4);
+
+/* OG 
+
+red: #e44556
+red border: #AF3333
+red hover: #C43939
+red hover border: #882828 
+
+green: #6cc41d
+green border: rgba(65, 117, 18, 1)
+green hover:  rgba(88, 161, 22, 1) 
+green hover border: rgba(48, 87, 13, 1)
+
+blue: #1781fb
+blue border: #0D509E
+blue hover: #1472DF
+blue hover border: #0A3D79
+
+activity color: #6C7270
+
+*/
+
 
 @mixin box_sizing {
 	-moz-box-sizing: border-box;
@@ -18,7 +63,6 @@ html {
 }
 
 body {
-//	background: #FAFAFA;
 	background-image: url("background.png"); //url(https://abs.twimg.com/images/themes/theme13/bg.gif);
 	background-position: left 40px;
 	background-attachment: fixed;
@@ -83,29 +127,29 @@ p {
 	font-family: 'Montserrat Alternates',Helvetica,'proxima-nova',Proxima Nova,'Helvetica Neue',sans-serif;
 	float: left;
 	margin-right: 10px;
-	font-size: 2.3em;
-	color: white;//#FF3300;//rgba(204,227,247,1);//#fff;
+	font-size: 2.2em;
+	color: $logonavbarColor;//#FF3300;//rgba(204,227,247,1);//#fff;
 //	text-shadow: 1px 1px 0 rgba(23,129,251,1);	
 	text-transform: lowercase;//none;
-	letter-spacing: -1px;
+	letter-spacing: -3px;
 	padding-top: 4px;
 	font-weight: 800; //normal;
 	line-height: 1;
 	&:hover {
-		color: #fff;
+		color: $logonavbarColor;
 		text-decoration: none;
-		padding-top: 3px;
+//		padding-top: 3px;
 	}
 }
 .logo-front {
 	// color: #e44545;
 	// text-shadow: -1px -1px 0px #FDFFFE;
-	color: #e44556;//#FF3300;//#0087FF ;//#fff;
+	color: $logofrontColor;//#FF3300;//#0087FF ;//#fff;
 //	text-shadow: -1px -1px 0 white;
-	letter-spacing: -1px;
+	letter-spacing: -4px;
 	text-transform: lowercase;
 	font-weight: 800;
-	margin-top: 0px;
+	padding-top: 10px;
 	font-size: 5em;
 	font-family: 'Montserrat Alternates',Helvetica,'proxima-nova',Proxima Nova,'Helvetica Neue',sans-serif;
 }
@@ -113,41 +157,79 @@ p {
 	margin-bottom: 0px;
 }
 .navbar .nav > li > a {
-	color: white;
+	color: $logonavbarColor;
 	font-weight: 200;
 	font-size: 18px;
 	text-shadow: 0 0 0;
-	padding: 10px 0px 10px;
+	padding: 6px 0px 6px;
 	-webkit-transition: .1s ease-in background-color;
 	-webkit-font-smoothing: antialiased;
 	&:hover {
-			color: #e6e6e6;
+			color: $logonavbarColor;
 		}
 }
 .navbar .nav li.dropdown > .dropdown-toggle .caret {
-	border-top-color: #FFFFFF;
-	border-bottom-color: #FFFFFF;
-	vertical-align: top;
+	border-top-color: $logonavbarColor;
+	border-bottom-color: $logonavbarColor;
+	vertical-align: middle;
 	&:hover {
-		color: #e6e6e6;
+		color: $logonavbarColor;
+		border-top-color: $logonavbarColor;
+		border-bottom-color: $logonavbarColor;
 	}
-
+	&:active {
+		color: $logonavbarColor;
+		border-top-color: $logonavbarColor;
+		border-bottom-color: $logonavbarColor;		
+	}
+	&:focus {
+		color: $logonavbarColor;
+		border-top-color: $logonavbarColor;
+		border-bottom-color: $logonavbarColor;
+	}
+}
+.navbar .nav li.dropdown.open > .dropdown-toggle .caret {
+	border-top-color: $logonavbarColor;
+	border-bottom-color: $logonavbarColor;
+	vertical-align: middle;
+	&:hover {
+		color: $logonavbarColor;
+		border-top-color: $logonavbarColor;
+		border-bottom-color: $logonavbarColor;
+	}
+	&:active {
+		color: $logonavbarColor;
+		border-top-color: $logonavbarColor;
+		border-bottom-color: $logonavbarColor;		
+	}
+	&:focus {
+		color: $logonavbarColor;
+		border-top-color: $logonavbarColor;
+		border-bottom-color: $logonavbarColor;
+	}
 }
 .navbar .nav li.dropdown.open.active > .dropdown-toggle {
-	background-color: #e44556;//#0087FF;//rgba(228,69,69,1);
-	color: #FFFFFF;
+	background-color: $navbarColor;//#0087FF;//rgba(228,69,69,1);
+	color: $logonavbarColor;
 }
 .navbar .nav li.dropdown.open > .dropdown-toggle {
-	background-color: #e44556;//#0087FF;//rgba(228,69,69,1);
-	color: #FFFFFF;	
+	background-color: $navbarColor;//#0087FF;//rgba(228,69,69,1);
+	color: $logonavbarColor;	
 }
 .navbar-inner {
-	background-color: #e44556;//#0087FF;//rgba(228,69,69,1); background-image: -webkit-linear-gradient(bottom, rgb(255, 82, 0) 10%, rgb(255, 10, 0) 90%);
+	background-color: $navbarColor;//#0087FF;//rgba(228,69,69,1); background-image: -webkit-linear-gradient(bottom, rgb(255, 82, 0) 10%, rgb(255, 10, 0) 90%);
 	background-image: none;
 	background-repeat: no-repeat;
 	filter: none;
 	border-radius: 0px;
-	border-bottom: 2px solid rgba(116,167,224,1)
+	border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+	min-height: inherit;
+	border-top: 0px;
+	border-right: 0px;
+	border-left: 0px;
+	-webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
 }
 
 
@@ -195,8 +277,8 @@ footer {
 
 aside {
   section {
-    padding: 10px 0;
-    border-top: 1px solid $grayLighter;
+    padding: 10px 0px 5px 0px;
+    border-top: 1px solid #CCCCCC;
     &:first-child {
       border: 0;
       padding-top: 0;
@@ -252,6 +334,10 @@ aside {
 
 /* forms */
 
+form {
+  margin: 0 0 0px; 
+}
+
 input, textarea, select, .uneditable-input {
 	border: 0px solid #bbb;
 	margin-bottom: 15px;
@@ -274,7 +360,7 @@ input[type="color"],
   background-color: white;
   border: 0px solid #cccccc;
   padding: 10px 10px 10px 10px;
-  border-radius: 2px;
+  border-radius: 0px;
   width: 100%;
   height: 40px;
 }
@@ -284,7 +370,7 @@ input[type="number"],
   background-color: white;
   border: 0px solid #cccccc;
   padding: 10px 10px 10px 10px;
-  border-radius: 2px;
+  border-radius: 0px;
   width: 84%;
   height: 40px;
 }
@@ -294,7 +380,7 @@ input[type="date"],
   background-color: white;
   border: 0px solid #cccccc;
   padding: 10px 10px 10px 10px;
-  border-radius: 2px;
+  border-radius: 0px;
   width: 49%;
   height: 40px;
 }
@@ -326,17 +412,19 @@ input[type="time"],
 	input[type="tel"],
 	input[type="color"],
 	.uneditable-input {
-		background-color: rgba(224, 243, 208, 1);
+		background-color: white;//rgba(224, 243, 208, 1);
 	}
 	input, textarea, select, .uneditable-input {
 	border: 0px solid #bbb;
 	width: 100%;
 	margin-bottom: 0px;
-	background: rgba(224, 243, 208, 1);
+	padding-left: 20px;
+	padding-right: 20px;
+	background: white;//rgba(224, 243, 208, 1);
 	border-bottom-left-radius: 0px;
 	border-bottom-right-radius: 0px;
-	border-top-left-radius: 2px;
-	border-top-right-radius: 2px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
 	@include box_sizing;
 	}
 }
@@ -357,17 +445,19 @@ input[type="time"],
 	input[type="tel"],
 	input[type="color"],
 	.uneditable-input {
-		background-color: rgb(231, 236, 240);
+		background-color: white;//rgb(231, 236, 240);
 	}
 	input, textarea, select, .uneditable-input {
 	border: 0px solid #bbb;
 	width: 100%;
 	margin-bottom: 0px;
-	background: #DBEEFF;
+	padding-left: 20px;
+	padding-right: 20px;
+	background: white;//#DBEEFF;
 	border-bottom-left-radius: 0px;
 	border-bottom-right-radius: 0px;
-	border-top-left-radius: 2px;
-	border-top-right-radius: 2px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
 	@include box_sizing;
 	}
 }
@@ -390,6 +480,7 @@ input {
 
 .alert {
 	margin-top: 20px;
+	margin-bottom: 10px;
 }
 
 #error_explanation {
@@ -407,7 +498,7 @@ input {
 
 .btn {
 	border: 0;
-	border-radius: 3px;
+	border-radius: 0px;
 //	padding: .9em 1.8em .8em;
 	box-shadow: none;
 	color: #fff;
@@ -415,41 +506,43 @@ input {
 	letter-spacing: 1px;
 	margin-right: 10px;
 	text-shadow: none;
-	font-size: 18px;
+	font-size: 16px;
 	line-height: 1;
 	font-weight: normal;
 	-webkit-transition: .1s ease-in background-color;
 	-webkit-font-smoothing: antialiased;
 }
-
+.btn-large {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
 .btn-join {
-	background: rgba(23,129,251,1);
-	margin-top: 5px;
-	border-bottom: 4px solid #0D509E;
+	background: $joinColor;
+	border-bottom: 0px solid $joinColorBorder;
 	&:hover {
-		background: #1472DF;
-		border-bottom: 4px solid #0A3D79;
+		background: $joinColorHover;
+		border-bottom: 0px solid $joinColorHoverBorder;
 		color: #fff;
 	}
 }
 
 .btn-joining {
-	background: rgba(108,196,29,1); //rgba(212,214,217,1);
-	margin-top: 5px;
-	border-bottom: 4px solid rgba(65, 117, 18, 1); //#ABB1B9;	
+	background: $joiningColor; //rgba(212,214,217,1);
+	border-bottom: 0px solid $joiningColorBorder; //#ABB1B9;	
 	&:hover {
-		background: rgba(88, 161, 22, 1); //#B1B3B8;
-		border-bottom: 4px solid rgba(48, 87, 13, 1); //#858A91;
+		background: $joiningColorHover; //#B1B3B8;
+		border-bottom: 0px solid $joiningColorHoverBorder; //#858A91;
 		color: #fff;		
 	}
 }
 
 .btn-invite {
-	background: rgba(228,69,69,1);
-	border-bottom: 4px solid #AF3333;
+	background: $inviteColor;
+	border-bottom: 0px solid $inviteColorBorder;
+	margin-bottom: 5px;
 	&:hover {
-		background: #C43939;
-		border-bottom: 4px solid #882828;
+		background: $inviteColorHover;
+		border-bottom: 0px solid $inviteColorHoverBorder;
 		color: #fff;
 		text-decoration: none;
 	}
@@ -458,31 +551,29 @@ input {
 	}
 }
 .btn-update-org {
-	background: rgba(156, 211, 107, 1);
+	background: #8A8A8A;//rgba(156, 211, 107, 1);
 	border-bottom: 0px solid #AF3333;
 	font-size: 14px;
-	padding: 8px;
-	border-bottom-left-radius: 2px;
-	border-bottom-right-radius: 2px;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
 	&:hover {
-		background: rgba(134, 201, 75, 1);
+		background: $inviteColor;
 		border-bottom: 0px solid #882828;
 		color: #fff;
 	}
 }
 .btn-update-no {
-	background: #77C2FF;
+	background: #8A8A8A;//#77C2FF;
 	border-bottom: 0px solid #AF3333;
 	font-size: 14px;
-	padding: 8px;
-	border-bottom-left-radius: 2px;
-	border-bottom-right-radius: 2px;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
 	&:hover {
-		background: #47ACFF;
+		background: $inviteColor;
 		border-bottom: 0px solid #882828;
 		color: #fff;
 	}
@@ -518,35 +609,47 @@ input {
 
 /* gathers */
 .feed {
-	background: rgba(163,163,163,.4);
+//	background: $feedbgColor;
+	border-radius: 0px;
+	margin-top: 10px;
+	border: 0px solid rgb(199, 211, 231);
 }
 .gathers {
   list-style: none;
   margin: 0px 0 0 0;
   li {
-    margin: 10px 10px 10px 10px;
-    padding: 15px 15px 15px 15px;
-    border-bottom: 3px solid #727272;
-    border-right: 1px solid #727272;
-    border-left: 1px solid #ADADAD;
-    border-top: 1px solid #ADADAD;
-    background-color: white;
+    margin: 0px 0px 10px 0px;
+//    padding: 15px 15px 15px 15px;
+    border-bottom: 0px solid #727272;
+    border-right: 0px solid #727272;
+    border-left: 0px solid #ADADAD;
+    border-top: 0px solid #ADADAD;
+//    background-color: white;
+    border-radius: 0px;
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   }
 }  
 .activity {
-	padding-bottom: 5px;
+	padding: 20px 20px 5px 20px;
 	display: block;
 	letter-spacing: 0px;
 	font-weight: 100;
-	font-size: 1.7em;
+	font-size: 1.8em;
 	line-height: 1;
-	color: #6C7270;
+	color: $activityColor; 
 	font-family: Helvetica,'proxima-nova',Proxima Nova,'Helvetica Neue',sans-serif;
 	-webkit-transition: .1s ease-in background-color;
 	-webkit-font-smoothing: antialiased;
+	background: white;
+	a {
+		text-decoration: none;	
+	}	
+
 }
 .tilt {
-	margin-bottom: 10px;
+	padding: 0px 20px 5px 20px;
 	display: block;
 	font-family: Helvetica,'proxima-nova',Proxima Nova,'Helvetica Neue',Helvetica,sans-serif;
 	letter-spacing: 0px;
@@ -555,10 +658,10 @@ input {
 	color: #6E7270;
 	-webkit-transition: .1s ease-in background-color;
 	-webkit-font-smoothing: antialiased;
+	background: white;
 }
 .tilt-real {
-	margin-bottom: 10px;
-	display: block;
+	padding: 5px 20px 5px 20px;
 	font-family: Helvetica,'proxima-nova',Proxima Nova,'Helvetica Neue',Helvetica,sans-serif;
 	letter-spacing: 0px;
 	font-weight: 100;
@@ -566,6 +669,63 @@ input {
 	color: #6E7270;
 	-webkit-transition: .1s ease-in background-color;
 	-webkit-font-smoothing: antialiased;
+	background: white;
+}
+.in-card-h {
+	display: block;
+	background: #CECECE;
+	padding: 5px 0px 0px 5px;
+	color: #3F3F3F;
+	margin: 0 0 0 0px;
+	border: 0px solid rgb(202, 202, 202);
+	border-radius: 0px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-size: 12px;
+	font-weight: normal;
+	text-align: center;
+	-webkit-transition: .1s ease-in background-color;
+	-webkit-font-smoothing: antialiased;
+}
+.in-card-p {
+	display: block;
+	padding: 5px 20px 20px 20px;
+	line-height: 1.5em;
+	background: rgba(255,255,255,.6);
+	margin: 0 0 0 0px;
+}
+.inside_card {
+}
+.user_avatars {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-bottom: 10px;
+	background: white;
+}
+#heart {
+	display: inline-block;
+	margin-bottom: 4px;
+	width: 26px;
+	height: 26px;
+	text-align: center;
+	a {
+		color: $leftbgColor;
+		&:hover {
+			color: $joinColor;
+		}
+	}
+}
+#elip {
+	display: inline-block;
+	color: #DFDFDF;
+	display: inline-block;
+	font-size: 1.0em;
+	a {
+		color: #DFDFDF;
+		&:hover {
+			color: #DFDFDF;
+		}
+	}
 }
 
 .invited {
@@ -578,11 +738,19 @@ input {
   color: $grayLight;
 }
 .left-side {
-	padding-top: 15px; // matches gathers li padding
+	padding-top: 12px; // matches gathers li padding
+	background: $leftbgColor;
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+	margin-bottom: 0px;
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+	-moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+//	border: 1px solid rgb(199, 211, 231); can't have border bc responsive won't work correctly
 }
 aside {
   textarea {
-    height: 80px;
+    height: 60px;
     margin-bottom: 10px;
   }
 }
@@ -591,11 +759,11 @@ aside {
 } // for the joining and join buttons
 .name-big {
 	padding-bottom: 0px;
-	margin-top: 5px;
+	margin-top: 0px;
 	display: block;
 	letter-spacing: 0px;
 	font-weight: 200;
-	font-size: 2em;
+	font-size: 1.5em;
 	line-height: 1;
 	color: #6C7270;
 	font-family: Helvetica,'proxima-nova',Proxima Nova,'Helvetica Neue',sans-serif;
@@ -614,7 +782,7 @@ aside {
 	-webkit-font-smoothing: antialiased;
 }
 .user-info-margin {
-	margin-left: 10px;
+	margin-left: 0px;
 }
 .make-white {
 	color: white;
@@ -642,7 +810,7 @@ aside {
 }
 .hero-unit-2 {
 	padding: 20px 35px 20px 35px;
-	margin-top: 30px;
+//	margin-top: 30px;
 	margin-left: auto;
 	margin-right: auto;
 	float: center;
@@ -666,16 +834,17 @@ aside {
 	float: center;
 }
 #circle-big {
-	width: 50px;
-	height: 50px;
-	background: rgba(108,196,29,1);
-	-moz-border-radius: 50px;
-	-webkit-border-radius: 50px;
-	border-radius: 50px;
+	width: 40px;
+	height: 40px;
+	background: $circleColor;
+	-moz-border-radius: 40px;
+	-webkit-border-radius: 40px;
+	border-radius: 40px;
 	text-align: center;
 	text-align: center;
-	font-size: 32px;
-	line-height: 50px;
+	font-size: 28px;
+	line-height: 40px;
+	margin-left: 10px;
 	a {
 		text-decoration: none;	
 		color: #fff;
@@ -692,11 +861,11 @@ aside {
 	text-align: center;
 	font-size: 16px;
 	line-height: 26px;
-	background: rgba(108,196,29,1);	
+	background: $circleColor;	
 	border-style: solid;
 	border-width: 1px;
 	color: white;
-	border-color: rgba(108,196,29,1);	
+	border-color: $circleColor;	
 	a {
 		color: #fff;
 		text-decoration: none;	
@@ -716,10 +885,37 @@ aside {
 	background: white;	
 	border-style: solid;
 	border-width: 1px;
-	color: rgba(108,196,29,1);
-	border-color: rgba(108,196,29,1);
+	color: $circleColor;
+	border-color: $circleColor;
 	a {
-		color: rgba(108,196,29,1);
+		color: $circleColor;
+		text-decoration: none;	
+	}
+}
+#circle-nav {
+	display: inline-block;
+	margin-bottom: 0px;
+	margin-right: 5px;
+	width: 26px;
+	height: 26px;
+	-moz-border-radius: 26px;
+	-webkit-border-radius: 26px;
+	border-radius: 26px;
+	text-align: center;
+	font-size: 16px;
+	line-height: 26px;
+	border-style: solid;
+	border-width: 1px;
+	color: white;
+	border-color: $circleColor;	
+	background: $circleColor;	
+	-webkit-transition: .1s ease-in background-color;
+	-webkit-font-smoothing: antialiased;
+//	background: white;	
+//	color: $circleColor;
+//	border-color: $circleColor;
+	a {
+		color: $circleColor;
 		text-decoration: none;	
 	}
 }
@@ -737,7 +933,7 @@ aside {
 	font-size: 40px;
 	line-height: 30px;
 	background: white;	
-	color: #cce3f7;
+	color: #DFDFDF;
 	float: right;
 	a {
 		color: white;
@@ -866,20 +1062,19 @@ aside {
 }
 .completed {
 	background: rgb(189, 189, 189);
-	margin-top: 5px;
-	border-bottom: 4px solid rgb(180, 180, 180);
-	border-radius: 3px;
+	border-bottom: 0px solid rgb(180, 180, 180);
+	border-radius: 0px;
 	box-shadow: none;
 	color: #fff;
 	text-transform: uppercase;
 	letter-spacing: 1px;
 	text-shadow: none;
-	font-size: 18px;
+	font-size: 16px;
 	line-height: 1;
 	font-weight: normal;
 	display: block;
 	text-align: center;
-	padding: 11px 19px;
+	padding: 10px;
 	-webkit-transition: .1s ease-in background-color;
 	-webkit-font-smoothing: antialiased	
 }
@@ -894,9 +1089,10 @@ aside {
 .blurb {
 	color: #5F5F5F;
 	text-transform: lowercase;
+	margin-bottom: 30px;
 }
 .opt {
-	background: rgb(231, 231, 231);
+	background: $leftbgColor;
 	color: gray;
 	border: 1px solid rgb(202, 202, 202);
 	border-radius: 3px;
@@ -914,22 +1110,6 @@ aside {
 a:hover {
 	text-decoration: none;
 }
-.in-card {
-	display: block;
-	background: #F5F5F5;
-	color: gray;
-	border: 1px solid rgb(202, 202, 202);
-	border-radius: 3px;
-	text-transform: uppercase;
-	letter-spacing: 1px;
-	margin-bottom: 3px;
-	margin-top: 15px;
-	font-size: 12px;
-	font-weight: normal;
-	text-align: center;
-	-webkit-transition: .1s ease-in background-color;
-	-webkit-font-smoothing: antialiased;
-}
 :focus {
 outline: -webkit-focus-ring-color auto 0px;
 //border: 1px solid red;
@@ -940,4 +1120,20 @@ display: inline;
 border-bottom: 1px solid red;
 border-top: 1px solid red;
 padding: 16px 0px 8px 0px;
+}
+.page_heading {
+	letter-spacing: 0px;
+	text-align: center;
+	font-weight: 500;
+	margin-bottom: 10px;
+	-webkit-transition: .1s ease-in background-color;
+	-webkit-font-smoothing: antialiased;
+	font-size: 1.2em;
+	line-height: 1.2em;
+}
+#why-put-in-number {
+	line-height: 1.4em;
+	background: #EDF7FF;
+	padding: 10px;
+	border-radius: 0px;
 }
