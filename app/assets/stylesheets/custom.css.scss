@@ -7,7 +7,7 @@ $joinColorBorder: #AF3333;
 $joinColorHover: #FF001B;
 $joinColorHoverBorder: #9d2d2d;
 
-$joiningColor: #EBA8AF;
+$joiningColor: #F1D6D9;
 $joiningColorBorder: #E5939B;
 $joiningColorHover: #d3979d;
 $joiningColorHoverBorder: #ce848b;
@@ -553,7 +553,7 @@ input {
 .btn-update-org {
 	background: $inviteColor;//#8A8A8A;//rgba(156, 211, 107, 1);
 	border-bottom: 0px solid #AF3333;
-	font-size: 14px;
+//	font-size: 14px;
 	border-bottom-left-radius: 0px;
 	border-bottom-right-radius: 0px;
 	border-top-left-radius: 0px;
@@ -567,7 +567,7 @@ input {
 .btn-update-no {
 	background: $inviteColor;//#8A8A8A;//#77C2FF;
 	border-bottom: 0px solid #AF3333;
-	font-size: 14px;
+//	font-size: 14px;
 	border-bottom-left-radius: 0px;
 	border-bottom-right-radius: 0px;
 	border-top-left-radius: 0px;
@@ -1136,4 +1136,7 @@ padding: 16px 0px 8px 0px;
 	background: #EDF7FF;
 	padding: 10px;
 	border-radius: 0px;
+}
+.invite_more {
+	border-top: 1px solid #ECECEC;
 }

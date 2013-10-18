@@ -34,7 +34,7 @@ class InviteMore < ActiveRecord::Base
 			@to_invitees = ""
 			@gather.invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).each do |i|
 				i_email = i
-				if formatted_email != i_email
+				if formatted_email != i_email && User.find_by(id: self.user_id).email != i_email
 					if @to_invitees == ""
 						if User.find_by(email: i_email).present?
 							@to_invitees = User.find_by(email: i_email).name.split(' ').first

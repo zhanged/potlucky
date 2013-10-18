@@ -90,10 +90,10 @@
 		<a href="#" onclick="toggle_visibility('invite_more<%= feed_item.id %>'); return false">
 			<img src='add_more.png' onmouseover="this.src='add_more_h.png'"
 	         onmouseout="this.src='add_more.png'" title="Invite more friends" width="20" style= 'vertical-align: middle; padding: 4px; margin-bottom: 4px;'>
-		<a>
+		</a>
 	<% end %>
 	</div>
-	<div id="invite_more<%= feed_item.id %>" style="display:none;">
+	<div id="invite_more<%= feed_item.id %>" class="invite_more" style="display:none;">
 		<%= form_for(InviteMore.new) do |f| %>
 			<%= render 'shared/error_messages', object: f.object %>
 			<div class="field-in-gather-no">

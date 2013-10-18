@@ -25,7 +25,7 @@
           </tr>
           <tr>
             <td align="left" style="border-collapse:collapse;background:#fff;padding: 20px 20px 20px 20px; font-size: 16px; line-height: 150%; text-align:left">
-              <i>Hey there, <%= @gather.user.name %> wants to hang out with you!</i>
+              <i>Hey there, <%= @invitor.name %> wants to hang out with you!</i>
               <br><br>
               Want to <a href="<%= @url %>" style="text-decoration:none; color:#F3253B;" target="_blank"><b><%= @gather.activity %></b></a> with <%= @to_invitees %><%= "?" if @gather.date.blank? && @gather.time.blank? && @gather.location.blank? %>
               <% if @gather.date.present? %>  
@@ -41,7 +41,7 @@
               <br><br>
               Looking forward to it,
               <br>
-              <%= @gather.user.name.split(' ').first %>
+              <%= @invitor.name.split(' ').first %>
             </td>
           </tr>
           <tr>
@@ -58,18 +58,18 @@
               <p style="font-size:12px;color:black">
                 <b>How does Bloon work?</b>
                 <br>
-                1. <%= @gather.user.name.split(' ').first %> invited <%= @gather.num_invited %> friends to <%= @gather.activity %>
+                1. <%= @invitor.name.split(' ').first %> invited <%= @gather.num_invited %> friends to <%= @gather.activity %>
                 <br>
-                2. If you're interested, let <%= @gather.user.name.split(' ').first %> know through <%= link_to "Bloon", @url %>
+                2. If you're interested, let <%= @invitor.name.split(' ').first %> know through <%= link_to "Bloon", @url %>
                 <br>
-                3. If <%= @gather.tilt %>+ people join <%= @gather.user.name.split(' ').first %>, they will be notified and put in a group text where they can figure out the details without bothering others
+                3. If <%= @gather.tilt %>+ people join <%= @invitor.name.split(' ').first %>, they will be notified and put in a group text where they can figure out the details without bothering others
               </p>
             </td>
           </tr>
           <tr>
             <td align="center" style="background:#cce3f7;border-collapse:collapse;">
               <p style="margin:0;padding:0;font-size:11px;color:#9a9a9a">
-    <%= link_to "Join", @url %> <%= @gather.user.name.split(' ').first %> on Bloon and effortlessly organize more fun with friends.
+    <%= link_to "Join", @url %> <%= @invitor.name.split(' ').first %> on Bloon and effortlessly organize more fun with friends.
     <br>&copy; 2013 Bloon Inc. San Francisco, CA | <a href="mailto:hello@bloon.us" style="font-weight:normal;text-decoration:none;" target="_blank">hello@bloon.us</a><br><br>
       </p>
             </td>
