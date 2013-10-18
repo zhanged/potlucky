@@ -551,7 +551,7 @@ input {
 	}
 }
 .btn-update-org {
-	background: #8A8A8A;//rgba(156, 211, 107, 1);
+	background: $inviteColor;//#8A8A8A;//rgba(156, 211, 107, 1);
 	border-bottom: 0px solid #AF3333;
 	font-size: 14px;
 	border-bottom-left-radius: 0px;
@@ -559,13 +559,13 @@ input {
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
 	&:hover {
-		background: $inviteColor;
+		background: $inviteColorHover;
 		border-bottom: 0px solid #882828;
 		color: #fff;
 	}
 }
 .btn-update-no {
-	background: #8A8A8A;//#77C2FF;
+	background: $inviteColor;//#8A8A8A;//#77C2FF;
 	border-bottom: 0px solid #AF3333;
 	font-size: 14px;
 	border-bottom-left-radius: 0px;
@@ -573,7 +573,7 @@ input {
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
 	&:hover {
-		background: $inviteColor;
+		background: $inviteColorHover;
 		border-bottom: 0px solid #882828;
 		color: #fff;
 	}

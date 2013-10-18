@@ -3,6 +3,7 @@ class Gather < ActiveRecord::Base
 	has_many :invitations, foreign_key: "gathering_id", dependent: :destroy
 	has_many :invitees, through: :invitations
 	has_many :updates, dependent: :destroy
+	has_many :invite_mores, dependent: :destroy
 	before_create do
 		self.invited = invited.downcase.sub(user.email,"").scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.join(" ")
 		self.invited_yes = user.email
@@ -66,7 +67,14 @@ class Gather < ActiveRecord::Base
 						@dtl = "at " + self.time.strftime("%l:%M%p")
 					end 
 					if self.location.present?
-						@dtl = @dtl + " at " + self.location
+						if self.time.present? || self.date.present?
+							@dtl = @dtl + " at " + self.location
+						else
+							@dtl = "at " + self.location
+						end
+					end
+					if @dtl != ""
+						@dtl = " " + @dtl
 					end
 					if self.more_details.present?						
 						@det = "where " + user.name.split(' ').first + " has provided more details"
@@ -75,7 +83,7 @@ class Gather < ActiveRecord::Base
 					end
 					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 					message = @client.account.messages.create(
-						body: "#{activity} #{@dtl}? #{user.name} invited you - #{tilt}/#{invitees.count} invitees must join for activity to take off. REPLY 'Y#{@invitation.id}' to join or go to bloon.us #{@det}",
+						body: "#{activity}#{@dtl}? #{user.name} invited you - #{tilt}/#{invitees.count} invitees must join for activity to take off. REPLY 'Y#{@invitation.id}' to join or go to bloon.us #{@det}",
 					    to: @user.phone,
 					    from: ENV['TWILIO_MAIN'])
 					puts message.from

@@ -8,7 +8,8 @@ class Update < ActiveRecord::Base
 		gather = Gather.find_by(id: self.gather_id)
 		responder = User.find_by(id: self.user_id)
 		@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
-		if responder.id == gather.user_id
+		if self.content.at(0..11) == "I've invited"
+		elsif responder.id == gather.user_id
 			# Update from organizer
 			invites = Invitation.where(gathering_id: gather.id).pluck(:id) - Invitation.where(gathering_id: gather.id, invitee_id: responder.id).pluck(:id)
 			invites.each do |i|

@@ -1,0 +1,2 @@
+module InviteMoreHelper
+end

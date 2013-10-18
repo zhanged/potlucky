@@ -9,6 +9,7 @@ Potlucky::Application.routes.draw do
   resources :tnumbers, only: [:new, :create, :destroy]
   resources :friendships, only: [:new, :create, :destroy]
   resources :updates, only: [:create, :destroy]
+  resources :invite_mores, only: [:create, :destroy]
   root to: 'static_pages#home'
 #  match '/signup',  to: 'users#new',           via: 'get'
   match '/lets_go',    to: 'users#lets_go',        via: 'get'

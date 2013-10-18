@@ -43,7 +43,7 @@
  		<%= f.text_field :activity, placeholder: activity_placeholder.sample %>
  		<a>
 		<div id="gather_form" style="display:none;">
-		<textarea id="tags" name="gather[invited]" placeholder="<%= invited_placeholder.sample %>" size="40"></textarea>
+		<textarea class="tags" id="tags" name="gather[invited]" placeholder="<%= invited_placeholder.sample %>" size="40"></textarea>
 		<input type="number" name="gather[tilt]" placeholder="# add'l friends to critical mass" title="Minimum number of friends needed to join you before this activity takes off">
 <!-- 		 f.number_field :tilt, placeholder: "# add'l friends to critical mass" %>  -->
 		<a href="#" onclick="toggle_visibility('optional'); return false" id="expand-form"><b>+</b><a>

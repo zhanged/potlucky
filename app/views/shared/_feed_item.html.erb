@@ -86,6 +86,23 @@
 	         onmouseout="this.src='rebloon_h.png'" title="Use this group in a new activity" width="20" style= 'vertical-align: middle; padding: 4px; margin-bottom: 4px;'>
 	     </a>
 	<% end %>
+	<% if current_page?(root_url) && feed_item.completed.blank? && feed_item.invitations.find_by(invitee_id: current_user.id).status == "Yes" %>
+		<a href="#" onclick="toggle_visibility('invite_more<%= feed_item.id %>'); return false">
+			<img src='add_more.png' onmouseover="this.src='add_more_h.png'"
+	         onmouseout="this.src='add_more.png'" title="Invite more friends" width="20" style= 'vertical-align: middle; padding: 4px; margin-bottom: 4px;'>
+		<a>
+	<% end %>
+	</div>
+	<div id="invite_more<%= feed_item.id %>" style="display:none;">
+		<%= form_for(InviteMore.new) do |f| %>
+			<%= render 'shared/error_messages', object: f.object %>
+			<div class="field-in-gather-no">
+				<%= f.hidden_field :user_id, :value => current_user.id %>
+				<%= f.hidden_field :gather_id, :value => feed_item.id %>
+				<textarea class="tags" name="invite_more[more_invitees]" placeholder="friend1@email.com, friend2@gmail.com" size="40"></textarea>
+			</div>
+			<%= f.submit "Inivite More", class: "btn btn-block btn-large btn-update-no" %>
+		<% end %>
 	</div>
 	<div class="inside_card">
 		<div id="gather<%= feed_item.id %>" style="display:none;">
@@ -124,7 +141,7 @@
 						<div class="field-in-gather-org">
 							<%= f.hidden_field :user_id, :value => current_user.id %>
 							<%= f.hidden_field :gather_id, :value => feed_item.id %>
-							<textarea id="tags" name="update[content]" placeholder="e.g. Tix almost out, join within hour" size="40"></textarea>
+							<textarea name="update[content]" placeholder="e.g. Tix almost out, join within hour" size="40"></textarea>
 						</div>
 						<%= f.submit "Send update to all", class: "btn btn-block btn-large btn-update-org" %>
 					<% end %>
@@ -135,7 +152,7 @@
 						<div class="field-in-gather-no">
 							<%= f.hidden_field :user_id, :value => current_user.id %>
 							<%= f.hidden_field :gather_id, :value => feed_item.id %>
-							<textarea id="tags" name="update[content]" placeholder="Can't make it bc..." size="40"></textarea>
+							<textarea name="update[content]" placeholder="Can't make it bc..." size="40"></textarea>
 						</div>
 						<%= f.submit "Respond to organizer", class: "btn btn-block btn-large btn-update-no" %>
 					<% end %>
