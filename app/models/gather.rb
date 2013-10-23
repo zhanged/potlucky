@@ -15,7 +15,7 @@ class Gather < ActiveRecord::Base
 	validates :activity, presence: true, length: { maximum: 72 }
 	validates :user_id, presence: true
 	validate :tilt_must_fall_in_range_of_invited, unless: "tilt.nil?"
-	validate :when_tilt_is_nil
+#	validate :when_tilt_is_nil
 	after_create do
 		invitees = invited.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
 		self.update_attributes(num_invited: invitees.count)
