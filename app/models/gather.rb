@@ -7,6 +7,9 @@ class Gather < ActiveRecord::Base
 	before_create do
 		self.invited = invited.downcase.sub(user.email,"").scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.join(" ")
 		self.invited_yes = user.email
+		if self.tilt == nil || self.tilt == 0
+			self.tilt = 1
+		end
 	end
 	default_scope -> { order('gathers.updated_at DESC') }
 	validates :activity, presence: true, length: { maximum: 72 }
@@ -350,7 +353,7 @@ class Gather < ActiveRecord::Base
 
 	def tilt_must_fall_in_range_of_invited		
 		if tilt > (invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.count)
-			errors.add(:tilt, "- Invite #{tilt - invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.count} more people for lift off number to be valid")
+			# errors.add(:tilt, "- Invite #{tilt - invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.count} more people for lift off number to be valid")
 		elsif tilt < 0
 			errors.add(:tilt, "- Can't lift off with negative people...")
 		end

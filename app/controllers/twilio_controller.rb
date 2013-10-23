@@ -57,6 +57,16 @@ class TwilioController < ApplicationController
 				end
 			end			
 
+		# Incorrect phone number
+		elsif @body.downcase == "pop22" && @to == ENV['TWILIO_MAIN']
+			@user = User.find_by(phone: @formatted_phone)
+			Invitation.where(invitee_id: @user.id, status: "Yes").pluck(:id).each do |i|
+				@user.unjoin!(i) # Wrong phone number still gets the leaving gather text
+				Gather.find_by(id: Invitation.find_by(id: i).gathering_id).decrease_num_joining!(i)
+			end
+   	    	@user.phone = nil
+    		@user.save(validate: false)
+
 		# Extending the group chat
 		elsif @body.downcase == "e" && Invitation.find_by(number_used: @to, invitee_id: User.find_by(phone: @formatted_phone).id).present?
     		@invitation = Invitation.find_by(number_used: @to, invitee_id: User.find_by(phone: @formatted_phone).id)

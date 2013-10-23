@@ -48,13 +48,37 @@ class UsersController < ApplicationController
   end
 
   def update
-    if @user.update_attributes(user_params)
-      @user.update_attributes(auth_token: SecureRandom.urlsafe_base64)
-      flash[:success] = "Profile updated"
-      sign_in @user
-      redirect_to(root_url)
-    else
-      render 'edit'
+    previous_phone = @user.phone
+    if previous_phone != user_params[:phone]
+      begin
+        @client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+        message = @client.account.messages.create(
+          body: "Welcome to Bloon! You'll receive new invitations from this phone number. If you didn't sign up for Bloon, reply 'Pop22'",
+            to: user_params[:phone],
+            from: ENV['TWILIO_MAIN'])
+        puts message.to, message.body               
+      rescue 
+        flash[:error] = "Oops this cell number doesn't seem to be correct, please re-enter your cell number"
+        render 'edit'
+      else
+        if @user.update_attributes(user_params)
+          @user.update_attributes(auth_token: SecureRandom.urlsafe_base64)
+          flash[:success] = "Profile updated"
+          sign_in @user
+          redirect_to(root_url)
+        else
+          render 'edit'
+        end        
+      end
+    else 
+      if @user.update_attributes(user_params)
+        @user.update_attributes(auth_token: SecureRandom.urlsafe_base64)
+        flash[:success] = "Profile updated"
+        sign_in @user
+        redirect_to(root_url)
+      else
+        render 'edit'
+      end
     end
   end
 
