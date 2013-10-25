@@ -2,7 +2,7 @@
 	<div class="center center-span span4or9 hero-unit-2">
 		<h2 class="welcome-front">Welcome to</h2>
 		<h1 class="logo-front">Bloon</h1>
-		<h2 class="desc-front blurb">Effortlessly organize hangouts with friends</h2>
+		<h2 class="desc-front blurb">Easily organize hangouts with friends</h2>
 		<br>
 		<% if signed_in? %>
 			<h2><%= link_to "Continue on to join #{User.find_by(id: Gather.find_by(id: (Invitation.where(invitee_id: current_user.id).last.gathering_id)).user_id).name} for #{Gather.find_by(id: (Invitation.where(invitee_id: current_user.id).last.gathering_id)).activity} >>", edit_user_path(current_user) %></h2>
