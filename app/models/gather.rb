@@ -4,19 +4,57 @@ class Gather < ActiveRecord::Base
 	has_many :invitees, through: :invitations
 	has_many :updates, dependent: :destroy
 	has_many :invite_mores, dependent: :destroy
+	has_many :links, foreign_key: "gathering_id", dependent: :destroy
 	before_create do
 		self.invited = invited.downcase.sub(user.email,"").scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.join(" ")
 		self.invited_yes = user.email
-		if self.tilt == nil || self.tilt == 0
-			self.tilt = 1
+#		if self.tilt == nil || self.tilt == 0
+#			self.tilt = 1
+#		end
+		if self.activity.blank? && (self.activity_2.present? || self.activity_3.present?)
+			if self.activity_2.present?
+				self.activity = activity_2
+				self.activity_2 = nil
+			else
+				self.activity = activity_3
+				self.activity_3 = nil
+			end
+		end
+		if self.date.blank? && self.time.blank? && (self.date_2.present? || self.date_3.present? || self.time_2.present? || self.time_3.present?)
+			if self.date_2.present? || self.time_2.present? 
+				self.date = date_2
+				self.time = time_2
+				self.date_2 = nil
+				self.time_2 = nil
+			else
+				self.date = date_3
+				self.time = time_3
+				self.date_3 = nil
+				self.date_3 = nil
+			end
+		end
+		if self.location.blank? && (self.location_2.present? || self.location_3.present?)
+			if self.location_2.present?
+				self.location = location_2
+				self.location_2 = nil
+			else
+				self.location = location_3
+				self.location_3 = nil
+			end
 		end
 	end
 	default_scope -> { order('gathers.updated_at DESC') }
-	validates :activity, presence: true, length: { maximum: 72 }
+#	validates :activity, presence: true, length: { maximum: 70 }
+	validates :activity_2, length: { maximum: 70 }
+	validates :activity_3, length: { maximum: 70 }
+	validates :location, length: { maximum: 100 }
+	validates :location_2, length: { maximum: 100 }
+	validates :location_3, length: { maximum: 100 }
 	validates :user_id, presence: true
-	validate :tilt_must_fall_in_range_of_invited, unless: "tilt.nil?"
-#	validate :when_tilt_is_nil
+#	validate :tilt_must_fall_in_range_of_invited, unless: "tilt.nil?"
 	after_create do
+		self.gen_link = String.random_alphanumeric
+		links.create!(in_url: self.gen_link, out_url: "/gathers/"+gen_link)
 		invitees = invited.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
 		self.update_attributes(num_invited: invitees.count)
 		invitees.each do |invitee|
@@ -61,32 +99,39 @@ class Gather < ActiveRecord::Base
 				@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: self.id)
 				if @user.phone.present?
 					@dtl = ""
-					if self.date.present? 
-						@dtl = "on " + self.date.strftime("%a, %b %e") 
-						if self.time.present? 
-							@dtl = @dtl + " " + self.time.strftime("%l:%M%p")
+					if self.activity.present? && self.activity_2.blank? && self.activity_3.blank? 
+						@dtl = self.activity
+					else
+						@dtl = "Hang out"
+					end
+					if self.date.present? && self.date_2.blank? && self.date_3.blank? 
+						@dtl = @dtl + " on " + self.date.strftime("%a, %b %e") 
+						if self.time.present? && self.time_2.blank? && self.time_3.blank? 
+							@dtl = @dtl + " @" + self.time.strftime("%l:%M%p")
 						end
-					elsif self.time.present? 
-						@dtl = "at " + self.time.strftime("%l:%M%p")
+					elsif self.time.present? && self.time_2.blank? && self.time_3.blank? 
+						@dtl = @dtl + " at " + self.time.strftime("%l:%M%p")
 					end 
-					if self.location.present?
-						if self.time.present? || self.date.present?
+					if self.location.present? && self.location_2.blank? && self.location_3.blank? 
+						if (self.activity.present? && self.activity_2.blank? && self.activity_3.blank?) || (self.time.present? && self.time_2.blank? && self.time_3.blank?) || (self.date.present? && self.date_2.blank? && self.date_3.blank?)
 							@dtl = @dtl + " at " + self.location
 						else
-							@dtl = "at " + self.location
+							@dtl = @dtl + " at " + self.location
 						end
 					end
-					if @dtl != ""
-						@dtl = " " + @dtl
-					end
-					if self.more_details.present?						
-						@det = "where " + user.name.split(' ').first + " has provided more details"
+					# if self.more_details.present?						
+					# 	@det = "where " + user.name.split(' ').first + " has provided more details"
+					# else
+					# 	@det = "for details"
+					# end
+					if wait_hours == 0
+						@wait = ""
 					else
-						@det = "for details"
+						@wait = " within #{wait_hours} hours"
 					end
 					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 					message = @client.account.messages.create(
-						body: "#{activity}#{@dtl}? #{user.name} invited you - #{tilt}/#{invitees.count} invitees must join for activity to take off. REPLY 'Y#{@invitation.id}' to join or go to bloon.us #{@det}",
+						body: "#{@dtl}? #{user.name} invited you - #{tilt} invitees must join for this to take off. Join on bloon.us/#{@invitation.link.in_url}#{@wait}",
 					    to: @user.phone,
 					    from: ENV['TWILIO_MAIN'])
 					puts message.from
@@ -124,7 +169,33 @@ class Gather < ActiveRecord::Base
 			end
 		end
 		invite!user
-		invitations.find_by(invitee_id: user.id).update(status: "Yes")
+		activity_1v = "1" if self.activity.present?
+		activity_2v = "2" if self.activity_2.present?
+		activity_3v = "3" if self.activity_3.present?
+		date_1v = "1" if self.date.present?
+		date_2v = "2" if self.date_2.present?
+		date_3v = "3" if self.date_3.present?
+		time_1v = "1" if self.time.present?
+		time_2v = "2" if self.time_2.present?
+		time_3v = "3" if self.time_3.present?
+		location_1v = "1" if self.location.present?
+		location_2v = "2" if self.location_2.present?
+		location_3v = "3" if self.location_3.present?
+		
+		invitations.find_by(invitee_id: user.id).update(status: "Yes", 
+			activity_1v: activity_1v, 
+			activity_2v: activity_2v, 
+			activity_3v: activity_3v, 
+			date_1v: date_1v, 
+			date_2v: date_2v, 
+			date_3v: date_3v, 
+			time_1v: time_1v, 
+			time_2v: time_2v, 
+			time_3v: time_3v, 
+			location_1v: location_1v, 
+			location_2v: location_2v, 
+			location_3v: location_3v, 
+			)
 		self.update_attributes(num_joining: 1)
 	end
 
@@ -134,6 +205,8 @@ class Gather < ActiveRecord::Base
 
 	def invite!(other_user)
 		invitations.create!(invitee_id: other_user.id)
+		short_link = String.random_alphanumeric
+		links.create!(in_url: short_link, out_url: "/gathers/"+short_link, invitation_id: Invitation.find_by(gathering_id: self.id, invitee_id: other_user.id).id)
 	end
 
 	def uninvite!(other_user)
@@ -157,7 +230,7 @@ class Gather < ActiveRecord::Base
 
 		@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 			
-		if @gather.num_joining < (@gather.tilt + 1)
+		if @gather.num_joining < (@gather.tilt)
 			message = @client.account.messages.create(
 				body: "Great, we've marked you down as interested in #{@gather.activity[0,1].downcase + @gather.activity[1..-1]} on bloon.us. You'll get a text if this takes off",
 			    to: @joining_user.phone,
@@ -167,12 +240,12 @@ class Gather < ActiveRecord::Base
 			@gather.update_attributes(details: ("#{@gather.details} <br>To #{@joining_user_name_or_email}: Great, we've marked you down as interested in #{@gather.activity[0,1].downcase + @gather.activity[1..-1]} on bloon.us. You'll get a text if this takes off (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
 
 			message = @client.account.messages.create(
-				body: "#{@joining_user.name} just joined you for #{@gather.activity[0,1].downcase + @gather.activity[1..-1]} on bloon.us. If #{@gather.tilt + 1 - @gather.num_joining} more join, you will be put in a group chat",
+				body: "#{@joining_user.name} just joined you for #{@gather.activity[0,1].downcase + @gather.activity[1..-1]} on bloon.us. If #{@gather.tilt - @gather.num_joining} more join, you will be put in a group chat",
 			    to: User.find_by(id: user_id).phone,
 			    from: ENV['TWILIO_MAIN'])
 			puts message.from
 
-		elsif @gather.num_joining == (@gather.tilt + 1)
+		elsif @gather.num_joining == (@gather.tilt)
 
 			# Expire existing Gather numbers?
 			Gather.where("expire IS NOT NULL").pluck(:id).each  do |g|
@@ -246,7 +319,7 @@ class Gather < ActiveRecord::Base
 
 			@gather.update_attributes(details: ("#{@gather.details} <br>Bloon: #{@gather.activity} has taken off with #{User.find_by(email: invited_yes_array.last).name.split(' ').first}, #{@people_joining_less_user}! Reply to this group text to plan the details together (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
 
-		elsif @gather.num_joining > (@gather.tilt + 1)
+		elsif @gather.num_joining > (@gather.tilt)
 			if @this_invitation.number_used.nil?
 				all_numbers_used = @joining_user.reverse_invitations.pluck(:number_used)
 				@number_used = (Tnumber.pluck(:tphone) - all_numbers_used).sample
@@ -316,7 +389,7 @@ class Gather < ActiveRecord::Base
 
 		@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 
-		if @gather.num_joining < @gather.tilt
+		if @gather.num_joining + 1 < @gather.tilt
 			from_number = ENV['TWILIO_MAIN']
 		else
 			from_number = @this_invitation.number_used
@@ -332,7 +405,7 @@ class Gather < ActiveRecord::Base
 
 		@this_invitation.update_attributes(number_used: nil)
 
-		if @gather.num_joining >= @gather.tilt			 
+		if @gather.num_joining + 1 >= @gather.tilt			 
 
 			invited_yes_array = @gather.invited_yes.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
 			invited_yes_array.each do |n|
@@ -359,14 +432,17 @@ class Gather < ActiveRecord::Base
 		end
 	end
 
-	def when_tilt_is_nil
-		if tilt == nil && invited.present?
-				errors.add(:tilt, "- Can't invite anyone if you don't enter a lift off number")
-		end
-	end
-
 	def self.from_gathers_invited_to(user)
 		gatherings = user.gatherings
 	end
-end
 
+	def to_param
+		gen_link
+	end
+
+	def String.random_alphanumeric(size=5)
+  		s = ""
+		size.times { s << (i = Kernel.rand(62); i += ((i < 10) ? 48 : ((i < 36) ? 55 : 61 ))).chr }
+  		s
+	end
+end

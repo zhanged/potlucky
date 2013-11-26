@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
 	has_many :gathers, dependent: :destroy
 	belongs_to :invitation, foreign_key: "invitee_id"
 	has_many :reverse_invitations, foreign_key: "invitee_id", class_name: "Invitation"
+	accepts_nested_attributes_for :invitation, :allow_destroy => true
 	has_many :gatherings, through: :reverse_invitations
 	has_many :friendships, foreign_key: "friender_id"
 	has_many :friended_users, through: :friendships, source: :friended
@@ -26,7 +27,7 @@ class User < ActiveRecord::Base
 	validates :phone, presence: true, :on => :update, length: { is: 10 }
 	has_secure_password :validations => false # users can be created without passwords
 	validates :password, :on => :update, length: { minimum: 6 }
-#	validate :phone_is_real, unless: "phone.nil?"
+	# validate :phone_is_real
 
 	def User.new_remember_token
 		SecureRandom.urlsafe_base64
@@ -70,13 +71,23 @@ class User < ActiveRecord::Base
 		current_user.friended_users.pluck(:email)
 	end
 
-#	def phone_is_real
-#		begin
-#			#text phone
-#		rescue
-#			#if error, redirect to edit profile and put error notice Twilio::REST::RequestError (The 'To' number 1513267216 is not a valid phone number.)
-#		end
-#	end
+	def phone_is_real
+		# begin
+		# 	#text phone
+		# rescue
+		# 	#if error, redirect to edit profile and put error notice Twilio::REST::RequestError (The 'To' number 1513267216 is not a valid phone number.)
+		# end
+		begin
+        @client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+	        message = @client.account.messages.create(
+	          body: "Welcome to Bloon! You'll receive new invitations from this phone number. If you didn't sign up for Bloon, reply 'Pop22'",
+	          to: self.phone,
+	          from: ENV['TWILIO_MAIN'])
+	        puts message.to, message.body               
+	    rescue 
+	        errors.add(:phone, "number doesn't seem to be correct, please re-enter your phone number")
+		end
+	end
 
 	private
 

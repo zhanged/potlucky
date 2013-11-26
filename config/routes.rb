@@ -1,8 +1,8 @@
 Potlucky::Application.routes.draw do
   get "twilio/respond"
-  resources :users, except: [:new]
+  resources :users #, except: [:new]
   resources :sessions, only: [:new, :create, :destroy]
-  resources :gathers,  only: [:index, :create, :update, :destroy]
+  resources :gathers,  only: [:show, :index, :create, :update, :destroy]
   resources :invitations, only: [:create, :update, :destroy]
   resources :password_resets, only: [:new, :create]
   resources :wait_lists, only: [:new, :create]
@@ -10,8 +10,9 @@ Potlucky::Application.routes.draw do
   resources :friendships, only: [:new, :create, :destroy]
   resources :updates, only: [:create, :destroy]
   resources :invite_mores, only: [:create, :destroy]
+  resources :links  
   root to: 'static_pages#home'
-#  match '/signup',  to: 'users#new',           via: 'get'
+  match '/signup',  to: 'users#new',           via: 'get'
   match '/lets_go',    to: 'users#lets_go',        via: 'get'
   match '/welcome',    to: 'static_pages#welcome',        via: 'get'
   match '/email_redirect', to: 'users#email_redirect',  via: 'get'
@@ -20,6 +21,10 @@ Potlucky::Application.routes.draw do
   match '/signout', to: 'sessions#destroy',    via: 'delete'
   match '/help',    to: 'static_pages#help',   via: 'get'
   match '/about',   to: 'static_pages#about',  via: 'get'
+  match '/faq',   to: 'static_pages#faq',  via: 'get'
+  match '/new',  to: 'gathers#new',           via: 'get'
+  match ':in_url', to: 'links#go',           via: 'get'
+  match '/:id', to: 'gathers#show', via: 'get'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

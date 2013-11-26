@@ -1,0 +1,96 @@
+<div class="whitebg">		
+<a name="rebloon"></a>
+<%= form_for(@gather) do |f| %>
+	<%= render 'shared/error_messages', object: f.object %> 
+	<div class="field">		
+		<div class="input-group">
+        	<input type="text" class="form-control" name="gather[activity]" placeholder="Activity">
+            <span class="input-group-btn">
+              <button onclick="toggle_visibility('more_activities'); return false" class="btn btn-poll" type="button">Poll</button>
+            </span>
+        </div>
+		<div id="more_activities" style="display:none;">
+			<input type="text" class="input-group form-control" name="gather[activity_2]" placeholder="Activity (option 2)">
+			<input type="text" class="input-group form-control" name="gather[activity_3]" placeholder="Activity (option 3)">
+		</div>
+        <div class="input-group">
+	        <input type="text" class="datepicker" name="gather[date]" placeholder="Date">
+			<input type="text" class="timepicker" name="gather[time]" placeholder="Time">
+			<span class="input-group-btn">
+            	<button onclick="toggle_visibility('more_dates'); return false" class="btn btn-poll" type="button">Poll</button>
+            </span>
+        </div>
+        <div id="more_dates" style="display:none;">
+	        <div class="input-group">
+				<input type="text" class="datepicker" name="gather[date_2]" placeholder="Date (option 2)">
+				<input type="text" class="timepicker" name="gather[time_2]" placeholder="Time (option 2)">
+				<span class="input-group-btn">
+              		<button class="btn btn-poll" type="button" style="visibility:hidden">Poll</button>
+            	</span>
+			</div>
+			<div class="input-group">
+				<input type="text" class="datepicker" name="gather[date_3]" placeholder="Date (option 3)">
+				<input type="text" class="timepicker" name="gather[time_3]" placeholder="Time (option 3)">
+				<span class="input-group-btn">
+              		<button class="btn btn-poll" type="button" style="visibility:hidden">Poll</button>
+              	</span>
+			</div>
+		</div>
+		<div class="input-group">
+        	<input type="text" class="form-control" name="gather[location]" placeholder="Location">
+            <span class="input-group-btn">
+              <button onclick="toggle_visibility('more_locations'); return false" class="btn btn-poll" type="button">Poll</button>
+            </span>
+        </div>
+        <div id="more_locations" style="display:none;">
+			<input type="text" class="input-group form-control" name="gather[location_2]" placeholder="Location (option 2)">
+			<input type="text" class="input-group form-control" name="gather[location_3]" placeholder="Location (option 3)">
+		</div>
+		<textarea style="display:none;" class="tags" id="select-result" name="gather[invited]" placeholder="Invite: (none selected from below)" ></textarea>
+		<div class="name-select-area">
+			<span class="name-select-invite">Invite:</span><span class="name-select-blurb"> (we’ll give you a link to invite friends not listed)</span>
+			<ol id="selectable">
+				<% current_user.friended_users.order(:name).each do |friend| %>
+					<li class="name-select" value="<%= friend.name %>">+<%= friend.name %> <div style="display:none;">(<%= friend.email %>) </div></li>
+				<% end %>
+			</ol>
+		</div>
+		<div class="name-select-area name-select-invite">Critical mass (?): </div>
+		<div class="radio-select-area">
+				<div id="radio_tilt">
+				    <input type="radio" id="radio2" name="gather[tilt]" value="2" checked="checked" /><label for="radio2">2</label>
+				    <input type="radio" id="radio3" name="gather[tilt]" value="3" /><label for="radio3">3</label>
+				    <input type="radio" id="radio4" name="gather[tilt]" value="4" /><label for="radio4">4</label>
+				    <input type="radio" id="radio5" name="gather[tilt]" value="5" /><label for="radio5">5</label>
+				    <input type="radio" id="radio6" name="gather[tilt]" value="6" /><label for="radio6">6</label>
+				    <input type="radio" id="radio7" name="gather[tilt]" value="7" /><label for="radio7">7</label>
+				    <input type="radio" id="radio8" name="gather[tilt]" value="8" /><label for="radio8">8</label>
+				    <input type="radio" id="radio9" name="gather[tilt]" value="9" /><label for="radio9">9</label>
+				    <input type="radio" id="radio10" name="gather[tilt]" value="10" /><label for="radio10">10</label>
+				</div>
+		</div>
+
+		<div class="name-select-area name-select-invite">Wait for responses (?): </div>
+		<div class="radio-select-area">
+				<div id="radio_wait">
+				    <input type="radio" id="radio_a" name="gather[wait_hours]" value="None" checked="checked" /><label for="radio_a">None</label>
+				    <input type="radio" id="radio_b" name="gather[wait_hours]" value="3" /><label for="radio_b">3 hrs</label>
+				    <input type="radio" id="radio_c" name="gather[wait_hours]" value="6" /><label for="radio_c">6 hrs</label>
+				    <input type="radio" id="radio_d" name="gather[wait_hours]" value="12" /><label for="radio_d">12 hrs</label>
+				    <input type="radio" id="radio_e" name="gather[wait_hours]" value="24" /><label for="radio_e">24 hrs</label>
+				</div>
+		</div>
+
+
+		<!-- <input type="number" name="gather[tilt]" placeholder="# add'l friends to critical mass" title="Minimum number of friends needed to join you before this activity takes off"> -->
+
+<!-- 		 f.number_field :tilt, placeholder: "# add'l friends to critical mass" %>  -->
+<!-- 			 f.date_field :date, placeholder: "Date" %> -->
+<!-- 			 f.time_field :time, placeholder: "Time" %> -->
+<!-- 	<	%= f.text_area :more_details, placeholder: "Details" %> -->
+		
+	</div>
+	<%= f.submit "Organize Activity", data: { disable_with: 'Please wait...' }, class: "btn btn-large btn-block btn-invite" %>
+
+<% end %>
+</div>

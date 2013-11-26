@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131017211728) do
+ActiveRecord::Schema.define(version: 20131121190007) do
 
   create_table "friendships", force: true do |t|
     t.integer  "friender_id"
@@ -42,6 +42,17 @@ ActiveRecord::Schema.define(version: 20131017211728) do
     t.date     "date"
     t.text     "location"
     t.text     "more_details"
+    t.string   "activity_2"
+    t.string   "activity_3"
+    t.text     "location_2"
+    t.text     "location_3"
+    t.date     "date_2"
+    t.date     "date_3"
+    t.time     "time_2"
+    t.time     "time_3"
+    t.integer  "wait_hours"
+    t.time     "wait_time"
+    t.text     "gen_link"
   end
 
   add_index "gathers", ["user_id", "created_at"], name: "index_gathers_on_user_id_and_created_at"
@@ -53,6 +64,18 @@ ActiveRecord::Schema.define(version: 20131017211728) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "number_used"
+    t.integer  "activity_1v"
+    t.integer  "activity_2v"
+    t.integer  "activity_3v"
+    t.integer  "time_1v"
+    t.integer  "time_2v"
+    t.integer  "time_3v"
+    t.integer  "date_1v"
+    t.integer  "date_2v"
+    t.integer  "date_3v"
+    t.integer  "location_1v"
+    t.integer  "location_2v"
+    t.integer  "location_3v"
   end
 
   add_index "invitations", ["gathering_id", "invitee_id"], name: "index_invitations_on_gathering_id_and_invitee_id", unique: true
@@ -68,6 +91,20 @@ ActiveRecord::Schema.define(version: 20131017211728) do
   end
 
   add_index "invite_mores", ["gather_id", "created_at"], name: "index_invite_mores_on_gather_id_and_created_at"
+
+  create_table "links", force: true do |t|
+    t.string   "in_url"
+    t.text     "out_url"
+    t.integer  "http_status",   default: 301
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "seen"
+    t.integer  "gathering_id"
+    t.integer  "invitation_id"
+  end
+
+  add_index "links", ["gathering_id", "invitation_id"], name: "index_links_on_gathering_id_and_invitation_id"
+  add_index "links", ["in_url"], name: "index_links_on_in_url"
 
   create_table "tnumbers", force: true do |t|
     t.string   "tphone"

@@ -2,7 +2,17 @@
 <% if current_page?(root_url) || current_page?('/gathers') %>
 	<a href="#" onclick="toggle_visibility('gather<%= feed_item.id %>'); return false">
 <% end %>
-  	<div class="activity"><%= feed_item.activity %>
+  	<div class="activity">
+  		<% if feed_item.activity.present? && feed_item.activity_2.blank? && feed_item.activity_3.blank? %>
+  			<%= feed_item.activity %>
+  		<% elsif (feed_item.date_2.blank? && feed_item.date_3.blank? && feed_item.time_2.blank? && feed_item.time_3.blank?) && (feed_item.date.present? || feed_item.time.present?) %>
+  			Hang out <%= "on " + feed_item.date.strftime("%A, %b %e") if feed_item.date.present? %> <%= "@" + feed_item.time.strftime("%l:%M%p") if feed_item.time.present? %>	
+  		<% elsif feed_item.location_2.blank? && feed_item.location_3.blank? && feed_item.location.present? %>
+  			Hang out at <%= feed_item.location %>
+  		<% else %>
+  			Hang out
+  		<% end %>
+
   		<% if feed_item.more_details.present? || feed_item.details.present? || feed_item.updates.present?  %>
   			<% if current_page?(root_url) || current_page?('/gathers') %>
   				<div id="elip">&bull;&bull;&bull;</div>
@@ -26,10 +36,10 @@
 	<div class="tilt-real">
 		<% if feed_item.tilt == nil %>
 		<% else %>
-			<% if (feed_item.num_joining - 1) >= feed_item.tilt %>
+			<% if (feed_item.num_joining) >= feed_item.tilt %>
 				<b><%= "It's taken off!" %></b>
 			<% else %>
-			<%= feed_item.tilt - feed_item.num_joining + 1 %> more to take off
+			<%= feed_item.tilt - feed_item.num_joining %> more to take off
 			<% end %>
 		<% end %> 
 	</div>
@@ -104,6 +114,20 @@
 			<%= f.submit "Invite More", class: "btn btn-block btn-large btn-update-no" %>
 		<% end %>
 	</div>
+	<% if feed_item.user_id == current_user.id %>
+		<div>
+			Seen by:
+			<% feed_item.links.each do |link| %>
+				<% if link.seen != nil && link.invitation_id.present? %>
+					<%= User.find_by(id: Invitation.find_by(id: link.invitation_id).invitee_id).name %>, 
+				<% end %>
+			<% end %>
+			<% if feed_item.links.find_by(invitation_id: nil).seen != nil %>
+					<%= pluralize(feed_item.links.find_by(invitation_id: nil).seen, 'anonymous') %>
+				
+			<% end %>
+		</div>
+	<% end %>
 	<div class="inside_card">
 		<div id="gather<%= feed_item.id %>" style="display:none;">
 			<% if feed_item.more_details.present? %>
@@ -169,11 +193,12 @@
 	</div>
 	</div></span>
 
-	
+	<% if !request.path.match(/^\/users/) %>
 		<% if feed_item.tilt.present? && feed_item.completed.blank? %>
-			<span><%= render 'shared/join_form', :feed_item => feed_item %></span>
+			<span><%= render 'shared/join_form', :feed_item => feed_item %></span> <!-- USED TO BE :feed_item => feed_item -->
 		<% end %>
 		<% if feed_item.completed.present? %>
 			<span class="completed">Completed</span>
 		<% end %>
+	<% end %>
 </li>

@@ -7,6 +7,10 @@ class GathersController < ApplicationController
 		@gathers = Gather.paginate(page: params[:page])
 	end
 
+	def new
+    	@gather = Gather.new
+	end
+
 	def create
 		if current_user.phone.present?
 			@gather = current_user.gathers.build(gather_params)
@@ -30,13 +34,38 @@ class GathersController < ApplicationController
 	end
 
 	def show
+		link = Link.find_by(in_url: params[:id])
+		@gather = Gather.find_by(id: link.gathering_id)
 		@updates = @gather.updates
+		if @gather.activity.present? && @gather.activity_2.blank? && @gather.activity_3.blank?
+			@activity_set = "yes"
+		end
+		if @gather.date.present? && @gather.date_2.blank? && @gather.date_3.blank? 
+			@date_set = "yes" 
+		end
+		if @gather.time.present? && @gather.time_2.blank? && @gather.time_3.blank?
+			@time_set = "yes" 
+		end
+		if @gather.location.present? && @gather.location_2.blank? && @gather.location_3.blank?
+			@location_set = "yes" 
+		end
+		if !signed_in?
+			if link.seen == nil
+				link.update_attributes(seen: "1")
+			else
+				link.update_attributes(seen: 1+link.seen)
+			end
+		elsif link.invitation_id.present?
+			if signed_in? && (Invitation.find_by(id: link.invitation_id).invitee_id == current_user.id)
+				link.update_attributes(seen: "1")
+			end
+		end
 	end
 
 	private
 
 		def gather_params
-			params.require(:gather).permit(:activity, :invited, :location, :date, :time, :details, :tilt, :more_details)
+			params.require(:gather).permit(:activity, :activity_2, :activity_3, :invited, :location, :location_2, :location_3, :date, :time, :date_2, :time_2, :date_3, :time_3, :details, :tilt, :more_details, :wait_hours, :wait_time)
 		end
 
 		def correct_user

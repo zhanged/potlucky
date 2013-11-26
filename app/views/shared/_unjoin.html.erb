@@ -1,4 +1,17 @@
 <%= form_for(Invitation.find_by(invitee: current_user, gathering: feed_item)) do |f| %>
-	<%= f.hidden_field :invitation_id, value: feed_item.id %>
-	<%= f.submit "Joined", class: "btn btn-large btn-block btn-joining", data: { confirm: "Are you sure you want to leave this activity?" }, :disable_with => "Please wait..." %>
+	<%= f.hidden_field :gathering_id, value: feed_item.id %>
+	<%= f.hidden_field :activity_v1, value: nil %>
+	<%= f.hidden_field :activity_v2, value: nil %>
+	<%= f.hidden_field :activity_v3, value: nil %>
+	<%= f.hidden_field :date_v1, value: nil %>
+	<%= f.hidden_field :date_v2, value: nil %>
+	<%= f.hidden_field :date_v3, value: nil %>
+	<%= f.hidden_field :time_v1, value: nil %>
+	<%= f.hidden_field :time_v2, value: nil %>
+	<%= f.hidden_field :time_v3, value: nil %>
+	<%= f.hidden_field :location_v1, value: nil %>
+	<%= f.hidden_field :location_v2, value: nil %>
+	<%= f.hidden_field :location_v3, value: nil %>
+
+	<%= f.submit "Joined", class: "btn btn-large btn-block btn-joining", data: { confirm: "Are you sure you want to leave this activity?", disable_with: 'Please wait...' } %>
 <% end %>

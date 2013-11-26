@@ -4,6 +4,7 @@ class InvitationsController < ApplicationController
 	def update
 		if current_user.phone.present?
 			@invitation = Invitation.find_by(id: params["id"])
+			@invitation.update_attributes(invitation_params)
 			if Invitation.find_by(id: params["id"]).status == "NA"
 				current_user.join!(params["id"])
 				Gather.find_by(id: @invitation.gathering_id).increase_num_joining!(params["id"])
@@ -20,5 +21,11 @@ class InvitationsController < ApplicationController
 		end
 
 	end
+
+	private
+		def invitation_params
+			params.require(:invitation).permit(:activity_1v, :activity_2v, :activity_3v, :time_1v, :time_2v, :time_3v, :date_1v, :date_2v, :date_3v, :location_1v, :location_2v, :location_3v)
+		end
+
 
 end

@@ -875,10 +875,10 @@ top: auto;
 .ui-state-default,
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
-	border: 1px solid #d3d3d3;
-	background: #e6e6e6;
+	border: 0px; /* 1px solid #d3d3d3;*/
+	background: #EEE; /*#e6e6e6;*/
 	font-weight: normal;
-	color: #555555;
+	color: #8B8B8B;/*#555555;*/
 }
 .ui-state-default a,
 .ui-state-default a:link,
@@ -892,7 +892,7 @@ top: auto;
 .ui-state-focus,
 .ui-widget-content .ui-state-focus,
 .ui-widget-header .ui-state-focus {
-	border: 1px solid #999999;
+	border: 0px; /*1px solid #999999;*/
 	background: #dadada; /* url(images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x;*/
 	font-weight: normal;
 	color: #212121;
@@ -907,7 +907,7 @@ top: auto;
 .ui-state-active,
 .ui-widget-content .ui-state-active,
 .ui-widget-header .ui-state-active {
-	border: 1px solid #aaaaaa;
+	border: 0px; /*1px solid #aaaaaa;*/
 	background: #ffffff; /*url(images/ui-bg_glass_65_ffffff_1x400.png) 50% 50% repeat-x;*/
 	font-weight: normal;
 	color: #212121;
@@ -1193,25 +1193,25 @@ top: auto;
 .ui-corner-top,
 .ui-corner-left,
 .ui-corner-tl {
-	border-top-left-radius: 2px;
+	border-top-left-radius: 0px; /*2px;*/
 }
 .ui-corner-all,
 .ui-corner-top,
 .ui-corner-right,
 .ui-corner-tr {
-	border-top-right-radius: 2px;
+	border-top-right-radius: 0px; /*2px;*/
 }
 .ui-corner-all,
 .ui-corner-bottom,
 .ui-corner-left,
 .ui-corner-bl {
-	border-bottom-left-radius: 2px;
+	border-bottom-left-radius: 0px; /*2px;*/
 }
 .ui-corner-all,
 .ui-corner-bottom,
 .ui-corner-right,
 .ui-corner-br {
-	border-bottom-right-radius: 2px;
+	border-bottom-right-radius: 0px; /*2px;*/
 }
 
 /* Overlays */

@@ -83,15 +83,48 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(user_params) 
-    if @user.save
-      sign_in @user
-      UserMailer.welcome_email(@user).deliver
-      flash[:success] = "Welcome to Bloon!"
-      redirect_to(root_url)
-    else
-      render 'new'
-    end
+    @user = User.new(user_params)
+      begin
+        @client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+        message = @client.account.messages.create(
+          body: "Welcome to Bloon! You'll receive new invitations from this phone number. If you didn't sign up for Bloon, reply 'Pop22'",
+            to: user_params[:phone],
+            from: ENV['TWILIO_MAIN'])
+        puts message.to, message.body               
+      rescue 
+        flash[:error] = "Oops this cell number doesn't seem to be correct, please re-enter your cell number"
+        redirect_to(request.env['HTTP_REFERER'])
+
+      else
+        if @user.save
+          sign_in @user
+          if params["invitation"].present?
+            @gather = Gather.find_by(id: params["invitation"]["gathering_id"])
+            feed_item = @gather
+            @invitation = @gather.invitations.create!(invitee_id: @user.id, 
+              activity_1v: params["invitation"]["activity_1v"],
+              activity_2v: params["invitation"]["activity_2v"],
+              activity_3v: params["invitation"]["activity_3v"],
+              date_1v: params["invitation"]["date_1v"],
+              date_2v: params["invitation"]["date_2v"],
+              date_3v: params["invitation"]["date_3v"],
+              time_1v: params["invitation"]["time_1v"],
+              time_2v: params["invitation"]["time_2v"],
+              time_3v: params["invitation"]["time_3v"],
+              location_1v: params["invitation"]["location_1v"],
+              location_2v: params["invitation"]["location_2v"],
+              location_3v: params["invitation"]["location_3v"],
+              )
+            @user.join!(@invitation.id)
+            @gather.increase_num_joining!(@invitation.id)
+          end
+          # UserMailer.welcome_email(@user).deliver
+          flash[:success] = "Welcome to Bloon!"
+          redirect_to(root_url)
+        else
+          render 'new'
+        end
+      end   
   end
 
   def destroy
@@ -104,10 +137,17 @@ class UsersController < ApplicationController
 
     def user_params
       params.require(:user).permit(:name, :email, :phone, :password,
-                                   :password_confirmation)
+                                   :password_confirmation, invitation: [:gathering_id, :activity_1v, :activity_2v, :activity_3v, :time_1v, :time_2v, :time_3v, :date_1v, :date_2v, :date_3v, :location_1v, :location_2v, :location_3v])
     end
 
     # Before filters
+
+    def signed_in_user
+      unless signed_in?
+        store_location
+        # redirect_to signin_url, notice: "Please sign in."
+      end
+    end
 
     def correct_user
       @user = User.find(params[:id])
