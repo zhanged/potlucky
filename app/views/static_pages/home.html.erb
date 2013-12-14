@@ -2,15 +2,13 @@
 
 <div class="row">
 	<div class="span4or8 center-span">
-		<aside class="span4 left-side">
-<!-- 			<section >
-				<ADD_%_AND_= render 'shared/user_info' %>
-			</section> -->
+<!-- 		<aside class="span4 left-side">
 			<section class="gather-form">
-				<%= render 'shared/gather_form' %>
+				%= render 'shared/gather_form' %>
 			</section>
-		</aside>
-		<div class="span4 feed">
+		</aside> -->
+		<div class="feed">
+			<div id="gather_form" style="display:none;"><h2>Create bloon</h2><%= render 'gathers/new' %><h2>Invitation feed</h2></div>
 			<%= render 'shared/feed' %>
 		</div>
 	</div>
@@ -31,8 +29,8 @@
 			<%= render 'static_pages/how' %>
 		</section>
  -->		<br>
-		<p class="waitlist-front">Interested? Get on our waitlist or ask a member to invite you to an activity!</p>
-			<%= render 'wait_list/new' %>
+<!-- 		<p class="waitlist-front">Interested? Get on our waitlist or ask a member to invite you to an activity!</p>
+			<%= render 'wait_list/new' %> -->
 	</div>
 </div>
 <% end %>

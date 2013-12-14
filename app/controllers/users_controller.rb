@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :signed_in_user, only: [:edit, :update, :destroy]
+  before_action :signed_in_user, only: [:show, :edit, :update, :destroy]
   before_action :correct_user,   only: [:edit, :update]
   before_action :admin_user,     only: [:destroy, :index]
 
@@ -63,7 +63,7 @@ class UsersController < ApplicationController
       else
         if @user.update_attributes(user_params)
           @user.update_attributes(auth_token: SecureRandom.urlsafe_base64)
-          flash[:success] = "Profile updated"
+          flash[:success] = "Profile updated!"
           sign_in @user
           redirect_to(root_url)
         else
@@ -73,7 +73,7 @@ class UsersController < ApplicationController
     else 
       if @user.update_attributes(user_params)
         @user.update_attributes(auth_token: SecureRandom.urlsafe_base64)
-        flash[:success] = "Profile updated"
+        flash[:success] = "Profile updated!"
         sign_in @user
         redirect_to(root_url)
       else
@@ -84,21 +84,24 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
-      begin
-        @client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
-        message = @client.account.messages.create(
-          body: "Welcome to Bloon! You'll receive new invitations from this phone number. If you didn't sign up for Bloon, reply 'Pop22'",
-            to: user_params[:phone],
-            from: ENV['TWILIO_MAIN'])
-        puts message.to, message.body               
-      rescue 
-        flash[:error] = "Oops this cell number doesn't seem to be correct, please re-enter your cell number"
-        redirect_to(request.env['HTTP_REFERER'])
-
-      else
+      # begin
+      #   @client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+      #   message = @client.account.messages.create(
+      #     body: "Welcome to Bloon! You'll receive new invitations from this phone number. If you didn't sign up for Bloon, reply 'Pop22'",
+      #       to: user_params[:phone],
+      #       from: ENV['TWILIO_MAIN'])
+      #   puts message.to, message.body               
+      # rescue 
+      #   flash[:error] = "Oops this cell number doesn't seem to be correct, please re-enter your cell number"
+      #   redirect_to(request.env['HTTP_REFERER'])
+      # else
+        puts "step 1"
+        Rails.logger.info(@user.errors.inspect)
         if @user.save
           sign_in @user
+          puts "step 2"
           if params["invitation"].present?
+            puts "step 3"
             @gather = Gather.find_by(id: params["invitation"]["gathering_id"])
             feed_item = @gather
             @invitation = @gather.invitations.create!(invitee_id: @user.id, 
@@ -117,14 +120,30 @@ class UsersController < ApplicationController
               )
             @user.join!(@invitation.id)
             @gather.increase_num_joining!(@invitation.id)
-          end
+            flash[:success] = "Welcome to Bloon!"
+            redirect_to(root_url)
+          else
           # UserMailer.welcome_email(@user).deliver
-          flash[:success] = "Welcome to Bloon!"
-          redirect_to(root_url)
+            flash[:success] = "Welcome to Bloon!"
+            redirect_to :controller => 'gathers', :action => 'new'
+          end
         else
-          render 'new'
+          if params["invitation"].present?
+            error_msgs = ""
+            @user.errors.full_messages.each do |msg|
+              if msg == @user.errors.full_messages.first
+                error_msgs = msg
+              else
+                error_msgs = error_msgs +", "+ msg
+              end
+            end
+            flash[:error] = error_msgs
+            redirect_to (request.env['HTTP_REFERER'])
+          else
+            render 'new'
+          end
         end
-      end   
+      # end   
   end
 
   def destroy
@@ -145,7 +164,7 @@ class UsersController < ApplicationController
     def signed_in_user
       unless signed_in?
         store_location
-        # redirect_to signin_url, notice: "Please sign in."
+        redirect_to signin_url, notice: "Please sign in."
       end
     end
 

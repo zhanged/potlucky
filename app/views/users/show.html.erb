@@ -1,48 +1,36 @@
 <% provide(:title, @user.name) %>
 	<div class="row">
-		<div class="span4or8 center-span">
-			<aside class="span4 left-side">
-				<section>
-
-	<!-- paste in user_info here, change current_user to @user -->
-					<div class="row">
-						<div class="span1">
-							<div id="circle-big" class="user-info-margin">
-								<a href="<%= user_path(@user) %>">
-									<% if @user.name.present? %>
-										<%= @user.name.at(0.1).upcase %>
-									<% else %>
-										<%= @user.email.at(0.1).upcase %>
-									<% end %>
-									<!--   <%= gravatar_for current_user, size: 52 %> -->
-								</a>
-							</div>
-						</div>
-						<div class="span3">
-							<span class="name-big user-info-margin">
-						  		<% if @user.name.present? %>
-									<%= @user.name %>
-								<% else %>
-									<%= @user.email.split('@').first %>
-								<% end %>
-							</span>
-							<span class="user-stats user-info-margin">
-							  <%= pluralize(@user.gathers.count, "invite") %>, <%= @user.gatherings.count %> invited
-							</span>
-						</div>
-					</div
-	<!-- end paste -->
-
-			    </section>
-			</aside>
-		</div>
-	<div class="span4 feed">
+		<section>
+			<div class="row">
+				<div id="circle-big" class="user-info-margin">
+					<a href="<%= user_path(@user) %>">
+						<% if @user.name.present? %>
+							<%= @user.name.at(0.1).upcase %><%= @user.name.split(' ').last.at(0.1).upcase if @user.name.split(' ').second.present? %>
+						<% else %>
+							<%= @user.email.at(0.1).upcase %>
+						<% end %>
+					</a>
+				</div>
+				<span class="name-big user-info-margin">
+			  		<% if @user.name.present? %>
+						<%= @user.name %>
+					<% else %>
+						<%= @user.email.split('@').first %>
+					<% end %>
+				</span>
+				<span class="user-stats user-info-margin">
+				  <%= pluralize(@user.gathers.count, "invite") %>, <%= @user.gatherings.count %> invited
+				</span>
+			</div>
+	    </section>
+	<div class="feed">
 		
-			<ol class="gathers">
-				<% @userfeed = @user.feed.paginate(page: params[:page]) %>
-				<%= render partial: 'shared/feed_item', collection: @userfeed %>
-			</ol>
-			<%= will_paginate @userfeed %>
-		
+	<ol class="gathers">
+		<% @userfeed = @user.feed.paginate(page: params[:page], per_page: 10) %>
+		<%= render partial: 'shared/feed_item', collection: @userfeed %>
+	</ol>
+	
 	</div>
+	<%= will_paginate @userfeed, :previous_label => nil, :next_label => nil, :inner_window => 0, :outer_window => 0 %>
+
 </div>

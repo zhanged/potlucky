@@ -82,7 +82,7 @@ class TwilioController < ApplicationController
 				    from: expiring_invitation.number_used)
 				puts message.from
 			end
-			@gather.update_attributes(details: ("#{@gather.details} <br>Bloon: This group chat has been extended by 7 days (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
+			@gather.update_attributes(details: ("#{@gather.details} <br>Bloon: This group chat has been extended by 7 days "))
 
 		# Killing the group chat
 		elsif @body.downcase == "x" && Invitation.find_by(number_used: @to, invitee_id: User.find_by(phone: @formatted_phone).id).present?
@@ -99,7 +99,7 @@ class TwilioController < ApplicationController
 					    from: expiring_invitation.number_used)
 					puts message.from
 				end
-				expiring_gather.update_attributes(details: ("#{expiring_gather.details} <br>Bloon: This group chat for #{expiring_gather.activity} has been closed. Visit bloon.us to create another activity! (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
+				expiring_gather.update_attributes(details: ("#{expiring_gather.details} <br>Bloon: This group chat for #{expiring_gather.activity} has been closed. Visit bloon.us to create another activity! "))
 
 				expiring_gather.update_attributes(expire: nil, completed: Time.now)
 				Invitation.where(gathering_id: expiring_gather.id, status: "Yes").pluck(:id).each do |i|
@@ -133,7 +133,7 @@ class TwilioController < ApplicationController
 				puts message.from
 			end
 
-			@gather.update_attributes(details: ("#{@gather.details} <br>#{@user_name_or_email}: #{@body} (#{Time.now.localtime("-07:00").strftime("%m/%d %I:%M%p PT")}) "))
+			@gather.update_attributes(details: ("#{@gather.details} <br>#{@user_name_or_email}: #{@body} "))
 
 		elsif (( @body.at(0.1) != "Y" && Invitation.find_by(number_used: @to, invitee_id: User.find_by(phone: @formatted_phone).id).blank? ) || 
     		( @body.at(0.1) == "Y" && Invitation.find_by(id: @invitation_id).blank? ))

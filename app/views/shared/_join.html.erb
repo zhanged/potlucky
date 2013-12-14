@@ -1,109 +1,32 @@
-<%= form_for(Invitation.find_by(invitee: current_user, gathering: feed_item)) do |f| %>
-	<%= f.hidden_field :gathering_id, value: feed_item.id %>
-	<% if feed_item.activity_2.present? || feed_item.activity_3.present? %>
-		<div class="tilt-real">Activity preference? </div>
-		<div class="name-select-area name-select-invite"><%= feed_item.activity %>?</div>
-		<div class="radio-select-area">
-				<div id="radio_activity_1">
-				    <input type="radio" id="radio_activity_1_1" name="invitation[activity_1v]" value="1" checked="checked" /><label for="radio_activity_1_1">1st Choice</label>
-				    <input type="radio" id="radio_activity_1_2" name="invitation[activity_1v]" value="2" /><label for="radio_activity_1_2">2nd</label>
-				    <input type="radio" id="radio_activity_1_3" name="invitation[activity_1v]" value="3" /><label for="radio_activity_1_3">3rd</label>
-				    <input type="radio" id="radio_activity_1_4" name="invitation[activity_1v]" value="10" /><label for="radio_activity_1_4">Can't do</label>
-				</div>
-		</div>
-		<% if feed_item.activity_2.present? %>
-			<div class="name-select-area name-select-invite"><%= feed_item.activity_2 %>?</div>
-			<div class="radio-select-area">
-					<div id="radio_activity_2">
-					    <input type="radio" id="radio_activity_2_1" name="invitation[activity_2v]" value="1" /><label for="radio_activity_2_1">1st</label>
-					    <input type="radio" id="radio_activity_2_2" name="invitation[activity_2v]" value="2" checked="checked" /><label for="radio_activity_2_2">2nd Choice</label>
-					    <input type="radio" id="radio_activity_2_3" name="invitation[activity_2v]" value="3" /><label for="radio_activity_2_3">3rd</label>
-					    <input type="radio" id="radio_activity_2_4" name="invitation[activity_2v]" value="10" /><label for="radio_activity_2_4">Can't do</label>
-					</div>
-			</div>
+<% if signed_in? %>
+	<% if Invitation.find_by(invitee: current_user, gathering: feed_item).present? %>
+		<%= form_for(Invitation.find_by(invitee: current_user, gathering: feed_item)) do |f| %>
+			<%= f.hidden_field :gathering_id, value: feed_item.id %>
+			<%= render 'shared/vote_form', :feed_item => feed_item %>
+			<%= f.submit "Join", class: "btn btn-large btn-block btn-join", data: { disable_with: 'Please wait...' } %>
 		<% end %>
-		<% if feed_item.activity_3.present? %>
-			<div class="name-select-area name-select-invite"><%= feed_item.activity_3 %>?</div>
-			<div class="radio-select-area">
-					<div id="radio_activity_3">
-					    <input type="radio" id="radio_activity_3_1" name="invitation[activity_3v]" value="1" /><label for="radio_activity_3_1">1st</label>
-					    <input type="radio" id="radio_activity_3_2" name="invitation[activity_3v]" value="2" /><label for="radio_activity_3_2">2nd</label>
-					    <input type="radio" id="radio_activity_3_3" name="invitation[activity_3v]" value="3" checked="checked" /><label for="radio_activity_3_3">3rd Choice</label>
-					    <input type="radio" id="radio_activity_3_4" name="invitation[activity_3v]" value="10" /><label for="radio_activity_3_4">Can't do</label>
-					</div>
-			</div>
+	<% else %>
+		<%= form_for(@invitation) do |f| %>
+			<%= f.hidden_field :gathering_id, value: feed_item.id %>
+			<%= render 'shared/vote_form', :feed_item => feed_item %>
+			<%= f.submit "Join", class: "btn btn-large btn-block btn-join", data: { disable_with: 'Please wait...' } %>
 		<% end %>
 	<% end %>
+<% else %>        
+    <%= form_for User.new do |f| %>
+        <%= render 'shared/error_messages', object: f.object %>
+        <%= f.fields_for :invitations do |f_i| %>
+	        <input type="hidden" name="invitation[gathering_id]" value="<%= @gather.id %>">
+	        <%= render 'shared/vote_form', :feed_item => feed_item %>
+	        <div class="name-select-title">Complete profile:<hr></div>
+	        <div class="all-wide-form side-padding-5">
+	            <%= f.text_field :name, placeholder: "Name" %>
+	            <%= f.text_field :email, placeholder: "Email"  %>
+	            <%= f.text_field :phone, placeholder: "Cell Number" %>
+	            <%= f.password_field :password, placeholder: "Password" %>
+	        </div>
 
-	<% if feed_item.date_2.present? || feed_item.date_3.present? || feed_item.time_2.present? || feed_item.time_3.present? %>
-		<div class="tilt-real">Date / time preference?</div>
-		<div class="name-select-area name-select-invite"><%= feed_item.date.strftime("%a, %b %e") if feed_item.date.present? %> <%= feed_item.time.strftime("%l:%M%p") if feed_item.time.present? %>?</div>
-		<div class="radio-select-area">
-				<div id="radio_date_1">
-				    <input type="radio" id="radio_date_1_1" name="invitation[date_1v]" value="1" checked="checked" /><label for="radio_date_1_1">1st Choice</label>
-				    <input type="radio" id="radio_date_1_2" name="invitation[date_1v]" value="2" /><label for="radio_date_1_2">2nd</label>
-				    <input type="radio" id="radio_date_1_3" name="invitation[date_1v]" value="3" /><label for="radio_date_1_3">3rd</label>
-				    <input type="radio" id="radio_date_1_4" name="invitation[date_1v]" value="10" /><label for="radio_date_1_4">Can't do</label>
-				</div>
-		</div>
-		<% if feed_item.date_2.present? || feed_item.time_2.present? %>
-			<div class="name-select-area name-select-invite"><%= feed_item.date_2.strftime("%a, %b %e") if feed_item.date_2.present? %> <%= feed_item.time_2.strftime("%l:%M%p") if feed_item.time_2.present? %>?</div>
-			<div class="radio-select-area">
-					<div id="radio_date_2">
-					    <input type="radio" id="radio_date_2_1" name="invitation[date_2v]" value="1" /><label for="radio_date_2_1">1st</label>
-					    <input type="radio" id="radio_date_2_2" name="invitation[date_2v]" value="2" checked="checked" /><label for="radio_date_2_2">2nd Choice</label>
-					    <input type="radio" id="radio_date_2_3" name="invitation[date_2v]" value="3" /><label for="radio_date_2_3">3rd</label>
-					    <input type="radio" id="radio_date_2_4" name="invitation[date_2v]" value="10" /><label for="radio_date_2_4">Can't do</label>
-					</div>
-			</div>
-		<% end %>
-		<% if feed_item.date_3.present? || feed_item.time_3.present? %>
-			<div class="name-select-area name-select-invite"><%= feed_item.date_3.strftime("%a, %b %e") if feed_item.date_3.present? %> <%= feed_item.time_3.strftime("%l:%M%p") if feed_item.time_3.present? %>?</div>
-			<div class="radio-select-area">
-					<div id="radio_date_3">
-					    <input type="radio" id="radio_date_3_1" name="invitation[date_3v]" value="1" /><label for="radio_date_3_1">1st</label>
-					    <input type="radio" id="radio_date_3_2" name="invitation[date_3v]" value="2" /><label for="radio_date_3_2">2nd</label>
-					    <input type="radio" id="radio_date_3_3" name="invitation[date_3v]" value="3" checked="checked" /><label for="radio_date_3_3">3rd Choice</label>
-					    <input type="radio" id="radio_date_3_4" name="invitation[date_3v]" value="10" /><label for="radio_date_3_4">Can't do</label>
-					</div>
-			</div>
-		<% end %>
-	<% end %>
-
-	<% if feed_item.location_2.present? || feed_item.location_3.present? %>
-		<div class="tilt-real">Location preference?</div>
-		<div class="name-select-area name-select-invite"><%= feed_item.location %>?</div>
-		<div class="radio-select-area">
-				<div id="radio_location_1">
-				    <input type="radio" id="radio_location_1_1" name="invitation[location_1v]" value="1" checked="checked" /><label for="radio_location_1_1">1st Choice</label>
-				    <input type="radio" id="radio_location_1_2" name="invitation[location_1v]" value="2" /><label for="radio_location_1_2">2nd</label>
-				    <input type="radio" id="radio_location_1_3" name="invitation[location_1v]" value="3" /><label for="radio_location_1_3">3rd</label>
-				    <input type="radio" id="radio_location_1_4" name="invitation[location_1v]" value="10" /><label for="radio_location_1_4">Can't do</label>
-				</div>
-		</div>
-		<% if feed_item.location_2.present? %>
-			<div class="name-select-area name-select-invite"><%= feed_item.location_2 %>?</div>
-			<div class="radio-select-area">
-					<div id="radio_location_2">
-					    <input type="radio" id="radio_location_2_1" name="invitation[location_2v]" value="1" /><label for="radio_location_2_1">1st</label>
-					    <input type="radio" id="radio_location_2_2" name="invitation[location_2v]" value="2" checked="checked" /><label for="radio_location_2_2">2nd Choice</label>
-					    <input type="radio" id="radio_location_2_3" name="invitation[location_2v]" value="3" /><label for="radio_location_2_3">3rd</label>
-					    <input type="radio" id="radio_location_2_4" name="invitation[location_2v]" value="10" /><label for="radio_location_2_4">Can't do</label>
-					</div>
-			</div>
-		<% end %>
-		<% if feed_item.location_3.present? %>
-			<div class="name-select-area name-select-invite"><%= feed_item.location_3 %>?</div>
-			<div class="radio-select-area">
-					<div id="radio_location_3">
-					    <input type="radio" id="radio_location_3_1" name="invitation[location_3v]" value="1" /><label for="radio_location_3_1">1st</label>
-					    <input type="radio" id="radio_location_3_2" name="invitation[location_3v]" value="2" /><label for="radio_location_3_2">2nd</label>
-					    <input type="radio" id="radio_location_3_3" name="invitation[location_3v]" value="3" checked="checked" /><label for="radio_location_3_3">3rd Choice</label>
-					    <input type="radio" id="radio_location_3_4" name="invitation[location_3v]" value="10" /><label for="radio_location_3_4">Can't do</label>
-					</div>
-			</div>
-		<% end %>
-	<% end %>
-
-	<%= f.submit "Join", class: "btn btn-large btn-block btn-join", data: { disable_with: 'Please wait...' } %>
+            <%= f.submit "Let's Go!", class: "btn btn-large btn-join btn-block" %>
+        <% end %>
+    <% end %>
 <% end %>

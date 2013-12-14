@@ -11,7 +11,7 @@ class Update < ActiveRecord::Base
 		if self.content.at(0..11) == "I've invited"
 		elsif responder.id == gather.user_id
 			# Update from organizer
-			invites = Invitation.where(gathering_id: gather.id).pluck(:id) - Invitation.where(gathering_id: gather.id, invitee_id: responder.id).pluck(:id)
+			invites = Invitation.where(gathering_id: gather.id).pluck(:id)
 			invites.each do |i|
 				invite = Invitation.find_by(id: i)
 				user = User.find_by(id: invite.invitee_id)

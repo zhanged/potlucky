@@ -1,67 +1,74 @@
 <li id="<%= feed_item.id %>">
-<% if current_page?(root_url) || current_page?('/gathers') %>
-	<a href="#" onclick="toggle_visibility('gather<%= feed_item.id %>'); return false">
-<% end %>
-  	<div class="activity">
-  		<% if feed_item.activity.present? && feed_item.activity_2.blank? && feed_item.activity_3.blank? %>
-  			<%= feed_item.activity %>
-  		<% elsif (feed_item.date_2.blank? && feed_item.date_3.blank? && feed_item.time_2.blank? && feed_item.time_3.blank?) && (feed_item.date.present? || feed_item.time.present?) %>
-  			Hang out <%= "on " + feed_item.date.strftime("%A, %b %e") if feed_item.date.present? %> <%= "@" + feed_item.time.strftime("%l:%M%p") if feed_item.time.present? %>	
-  		<% elsif feed_item.location_2.blank? && feed_item.location_3.blank? && feed_item.location.present? %>
-  			Hang out at <%= feed_item.location %>
-  		<% else %>
-  			Hang out
-  		<% end %>
-
-  		<% if feed_item.more_details.present? || feed_item.details.present? || feed_item.updates.present?  %>
-  			<% if current_page?(root_url) || current_page?('/gathers') %>
-  				<div id="elip">&bull;&bull;&bull;</div>
-  			<% end %>
-  		<% end %>
-  	</div>
-<% if current_page?(root_url) || current_page?('/gathers') %>
-	</a>
-<% end %>	
-	<% if feed_item.date.present? || feed_item.time.present? || feed_item.location.present? %>
-		<span class="tilt">
-			<%= feed_item.date.strftime("%A, %b %e") if feed_item.date.present? %>
-			<% if feed_item.time.present? && feed_item.date.present? %>@<% end %>
-			<%= feed_item.time.strftime("%l:%M%p") if feed_item.time.present? %>
-			<% if feed_item.location.present? && (feed_item.date.present? || feed_item.time.present?) %><br><%end%>
-			<% if feed_item.location.present? %>
-				<img src="/location.png" width="11"> <%= feed_item.location %>
+	<table class="title-table"><tr>
+		<td class="td-activity">
+		  	<div class="activity">
+		  		<% if feed_item.activity.present? && feed_item.activity_2.blank? && feed_item.activity_3.blank? %>
+		  			<%= feed_item.activity %>
+		  		<% elsif (feed_item.date_2.blank? && feed_item.date_3.blank? && feed_item.time_2.blank? && feed_item.time_3.blank?) && (feed_item.date.present? || feed_item.time.present?) %>
+		  			Hang out <%= "on " + feed_item.date.strftime("%a, %b %-e") if feed_item.date.present? %> <%= "@" + feed_item.time.strftime("%-l:%M%p") if feed_item.time.present? %>	
+		  		<% elsif feed_item.location_2.blank? && feed_item.location_3.blank? && feed_item.location.present? %>
+		  			Hang out at <%= feed_item.location %>
+		  		<% else %>
+		  			Hang out
+		  		<% end %>
+		  	</div>
+  		</td>
+  		<td class="td-info">
+			<% if feed_item.date.present? %>
+				<div class="gather-date">					
+					<% if feed_item.date_2.present? || feed_item.date_3.present? %>
+						Date TBD
+					<% else %>
+						<%= feed_item.date.strftime("%a, %b %-e") %>
+					<% end %>
+				</div>
+			<% end %>				
+			<% if feed_item.time.present? %>
+				<div class="gather-time">					
+					<% if feed_item.time_2.present? || feed_item.time_3.present? %>
+						Time TBD
+					<% else %>
+						<%= feed_item.time.strftime("%-l:%M%p") %>
+					<% end %>
+				</div>
 			<% end %>
-		</span>
-	<% end %> 
-	<div class="tilt-real">
-		<% if feed_item.tilt == nil %>
-		<% else %>
-			<% if (feed_item.num_joining) >= feed_item.tilt %>
-				<b><%= "It's taken off!" %></b>
-			<% else %>
-			<%= feed_item.tilt - feed_item.num_joining %> more to take off
+			<% if feed_item.location.present? %>				
+				<div class="gather-location">
+					<% if feed_item.location_2.present? || feed_item.location_3.present? %>
+						Location TBD
+					<% else %>
+						<%= feed_item.location %>
+					<% end %>
+				</div>
 			<% end %>
-		<% end %> 
-	</div>
+		</td>
+	</tr></table>
 
 	<span class="invited"><div class="user_avatars">
+		<% if (feed_item.num_joining) >= feed_item.tilt %>
+			<div class="circle-yes-text"><%= "Enough joined - this is on!" %></div>
+		<% else %>
+			<div class="circle-no-text"><%= feed_item.tilt - feed_item.num_joining %> more must join for this to happen</div>
+		<% end %>
 	<% feed_item.invitations.each do |invitation| %>
 		<% if invitation.status == "Yes" %>
-				<div id="circle-yes">
-					<% if current_page?(root_url) || current_page?('/gathers') %>
+			<div id="circle-yes">
+				<% if current_page?(root_url) || current_page?('/gathers') %>
+					<% if signed_in? %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
 						<% else %>
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee == feed_item.user %><b><% end %>
-					<% if invitation.invitee.name.present? %>
-						<%= invitation.invitee.name.at(0.1).upcase %>
-					<% else %>
-						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
-					<% if invitation.invitee == feed_item.user %></b><% end %>
+				<% end %>
+				<% if invitation.invitee == feed_item.user %><b><% end %>
+				<% if invitation.invitee.name.present? %>
+					<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
+				<% else %>
+					<%= invitation.invitee.email.at(0.1).upcase %>
+				<% end %>
+				<% if invitation.invitee == feed_item.user %></b><% end %>
 				</a>
 			</div>
 		<% end %>
@@ -69,136 +76,187 @@
 
 	<% feed_item.invitations.each do |invitation| %>
 		<% if invitation.status == "NA" %>
-				<div id="circle-no">
-					<% if current_page?(root_url) || current_page?('/gathers') %>
+			<div id="circle-no">
+				<% if current_page?(root_url) || current_page?('/gathers') %>
+					<% if invitation.invitee == current_user %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
 						<% else %>
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee == feed_item.user %><b><% end %>
-					<% if invitation.invitee.name.present? %>
-						<%= invitation.invitee.name.at(0.1).upcase %>
-					<% else %>
-						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
-					<% if invitation.invitee == feed_item.user %></b><% end %>
+				<% end %>
+				<% if invitation.invitee == feed_item.user %><b><% end %>
+				<% if invitation.invitee.name.present? %>
+					<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
+				<% else %>
+					<%= invitation.invitee.email.at(0.1).upcase %>
+				<% end %>
+				<% if invitation.invitee == feed_item.user %></b><% end %>
 				</a>
-		</div>
-		<% end %>
-		<!-- 		<%= link_to gravatar_for(invitation.invitee, size:30), invitation.invitee %> -->
-	<% end %>
-
-	<% if current_page?(root_url) %>
-		<a href="#rebloon" onclick="reBloon(<%= feed_item.invited.to_json %>, 'tags', 'gather_form')" title="Use this group in a new activity">
-			<img src='rebloon_h.png' onmouseover="this.src='rebloon.png'"
-	         onmouseout="this.src='rebloon_h.png'" title="Use this group in a new activity" width="20" style= 'vertical-align: middle; padding: 4px; margin-bottom: 4px;'>
-	     </a>
-	<% end %>
-	<% if current_page?(root_url) && feed_item.completed.blank? && feed_item.invitations.find_by(invitee_id: current_user.id).status == "Yes" %>
-		<a href="#" onclick="toggle_visibility('invite_more<%= feed_item.id %>'); return false">
-			<img src='add_more.png' onmouseover="this.src='add_more_h.png'"
-	         onmouseout="this.src='add_more.png'" title="Invite more friends" width="20" style= 'vertical-align: middle; padding: 4px; margin-bottom: 4px;'>
-		</a>
-	<% end %>
-	</div>
-	<div id="invite_more<%= feed_item.id %>" class="invite_more" style="display:none;">
-		<%= form_for(InviteMore.new) do |f| %>
-			<%= render 'shared/error_messages', object: f.object %>
-			<div class="field-in-gather-no">
-				<%= f.hidden_field :user_id, :value => current_user.id %>
-				<%= f.hidden_field :gather_id, :value => feed_item.id %>
-				<textarea class="tags" name="invite_more[more_invitees]" placeholder="friend1@email.com, friend2@email.com" size="40"></textarea>
 			</div>
-			<%= f.submit "Invite More", class: "btn btn-block btn-large btn-update-no" %>
 		<% end %>
-	</div>
-	<% if feed_item.user_id == current_user.id %>
-		<div>
-			Seen by:
-			<% feed_item.links.each do |link| %>
-				<% if link.seen != nil && link.invitation_id.present? %>
-					<%= User.find_by(id: Invitation.find_by(id: link.invitation_id).invitee_id).name %>, 
-				<% end %>
-			<% end %>
-			<% if feed_item.links.find_by(invitation_id: nil).seen != nil %>
-					<%= pluralize(feed_item.links.find_by(invitation_id: nil).seen, 'anonymous') %>
-				
-			<% end %>
-		</div>
 	<% end %>
-	<div class="inside_card">
-		<div id="gather<%= feed_item.id %>" style="display:none;">
-			<% if feed_item.more_details.present? %>
-					<p class="in-card-h">Details</p>
-					<p class="in-card-p"><%= feed_item.more_details %></p>
-			<% end %>
-
-			<% if feed_item.updates.present? %>
-				<p class="in-card-h">Updates</p>
-				<p class="in-card-p">
-					<% feed_item.updates.pluck(:id).each do |i| %>
-						<%= User.find_by(id: Update.find_by(id: i).user_id).name.split(' ').first %>: <%= Update.find_by(id: i).content %><br>
-				
-					<% end %>
-				</p>
-			<% end %>
-
-			<% if feed_item.details.present? %>
-					<p class="in-card-h">Conversation</p>
-					<p class="in-card-p">	
-						<% feed_item.details.split("<br>").each do |message| %>
-							<% if message != " " %>
-								<%= message %><br>
-							<% end %>
-						<% end %>
-					</p>
-			<% end %>
-
-		<% if current_page?(root_url) %>
-			<% if feed_item.completed.blank? %>
-				<% if feed_item.user == current_user %>
-					<p class="in-card-h">Send update to all invitees</p>
-					<%= form_for(Update.new) do |f| %>
-						<%= render 'shared/error_messages', object: f.object %>
-						<div class="field-in-gather-org">
-							<%= f.hidden_field :user_id, :value => current_user.id %>
-							<%= f.hidden_field :gather_id, :value => feed_item.id %>
-							<textarea name="update[content]" placeholder="e.g. Tix almost out, join within hour" size="40"></textarea>
-						</div>
-						<%= f.submit "Send update to all", class: "btn btn-block btn-large btn-update-org" %>
-					<% end %>
-				<% elsif feed_item.invitations.find_by(invitee_id: current_user.id).status == "NA" %>
-					<p class="in-card-h">Send message to organizer</p>
-					<%= form_for(Update.new) do |f| %>
-						<%= render 'shared/error_messages', object: f.object %>
-						<div class="field-in-gather-no">
-							<%= f.hidden_field :user_id, :value => current_user.id %>
-							<%= f.hidden_field :gather_id, :value => feed_item.id %>
-							<textarea name="update[content]" placeholder="Can't make it bc..." size="40"></textarea>
-						</div>
-						<%= f.submit "Respond to organizer", class: "btn btn-block btn-large btn-update-no" %>
-					<% end %>
-				<% end %>
-			<% end %>
-		<% end %>
-
-		<p class="in-card-p"><small>
-			Organized by <%= feed_item.user.name %> <%= time_ago_in_words(feed_item.created_at) %> ago
-				<% if current_user?(feed_item.user) %>
-		  			<%= link_to "delete", feed_item, method: :delete, data: { confirm: "You sure?" } %>
-		  		<% end %>
-		</small></p>
-	</div>
 	</div></span>
 
-	<% if !request.path.match(/^\/users/) %>
-		<% if feed_item.tilt.present? && feed_item.completed.blank? %>
-			<span><%= render 'shared/join_form', :feed_item => feed_item %></span> <!-- USED TO BE :feed_item => feed_item -->
-		<% end %>
-		<% if feed_item.completed.present? %>
-			<span class="completed">Completed</span>
+	<% if signed_in? && (current_page?(root_url) || current_page?(controller: 'gathers', action: 'show')) && (Invitation.find_by(invitee_id: current_user.id, gathering_id: feed_item.id).present? ) %>
+		<% if (Invitation.find_by(invitee_id: current_user.id, gathering_id: feed_item.id).status == "Yes") %>
+			<%= render 'shared/organizer_view', :feed_item => feed_item %>		
+			<% if (feed_item.user_id == current_user.id) && (Invitation.find_by(invitee_id: current_user.id, gathering_id: feed_item.id).status == "Yes") %>		
+				<%= render 'shared/cal_invite_form', :feed_item => feed_item %>		
+			<% end %>
 		<% end %>
 	<% end %>
+
+	<% if current_page?(root_url) || current_page?(controller: 'gathers', action: 'show') %>
+		<% if signed_in? && Invitation.find_by(invitee_id: current_user.id, gathering_id: feed_item.id).present? %>
+			<% if Invitation.find_by(invitee_id: current_user.id, gathering_id: feed_item.id).status == "Yes" || feed_item.completed.present? %>
+				<div class="join-form-done">
+			<% else %>
+				<div class="join-form">
+			<% end %>
+		<% else %>
+			<% if feed_item.completed.present? %>
+				<div class="join-form-done">
+			<% else %>
+				<div class="join-form">
+			<% end %>
+		<% end %>
+					<% if !request.path.match(/^\/users/) %>
+						<% if feed_item.completed.blank? %>
+							<span><%= render 'shared/join_form', :feed_item => feed_item %></span> <!-- USED TO BE :feed_item => feed_item -->
+						<% end %>
+						<% if feed_item.completed.present? %>
+							<span class="completed">Completed</span>
+						<% end %>
+					<% end %>
+				</div>
+	<% end %>
+
+	<% if signed_in? && (current_page?(root_url) || current_page?(controller: 'gathers', action: 'show')) %>
+		<div class="all-tabs">
+		  <div class="tabs">
+			<div class="misc-actions">
+				<ol>
+					<li><a href="#tabs-1_<%=feed_item.id %>">Reply</a>
+					<li><a href="#tabs-2_<%=feed_item.id %>">Invite</a>
+					<li><a href="#tabs-3_<%=feed_item.id %>">Convo</a>
+					<li><a href="#tabs-4_<%=feed_item.id %>">Rebloon</a>
+				</ol>
+			</div>
+
+			<div id="tabs-1_<%=feed_item.id %>">
+				<div class="join-form">
+			    	<% if feed_item.completed.blank? %>
+						<% if feed_item.user == current_user %>
+							<%= form_for(Update.new) do |f| %>
+								<%= render 'shared/error_messages', object: f.object %>
+								<div class="field-in-gather-org">
+									<%= f.hidden_field :user_id, :value => current_user.id %>
+									<%= f.hidden_field :gather_id, :value => feed_item.id %>
+									<textarea name="update[content]" placeholder="e.g. Tix almost out, join within hour" size="60"></textarea>
+								</div>
+								<%= f.submit "Send update to all", data: { disable_with: 'Sending update...' }, class: "btn btn-block btn-large btn-join" %>
+							<% end %>
+						<% else %>
+							<%= form_for(Update.new) do |f| %>
+								<%= render 'shared/error_messages', object: f.object %>
+								<div class="field-in-gather-no">
+									<%= f.hidden_field :user_id, :value => current_user.id %>
+									<%= f.hidden_field :gather_id, :value => feed_item.id %>
+									<textarea name="update[content]" placeholder="Sorry, can't make it bc..." size="60"></textarea>
+								</div>
+								<%= f.submit "Respond to organizer", data: { disable_with: 'Sending response...' }, class: "btn btn-block btn-large btn-join" %>
+							<% end %>
+						<% end %>
+					<% else %>
+						<div class="already-completed">This activity has already been completed</div>
+					<% end %>
+				</div>
+			</div>
+			
+			<div id="tabs-2_<%=feed_item.id %>">
+				<div class="join-form">
+				    <% if feed_item.completed.blank? %>
+						<!-- <div class="name-select-title">Select friends to invite:<hr></div> -->
+							<!-- <textarea class="share-link-area" size="60" onclick="this.focus();this.select()" readonly="readonly">Interested in hanging out with me? Join me here: bloon.us/<%= feed_item.gen_link %></textarea> -->
+				    	<%= form_for(InviteMore.new) do |f| %>
+					    	<%= f.hidden_field :user_id, :value => current_user.id %>
+	                        <%= f.hidden_field :gather_id, :value => feed_item.id %>
+				    		<textarea style="display:none;" class="select-result-<%= feed_item.id %>" id="select-result-<%= feed_item.id %>" name="invite_more[more_invitees]" ></textarea>
+					    	<div class="name-select-area-feed">
+					    		<ol class="selectable" id="select-result-<%= feed_item.id %>">
+									<% current_user.friended_users.where("phone IS NOT NULL").order(:name).each do |friend| %>
+										<% if not feed_item.invited.include? friend.email %>
+											<li class="name-select" value="<%= friend.name %>">+<%= friend.name %> <div style="display:none;">(<%= friend.email %>) </div></li>
+										<% end %>
+									<% end %>
+								</ol>
+								<% if feed_item.gen_link.present? %>
+									<div class="name-select-link">Invite others by giving them this link: <b>bloon.us/<%= feed_item.gen_link %></b></div>
+								<% end %>
+							</div>
+						<%= f.submit "Invite selected", data: { disable_with: 'Inviting...' }, class: "btn btn-block btn-large btn-join" %>
+						<% end %>
+					<% else %>
+						<div class="already-completed">This activity has already been completed</div>
+					<% end %>
+				</div>
+			</div>
+			
+			<div id="tabs-3_<%=feed_item.id %>">
+				<% if feed_item.more_details.present? %>
+					<div class="name-results-title">Details<hr></div>
+					<p class="in-card-p"><%= feed_item.more_details %></p>
+				<% end %>
+
+				<% if feed_item.updates.present? %>
+					<div class="name-results-title">Updates<hr></div>
+					<p class="in-card-p">
+						<% feed_item.updates.pluck(:id).each do |i| %>
+							<b><%= User.find_by(id: Update.find_by(id: i).user_id).name.split(' ').first %>:</b> <%= Update.find_by(id: i).content %><br>
+					
+						<% end %>
+					</p>
+				<% end %>
+
+				<% if feed_item.details.present? %>
+						<div class="name-results-title">Conversation<hr></div>
+						<p class="in-card-p">	
+							<% feed_item.details.split("<br>").each do |message| %>
+								<% if message != " " %>
+									<b><%= message.split(":").first %></b>: <%= message.split(":",2).second %><br>
+								<% end %>
+							<% end %>
+						</p>
+				<% end %>
+
+				<div class="organized-by">
+					Organized by <%= feed_item.user.name %> <%= time_ago_in_words(feed_item.created_at) %> ago
+						<% if current_user?(feed_item.user) %>
+				  			<%= link_to "delete", { controller: "gathers", action: 'destroy', id: feed_item.id }, method: :delete, data: { confirm: "You sure?" } %>
+				  		<% end %>
+				</div>
+			</div>
+
+			<div id="tabs-4_<%=feed_item.id %>">
+			    <% if signed_in? %>
+			    	<% friends_with_no_phone = "no" %>
+			    	<% feed_item.invitations.pluck(:invitee_id).each do |i| %>
+			    		<% friends_with_no_phone = "yes" if ( User.find_by(id: i).phone.nil? || User.find_by(id: i).phone == "" ) %>
+			    	<% end %>
+			    	<% if friends_with_no_phone == "yes" %>
+			    		<div class="organized-by">Not all friends here can be reblooned :(</div>
+			    	<% else %>
+						<div class="organized-by"><a href="#rebloon" onclick="make_visible('gather_form'); reBloon(<%= feed_item.invited.to_json %>, 'new-gather-form-invite', 'gather_form'); whosInvited(<%= User.where(id: feed_item.invitations.pluck(:invitee_id)).pluck(:name).join(", ").to_json %>, 'whos-invited', 'gather_form')">Create a new Bloon inviting the same people
+				     	</a></div>
+				     <% end %>
+				<% end %>
+			</div>
+
+			<div id="tabs-5_<%=feed_item.id %>">			    
+			</div>
+		</div>
+	<% end %>
+<div class="d-effect"></div>
 </li>

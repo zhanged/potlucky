@@ -3,6 +3,7 @@ Potlucky::Application.routes.draw do
   resources :users #, except: [:new]
   resources :sessions, only: [:new, :create, :destroy]
   resources :gathers,  only: [:show, :index, :create, :update, :destroy]
+  resources :calinvites,  only: [:create, :update, :destroy]
   resources :invitations, only: [:create, :update, :destroy]
   resources :password_resets, only: [:new, :create]
   resources :wait_lists, only: [:new, :create]

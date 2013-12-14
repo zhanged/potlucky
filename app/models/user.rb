@@ -21,13 +21,13 @@ class User < ActiveRecord::Base
 	end
 	before_create :create_remember_token
 	before_create :create_auth_token
-	validates :name, 	presence: true, :on => :update, length: { maximum: 22 }
+	validates :name, 	presence: true, length: { maximum: 22 }
 	VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 	validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
 	validates :phone, presence: true, :on => :update, length: { is: 10 }
-	has_secure_password :validations => false # users can be created without passwords
-	validates :password, :on => :update, length: { minimum: 6 }
-	# validate :phone_is_real
+	has_secure_password :validations => false # users canNOT be created without passwords
+	validates :password, length: { minimum: 6 }
+	validate :phone_is_real
 
 	def User.new_remember_token
 		SecureRandom.urlsafe_base64

@@ -63,12 +63,12 @@ class InviteMore < ActiveRecord::Base
 				if @user.phone.present?
 					@dtl = ""
 					if @gather.date.present? 
-						@dtl = "on " + @gather.date.strftime("%a, %b %e") 
+						@dtl = "on " + @gather.date.strftime("%a, %b %-e") 
 						if @gather.time.present? 
-							@dtl = @dtl + " " + @gather.time.strftime("%l:%M%p")
+							@dtl = @dtl + ", " + @gather.time.strftime("%-l:%M%p")
 						end
 					elsif @gather.time.present? 
-						@dtl = "at " + @gather.time.strftime("%l:%M%p")
+						@dtl = "at " + @gather.time.strftime("%-l:%M%p")
 					end 
 					if @gather.location.present?
 						if @gather.time.present? || @gather.date.present?
@@ -87,7 +87,7 @@ class InviteMore < ActiveRecord::Base
 					end
 					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 					message = @client.account.messages.create(
-						body: "#{@gather.activity}#{@dtl}? #{User.find_by(id: self.user_id).name} invited you - #{@gather.tilt}/#{@gather.num_invited} invitees must join for activity to take off. REPLY 'Y#{@invitation.id}' to join or go to bloon.us #{@det}",
+						body: "#{@gather.activity}#{@dtl}? #{User.find_by(id: self.user_id).name} invited you - #{@gather.tilt} must join for this to take off. Join on bloon.us/#{@invitation.link.in_url}",
 					    to: @user.phone,
 					    from: ENV['TWILIO_MAIN'])
 					puts message.from

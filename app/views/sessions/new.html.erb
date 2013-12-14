@@ -1,13 +1,13 @@
 <% provide(:title, "Sign in") %>
 <div class="row">
-	<div class="span4 hero-unit-2 center center-span">
-		<h1>Sign in</h1><p></p>
+	<div class="all-wide-form">
+		<div class="page-title">Sign in</div>
 			<%= form_for(:session, url: sessions_path, :method => :post) do |f| %>
 
 				<%= f.text_field :email, placeholder: "Email", :autofocus => true %>
 				<%= f.password_field :password, placeholder: "Password" %>
 
-				<%= f.submit "Sign in", class: "btn btn-block btn-invite btn-large" %>
+				<%= f.submit "Sign in", data: { disable_with: 'Signing in...' }, class: "btn btn-block btn-invite btn-large" %>
 			<% end %>
 
 			<p class="forgot-password"><%= link_to "Forgot your password?", reset_path %></p>

@@ -1,5 +1,5 @@
 class GathersController < ApplicationController
-	before_action :signed_in_user,  only: [:create, :update, :destroy]
+	before_action :signed_in_user,  only: [:new, :create, :update, :destroy]
 	before_action :correct_user, 	only: :destroy
 	before_action :admin_user,     only: [:index]
 
@@ -15,7 +15,7 @@ class GathersController < ApplicationController
 		if current_user.phone.present?
 			@gather = current_user.gathers.build(gather_params)
 			if @gather.save
-				flash[:success] = "Activity created!"
+				flash[:success] = "Activity created! Share this link with friends not yet invited: bloon.us/#{@gather.gen_link}"
 				redirect_to root_url
 			else				
 				@feed_items = current_user.feed.paginate(page: params[:page], per_page: 10) #Also in static_pages_controller, needed here so show feed during error
@@ -34,6 +34,7 @@ class GathersController < ApplicationController
 	end
 
 	def show
+		@invitation = Invitation.new
 		link = Link.find_by(in_url: params[:id])
 		@gather = Gather.find_by(id: link.gathering_id)
 		@updates = @gather.updates
@@ -58,6 +59,12 @@ class GathersController < ApplicationController
 		elsif link.invitation_id.present?
 			if signed_in? && (Invitation.find_by(id: link.invitation_id).invitee_id == current_user.id)
 				link.update_attributes(seen: "1")
+			end
+		else
+			if link.seen == nil
+				link.update_attributes(seen: "1")
+			else
+				link.update_attributes(seen: 1+link.seen)
 			end
 		end
 	end

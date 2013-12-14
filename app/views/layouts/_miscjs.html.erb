@@ -1,11 +1,23 @@
+<script>
+  $(function() {
+    $( ".tabs" ).tabs({
+      collapsible: true,
+      active: false
+    });
+  });
+</script>
+
 <!-- SELECTABLE -->
 <script>
 $(function() {
-    $("#selectable").bind("mousedown", function(e) {
+    $(".selectable").bind("mousedown", function(e) {
         e.metaKey = true;
     }).selectable({
       stop: function() {
-        var result = $( "#select-result" ).empty();
+        idName = $(this).attr("id");
+        newidName = "#"
+        newidName += idName
+        var result = $( newidName ).empty();
         $( ".ui-selected", this ).each(function() {
           result.append($(this).text());
         });
@@ -36,74 +48,74 @@ $(function() {
 
 <script>
   $(function() {
-    $( "#radio_activity_1" ).buttonset();
+    $( ".radio_activity_1" ).buttonset();
   });
 </script>
 
 <script>
   $(function() {
-    $( "#radio_activity_2" ).buttonset();
+    $( ".radio_activity_2" ).buttonset();
   });
 </script>
 
 <script>
   $(function() {
-    $( "#radio_activity_3" ).buttonset();
+    $( ".radio_activity_3" ).buttonset();
   });
 </script>
 
 <script>
   $(function() {
-    $( "#radio_date_1" ).buttonset();
+    $( ".radio_date_1" ).buttonset();
   });
 </script>
 
 <script>
   $(function() {
-    $( "#radio_date_2" ).buttonset();
+    $( ".radio_date_2" ).buttonset();
   });
 </script>
 
 <script>
   $(function() {
-    $( "#radio_date_3" ).buttonset();
+    $( ".radio_date_3" ).buttonset();
   });
 </script>
 
 
 <script>
   $(function() {
-    $( "#radio_time_1" ).buttonset();
+    $( ".radio_time_1" ).buttonset();
   });
 </script>
 
 <script>
   $(function() {
-    $( "#radio_time_2" ).buttonset();
+    $( ".radio_time_2" ).buttonset();
   });
 </script>
 
 <script>
   $(function() {
-    $( "#radio_time_3" ).buttonset();
+    $( ".radio_time_3" ).buttonset();
   });
 </script>
 
 <script>
   $(function() {
-    $( "#radio_location_1" ).buttonset();
+    $( ".radio_location_1" ).buttonset();
   });
 </script>
 
 <script>
   $(function() {
-    $( "#radio_location_2" ).buttonset();
+    $( ".radio_location_2" ).buttonset();
   });
 </script>
 
 <script>
   $(function() {
-    $( "#radio_location_3" ).buttonset();
+    $( ".radio_location_3" ).buttonset();
   });
 </script>
 <script>

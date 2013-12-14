@@ -1,0 +1,121 @@
+<% if feed_item.activity_2.present? || feed_item.activity_3.present? %>
+	<div class="name-select-title">rank activities:<hr></div>
+	<div class="name-select-invite">
+		<div class="select-item"><%= feed_item.activity %></div>
+		<div class="radio-select-area">
+			<div class="radio_activity_1">
+			    <input type="radio" id="radio_activity_1_1_<%= feed_item.id %>" name="invitation[activity_1v]" value="1" /><label for="radio_activity_1_1_<%= feed_item.id %>">&#10112;</label>
+			    <input type="radio" id="radio_activity_1_2_<%= feed_item.id %>" name="invitation[activity_1v]" value="2" /><label for="radio_activity_1_2_<%= feed_item.id %>">&#10113;</font></label>
+			    <input type="radio" id="radio_activity_1_3_<%= feed_item.id %>" name="invitation[activity_1v]" value="3" /><label for="radio_activity_1_3_<%= feed_item.id %>">&#10114;</label>
+			    <input type="radio" id="radio_activity_1_4_<%= feed_item.id %>" name="invitation[activity_1v]" value="10" /><label for="radio_activity_1_4_<%= feed_item.id %>">&#9760;</label>
+			</div>
+		</div>
+	</div>
+<% if feed_item.activity_2.present? %>
+		<div class="name-select-invite">
+			<div class="select-item"><%= feed_item.activity_2 %></div>
+			<div class="radio-select-area">
+				<div class="radio_activity_2">
+				    <input type="radio" id="radio_activity_2_1_<%= feed_item.id %>" name="invitation[activity_2v]" value="1" /><label for="radio_activity_2_1_<%= feed_item.id %>">&#10112;</label>
+				    <input type="radio" id="radio_activity_2_2_<%= feed_item.id %>" name="invitation[activity_2v]" value="2" /><label for="radio_activity_2_2_<%= feed_item.id %>">&#10113;</label>
+				    <input type="radio" id="radio_activity_2_3_<%= feed_item.id %>" name="invitation[activity_2v]" value="3" /><label for="radio_activity_2_3_<%= feed_item.id %>">&#10114;</label>
+				    <input type="radio" id="radio_activity_2_4_<%= feed_item.id %>" name="invitation[activity_2v]" value="10" /><label for="radio_activity_2_4_<%= feed_item.id %>">&#9760;</label>
+				</div>
+			</div>
+		</div>
+	<% end %>
+	<% if feed_item.activity_3.present? %>
+		<div class="name-select-invite">
+			<div class="select-item"><%= feed_item.activity_3 %></div>
+			<div class="radio-select-area">
+				<div class="radio_activity_3">
+				    <input type="radio" id="radio_activity_3_1_<%= feed_item.id %>" name="invitation[activity_3v]" value="1" /><label for="radio_activity_3_1_<%= feed_item.id %>">&#10112;</label>
+				    <input type="radio" id="radio_activity_3_2_<%= feed_item.id %>" name="invitation[activity_3v]" value="2" /><label for="radio_activity_3_2_<%= feed_item.id %>">&#10113;</label>
+				    <input type="radio" id="radio_activity_3_3_<%= feed_item.id %>" name="invitation[activity_3v]" value="3" /><label for="radio_activity_3_3_<%= feed_item.id %>">&#10114;</label>
+				    <input type="radio" id="radio_activity_3_4_<%= feed_item.id %>" name="invitation[activity_3v]" value="10" /><label for="radio_activity_3_4_<%= feed_item.id %>">&#9760;</label>
+				</div>
+			</div>
+		</div>
+	<% end %>
+<% end %>
+<% if feed_item.date_2.present? || feed_item.date_3.present? || feed_item.time_2.present? || feed_item.time_3.present? %>
+	<div class="name-select-title">rank dates & times:<hr></div>
+	<div class="name-select-invite">
+		<div class="select-item"><%= feed_item.date.strftime("%a, %b %-e") if feed_item.date.present? %> <%= feed_item.time.strftime("%-l:%M%p") if feed_item.time.present? %></div>
+		<div class="radio-select-area">
+			<div class="radio_date_1">
+			    <input type="radio" id="radio_date_1_1_<%= feed_item.id %>" name="invitation[date_1v]" value="1" /><label for="radio_date_1_1_<%= feed_item.id %>">&#10112;</label>
+			    <input type="radio" id="radio_date_1_2_<%= feed_item.id %>" name="invitation[date_1v]" value="2" /><label for="radio_date_1_2_<%= feed_item.id %>">&#10113;</label>
+			    <input type="radio" id="radio_date_1_3_<%= feed_item.id %>" name="invitation[date_1v]" value="3" /><label for="radio_date_1_3_<%= feed_item.id %>">&#10114;</label>
+			    <input type="radio" id="radio_date_1_4_<%= feed_item.id %>" name="invitation[date_1v]" value="10" /><label for="radio_date_1_4_<%= feed_item.id %>">&#9760;</label>
+			</div>
+		</div>
+	</div>
+	<% if feed_item.date_2.present? || feed_item.time_2.present? %>
+		<div class="name-select-invite">
+			<div class="select-item"><%= feed_item.date_2.strftime("%a, %b %-e") if feed_item.date_2.present? %> <%= feed_item.time_2.strftime("%-l:%M%p") if feed_item.time_2.present? %></div>
+			<div class="radio-select-area">
+				<div class="radio_date_2">
+				    <input type="radio" id="radio_date_2_1_<%= feed_item.id %>" name="invitation[date_2v]" value="1" /><label for="radio_date_2_1_<%= feed_item.id %>">&#10112;</label>
+				    <input type="radio" id="radio_date_2_2_<%= feed_item.id %>" name="invitation[date_2v]" value="2" /><label for="radio_date_2_2_<%= feed_item.id %>">&#10113;</label>
+				    <input type="radio" id="radio_date_2_3_<%= feed_item.id %>" name="invitation[date_2v]" value="3" /><label for="radio_date_2_3_<%= feed_item.id %>">&#10114;</label>
+				    <input type="radio" id="radio_date_2_4_<%= feed_item.id %>" name="invitation[date_2v]" value="10" /><label for="radio_date_2_4_<%= feed_item.id %>">&#9760;</label>
+				</div>
+			</div>
+		</div>
+	<% end %>
+	<% if feed_item.date_3.present? || feed_item.time_3.present? %>
+		<div class="name-select-invite">
+			<div class="select-item"><%= feed_item.date_3.strftime("%a, %b %-e") if feed_item.date_3.present? %> <%= feed_item.time_3.strftime("%-l:%M%p") if feed_item.time_3.present? %></div>
+			<div class="radio-select-area">
+				<div class="radio_date_3">
+				    <input type="radio" id="radio_date_3_1_<%= feed_item.id %>" name="invitation[date_3v]" value="1" /><label for="radio_date_3_1_<%= feed_item.id %>">&#10112;</label>
+				    <input type="radio" id="radio_date_3_2_<%= feed_item.id %>" name="invitation[date_3v]" value="2" /><label for="radio_date_3_2_<%= feed_item.id %>">&#10113;</label>
+				    <input type="radio" id="radio_date_3_3_<%= feed_item.id %>" name="invitation[date_3v]" value="3" /><label for="radio_date_3_3_<%= feed_item.id %>">&#10114;</label>
+				    <input type="radio" id="radio_date_3_4_<%= feed_item.id %>" name="invitation[date_3v]" value="10" /><label for="radio_date_3_4_<%= feed_item.id %>">&#9760;</label>
+				</div>
+			</div>
+		</div>
+	<% end %>
+<% end %>
+
+<% if feed_item.location_2.present? || feed_item.location_3.present? %>
+	<div class="name-select-title">rank locations:<hr></div>
+	<div class="name-select-invite">
+		<div class="select-item"><%= feed_item.location %></div>
+		<div class="radio-select-area">
+			<div class="radio_location_1">
+			    <input type="radio" id="radio_location_1_1_<%= feed_item.id %>" name="invitation[location_1v]" value="1" /><label for="radio_location_1_1_<%= feed_item.id %>">&#10112;</label>
+			    <input type="radio" id="radio_location_1_2_<%= feed_item.id %>" name="invitation[location_1v]" value="2" /><label for="radio_location_1_2_<%= feed_item.id %>">&#10113;</label>
+			    <input type="radio" id="radio_location_1_3_<%= feed_item.id %>" name="invitation[location_1v]" value="3" /><label for="radio_location_1_3_<%= feed_item.id %>">&#10114;</label>
+			    <input type="radio" id="radio_location_1_4_<%= feed_item.id %>" name="invitation[location_1v]" value="10" /><label for="radio_location_1_4_<%= feed_item.id %>">&#9760;</label>
+			</div>
+		</div>
+	</div>
+	<% if feed_item.location_2.present? %>
+		<div class="name-select-invite">
+			<div class="select-item"><%= feed_item.location_2 %></div>
+			<div class="radio-select-area">
+				<div class="radio_location_2">
+				    <input type="radio" id="radio_location_2_1_<%= feed_item.id %>" name="invitation[location_2v]" value="1" /><label for="radio_location_2_1_<%= feed_item.id %>">&#10112;</label>
+				    <input type="radio" id="radio_location_2_2_<%= feed_item.id %>" name="invitation[location_2v]" value="2" /><label for="radio_location_2_2_<%= feed_item.id %>">&#10113;</label>
+				    <input type="radio" id="radio_location_2_3_<%= feed_item.id %>" name="invitation[location_2v]" value="3" /><label for="radio_location_2_3_<%= feed_item.id %>">&#10114;</label>
+				    <input type="radio" id="radio_location_2_4_<%= feed_item.id %>" name="invitation[location_2v]" value="10" /><label for="radio_location_2_4_<%= feed_item.id %>">&#9760;</label>
+				</div>
+			</div>
+		</div>
+	<% end %>
+	<% if feed_item.location_3.present? %>
+		<div class="name-select-invite">
+			<div class="select-item"><%= feed_item.location_3 %></div>
+			<div class="radio-select-area">
+				<div class="radio_location_3">
+				    <input type="radio" id="radio_location_3_1_<%= feed_item.id %>" name="invitation[location_3v]" value="1" /><label for="radio_location_3_1_<%= feed_item.id %>">&#10112;</label>
+				    <input type="radio" id="radio_location_3_2_<%= feed_item.id %>" name="invitation[location_3v]" value="2" /><label for="radio_location_3_2_<%= feed_item.id %>">&#10113;</label>
+				    <input type="radio" id="radio_location_3_3_<%= feed_item.id %>" name="invitation[location_3v]" value="3" /><label for="radio_location_3_3_<%= feed_item.id %>">&#10114;</label>
+				    <input type="radio" id="radio_location_3_4_<%= feed_item.id %>" name="invitation[location_3v]" value="10" /><label for="radio_location_3_4_<%= feed_item.id %>">&#9760;</label>
+				</div>
+			</div>
+		</div>
+	<% end %>
+<% end %>
