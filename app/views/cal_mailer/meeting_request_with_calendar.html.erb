@@ -7,39 +7,30 @@
 
   <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" style="margin:0;padding:0;height:100%;width:100%;background:#cce3f7;font-family:helvetica"><tbody><tr><td align="center" valign="top"><tr>
 <!--     <table border="0" cellpadding="0" cellspacing="0" style="padding:0; margin:0; width:100%;height:100%; background:#cce3f7; font-family:helvetica"><tbody><tr> -->
-      <td align="center" style="border-collapse:collapse; padding: 0 15px 0 15px;">
-      <table border="0px" cellpadding="0" cellspacing="0" width="450" style="background:#fff;border:0px solid #e44556;max-width:450px; color: #505050;">
+      <td align="center" style="border-collapse:collapse; padding: 0 15px 0 15px; background: #00ccff;">
+      <table border="0px" cellpadding="0" cellspacing="0" width="400" style="background:#fff;border:0px solid #e44556;max-width:400px; color: #505050;">
         <tbody>
           <tr>
-            <td align="center" height="20px" style="border-collapse:collapse;background:#cce3f7">
+            <td align="center" height="20px" style="border-collapse:collapse;background:#00ccff;">
             </td>
           </tr>
           <tr>
-            <td align="left" height="31px" style="color:#e44556; padding: 15px 20px 15px 20px; background:#fff">
-              Bloon
+            <td align="left" style="background:#fff">
+              <p style="background: #00ccff;border-radius: 50px;height: 50px;width: 50px;float: none;margin-left: auto;margin-right: auto;vertical-align: middle;color: white;font-size: 25px;text-align: center;font-weight: 300;line-height: 50px;margin-top: 20px;margin-bottom: 10px;"><%= @recipient_initials %></p>
             </td>
           </tr>
           <tr>
-            <td align="center" height="1px" style="border-collapse:collapse;background:#cce3f7; padding: 0px 20px 0px 20px;">
+            <td align="left" style="border-collapse:collapse;background:#fff;padding: 0px 20px 0px 20px; font-size: 16px; text-align:center;color: #686868;font-family: helvetica;">
+              <p style="font-weight: 300;font-size: 28px;text-transform: uppercase;line-height: 1;margin-top:10px;margin-bottom:10px;"><%= @calinvite.cal_activity %></p>
+              <p style="margin-top:10px;margin-bottom:10px;"><%= @calinvite.cal_date.strftime("%A, %B %-e") %> at <%= @calinvite.cal_time.strftime("%-l:%M%p") %></p>
+              <% if @calinvite.cal_location.present? %><p style="margin-top:10px;margin-bottom:10px;"><%= @calinvite.cal_location %></p><% end %>
+              <% if @calinvite.cal_details.present? %><p style="margin-top:10px;margin-bottom:10px;"><%= "Details: " if @calinvite.cal_details.present? %><%= @calinvite.cal_details if @calinvite.cal_details.present? %></p><% end %>
+              <p style="margin-top:20px;margin-bottom:10px;text-align:center;font-size:12px;color:#00ccff;"><i>Invitation from <%= @gather.user.name %> via Bloon</i></p>             
             </td>
           </tr>
           <tr>
-            <td align="left" style="border-collapse:collapse;background:#fff;padding: 20px 20px 20px 20px; font-size: 16px; line-height: 150%; text-align:left">
-              <%= @calinvite.cal_activity %><br>
-              <%= @calinvite.cal_date.strftime("%a, %B %-e") %> at <%= @calinvite.cal_time.strftime("%-l:%M%p") %><br>
-              <%= @calinvite.cal_location if @calinvite.cal_location.present? %>
-              <% if @calinvite.cal_location.present? %><br><% end %>
-              <%= "Details: " if @calinvite.cal_details.present? %><%= @calinvite.cal_details if @calinvite.cal_details.present? %>
-              
-            </td>
-          </tr>
-          <tr>
-            <td align="center" height="4px" style="border-collapse:collapse;background:#D6D7DB">
-            </td>
-          </tr>
-          <tr>
-            <td align="center" style="background:#cce3f7;border-collapse:collapse;">
-              <p style="margin:0;padding:0;font-size:11px;color:#9a9a9a">
+            <td align="center" style="background:#00ccff;border-collapse:collapse;">
+              <p style="margin:0;padding:0;font-size:11px;color:white;">
     <br>&copy; 2013 Bloon Inc. San Francisco, CA | <a href="mailto:hello@bloon.us" style="font-weight:normal;text-decoration:none;" target="_blank">hello@bloon.us</a><br><br>
       </p>
             </td>

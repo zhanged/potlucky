@@ -7,6 +7,7 @@ class Gather < ActiveRecord::Base
 	has_many :links, foreign_key: "gathering_id", dependent: :destroy
 	has_one :calinvite, dependent: :destroy
 	before_create do
+		self.gen_link = gen_link.gsub("bloon.us/","")
 		self.invited = invited.downcase.sub(user.email,"").scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.join(" ")
 		self.invited_yes = user.email
 #		if self.tilt == nil || self.tilt == 0
@@ -54,7 +55,7 @@ class Gather < ActiveRecord::Base
 	validates :user_id, presence: true
 #	validate :tilt_must_fall_in_range_of_invited, unless: "tilt.nil?"
 	after_create do
-		self.gen_link = String.random_alphanumeric
+		# self.gen_link = String.random_alphanumeric
 		links.create!(in_url: self.gen_link, out_url: "/gathers/"+gen_link)
 		invitees = invited.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
 		self.update_attributes(num_invited: invitees.count)

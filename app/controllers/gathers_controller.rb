@@ -72,7 +72,7 @@ class GathersController < ApplicationController
 	private
 
 		def gather_params
-			params.require(:gather).permit(:activity, :activity_2, :activity_3, :invited, :location, :location_2, :location_3, :date, :time, :date_2, :time_2, :date_3, :time_3, :details, :tilt, :more_details, :wait_hours, :wait_time)
+			params.require(:gather).permit(:activity, :activity_2, :activity_3, :invited, :location, :location_2, :location_3, :date, :time, :date_2, :time_2, :date_3, :time_3, :details, :tilt, :more_details, :wait_hours, :wait_time, :gen_link)
 		end
 
 		def correct_user

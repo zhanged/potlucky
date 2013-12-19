@@ -38,7 +38,7 @@ class CalinvitesController < ApplicationController
 			puts message.from
 		end
 
-		gather.update_attributes(details: ("#{gather.details} <br>Bloon: #{gather.user.name.split(' ')} has sent out a calendar invitation for #{gather_blurb} "))
+		gather.update_attributes(details: ("#{gather.details} <br>Bloon: #{gather.user.name.split(' ').first} has sent out a calendar invitation for #{gather_blurb} "))
 
 		redirect_to root_url, notice: "Calendar invitations sent!"
 	end					

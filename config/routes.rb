@@ -23,6 +23,8 @@ Potlucky::Application.routes.draw do
   match '/help',    to: 'static_pages#help',   via: 'get'
   match '/about',   to: 'static_pages#about',  via: 'get'
   match '/faq',   to: 'static_pages#faq',  via: 'get'
+  match '/more',   to: 'static_pages#more',  via: 'get'
+  match '/how',   to: 'static_pages#how',  via: 'get'
   match '/new',  to: 'gathers#new',           via: 'get'
   match ':in_url', to: 'links#go',           via: 'get'
   match '/:id', to: 'gathers#show', via: 'get'

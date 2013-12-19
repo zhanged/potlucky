@@ -3,6 +3,12 @@ class CalMailer < ActionMailer::Base
 
 	def meeting_request_with_calendar(gather, calinvite, recipient)
 		@calinvite = calinvite
+		@gather = gather
+		if recipient.name.split(' ').second.present?
+			@recipient_initials = recipient.name.at(0.1).upcase + recipient.name.split(' ').last.at(0.1).upcase
+		else
+			@recipient_initials = recipient.name.at(0.1).upcase
+		end
     	invitations_all = "" 
     	gather.invitations.where(status: "Yes").pluck(:invitee_id).each do |f|
 			if invitations_all == "" 
@@ -39,7 +45,7 @@ ORGANIZER;CN="+gather.user.name+":mailto:"+gather.user.email+"
 UID:"+gather.created_at.strftime("%Y%m%dT%H%M%S")+gather.id.to_s+"@bloon.us
 "+invitations_all+"
 CREATED:"+DateTime.now.strftime("%Y%m%dT%H%M%S")+"Z"+"
-DESCRIPTION:"+calinvite.cal_details.gsub("\r\n","\n").to_s+"
+DESCRIPTION:"+calinvite.cal_details.to_s+"
 LAST-MODIFIED:"+DateTime.now.strftime("%Y%m%dT%H%M%S")+"Z"+"
 LOCATION:"+calinvite.cal_location.to_s+"
 SEQUENCE:0
@@ -54,7 +60,7 @@ END:VCALENDAR"
 		file.close
 
 		
-		mail(to: recipient, from: "Bloon <hello@bloon.us>", subject: "Invitation: #{calinvite.cal_activity}") do |format|
+		mail(to: recipient.email, from: "Bloon <hello@bloon.us>", subject: "Invitation: #{calinvite.cal_activity}") do |format|
 			format.ics { render 'tmp/invite' }
 			format.html { render 'meeting_request_with_calendar' }
 		end

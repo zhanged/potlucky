@@ -1,36 +1,30 @@
 <% if signed_in? %>
 
 <div class="row">
-	<div class="span4or8 center-span">
+	<div class="center-span">
 <!-- 		<aside class="span4 left-side">
 			<section class="gather-form">
 				%= render 'shared/gather_form' %>
 			</section>
 		</aside> -->
 		<div class="feed">
-			<div id="gather_form" style="display:none;"><h2>Create bloon</h2><%= render 'gathers/new' %><h2>Invitation feed</h2></div>
+			<div id="gather_form" style="display:none;"><h2>Create bloon:</h2><%= render 'gathers/new' %><h2>Your invitation feed:</h2></div>
 			<%= render 'shared/feed' %>
 		</div>
 	</div>
 </div>
 <% else %>
 <div class="row">
-	<div class="center center-span span4or9 hero-unit-2">
-<!-- 		<h2 class="welcome-front">Welcome to</h2> -->
-		<h1 class="logo-front">Bloon</h1>
-		<h2 class="desc-front blurb">Easily organize hangouts with friends</h2>
-<!-- 		<h2 class="desc-front black"><b>Why use Bloon:</b></h2> -->
-		<section >
-			<%= render 'static_pages/why' %>
+	<div class="center center-span">
+		<h1 class="logo-front">Have more fun.</h1>
+		<h2 class="desc-front blurb">Bloon helps you organize social activities for you and your friends, effortlessly.
+		<br>
+		<a href="<%= '/more' %>">Learn more</a>
+		</h2>
+		<div class="signup-login"><a href="<%= '/signin' %>">Log in.</a> Sign up now:</div>
+		<section>
+			<%= render 'users/new' %>
 		</section>
-<!-- 		<br>
-		<h2 class="desc-front"><b>How it works:</b></h2>
-		<section >
-			<%= render 'static_pages/how' %>
-		</section>
- -->		<br>
-<!-- 		<p class="waitlist-front">Interested? Get on our waitlist or ask a member to invite you to an activity!</p>
-			<%= render 'wait_list/new' %> -->
 	</div>
 </div>
 <% end %>

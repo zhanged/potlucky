@@ -1,0 +1,14 @@
+<div class="form-300 all-wide-form">
+	<%= form_for(User.new) do |f| %>
+		<%= render 'shared/error_messages', object: f.object %>
+		<%= f.text_field :name, placeholder: "Name", :autofocus => true %>
+		<%= f.text_field :email, placeholder: "Email"  %>
+		<%= f.text_field :phone, placeholder: "Cell Number" %>
+		<%= f.password_field :password, placeholder: "Password" %>
+<!-- 				%= f.password_field :password_confirmation, placeholder: "Confirmm Password" %> -->
+
+		<%= f.submit "Join Bloon", data: { disable_with: 'Getting bloon ready...' }, class: "btn btn-large btn-invite btn-block" %>
+	<% end %>
+
+    <p class="forgot-password">We will never give away your information to 3rd parties. You will receive text messages to notify you of invitations and to organize activities with friends</p>
+</div>

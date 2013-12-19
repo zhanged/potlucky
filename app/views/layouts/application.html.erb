@@ -1,31 +1,23 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head data-no-turbolink>
 	<%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
 	<meta name="apple-mobile-web-app-capable" content="no" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<!-- Bootstrap -->
-    <!-- <link href="bootstrap.min.css" rel="stylesheet"> -->
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-    <![endif]-->
 	<%= javascript_include_tag "application", "data-turbolinks-track" => true %>
 	<%= favicon_link_tag 'favicon.ico' %>
 	<title><%= full_title(yield(:title)) %></title>
 	<!-- <link href='http://fonts.googleapis.com/css?family=Montserrat+Alternates' rel='stylesheet' type='text/css'> -->
 	<link rel="apple-touch-icon-precomposed" sizes="120x120" href="touch-icon-iphone-retina.png" />
 	<link rel="apple-touch-icon-precomposed" sizes="152x152" href="touch-icon-ipad-retina.png" />
+	<link rel="stylesheet" href="/font-awesome-4.0.3/css/font-awesome.min.css">
 	<%= csrf_meta_tags %>
 	<%= render 'layouts/shim' %>
 	<%= render 'layouts/miscjs' %>
 	<%= render 'layouts/autocomplete' if signed_in? %>
 </head>
 
-	<body>
+	<body data-no-turbolink>
 		<%= render 'layouts/header' %>
 		<div class="container-fluid">
 			<% flash.each do |key, value| %>

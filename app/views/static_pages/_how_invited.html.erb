@@ -1,0 +1,31 @@
+<br>
+<div class="page-title-2">How Bloon works</div>
+<div class="row why-all">
+	<div class="why-section">
+		<i class="fa fa-users fa-4x"></i>
+		<div class="why-title">
+			Critical mass needed
+		</div>
+		<div class="why-desc">
+			Only once <%= feed_item.tilt %> friends join will the activity actually happen. If this happens, you will be notified and connected to each other via a group text chat
+		</div>
+	</div>
+	<div class="why-section">
+		<i class="fa fa-calendar-o fa-4x"></i>
+		<div class="why-title">
+			Calendar invitation
+		</div>
+		<div class="why-desc">
+			The organizer can send one to the participants via email through Bloon <%= "based on the vote results" if feed_item.activity_2.present? || feed_item.date_2.present? || feed_item.time_2.present? || feed_item.location_2.present? %> so you won't forget
+		</div>
+	</div>
+	<div class="why-section">
+		<i class="fa fa-repeat fa-4x"></i>
+		<div class="why-title">
+			Have fun!
+		</div>
+		<div class="why-desc">
+			Rebloon the same group of friends to hang out again (Bloon will text them the invitation so you don't need to share it with them)
+		</div>
+	</div>
+</div>

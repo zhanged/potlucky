@@ -11,7 +11,7 @@ class InvitationsController < ApplicationController
 			if Calinvite.find_by(gather_id: @invitation.gathering_id).present?
 				calinvite = Calinvite.find_by(gather_id: @invitation.gathering_id)
 				if calinvite.cal_sent == "Yes"
-					CalMailer.meeting_request_with_calendar(Gather.find_by(id: @invitation.gathering_id), calinvite, current_user.email).deliver
+					CalMailer.meeting_request_with_calendar(Gather.find_by(id: @invitation.gathering_id), calinvite, current_user).deliver
 				else
 					calinvite.redo_results!(@invitation.gathering_id)
 				end				
@@ -32,7 +32,7 @@ class InvitationsController < ApplicationController
 				if Calinvite.find_by(gather_id: @invitation.gathering_id).present?
 					calinvite = Calinvite.find_by(gather_id: @invitation.gathering_id)
 					if calinvite.cal_sent == "Yes"
-						CalMailer.meeting_request_with_calendar(Gather.find_by(id: @invitation.gathering_id), calinvite, current_user.email).deliver
+						CalMailer.meeting_request_with_calendar(Gather.find_by(id: @invitation.gathering_id), calinvite, current_user).deliver
 					else
 						calinvite.redo_results!(@invitation.gathering_id)
 					end

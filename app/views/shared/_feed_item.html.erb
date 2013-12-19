@@ -17,27 +17,27 @@
 			<% if feed_item.date.present? %>
 				<div class="gather-date">					
 					<% if feed_item.date_2.present? || feed_item.date_3.present? %>
-						Date TBD
+						<i class="fa fa-calendar-o"></i>&nbsp Date TBD
 					<% else %>
-						<%= feed_item.date.strftime("%a, %b %-e") %>
+						<i class="fa fa-calendar-o"></i>&nbsp <%= feed_item.date.strftime("%a, %b %-e") %>
 					<% end %>
 				</div>
 			<% end %>				
 			<% if feed_item.time.present? %>
 				<div class="gather-time">					
 					<% if feed_item.time_2.present? || feed_item.time_3.present? %>
-						Time TBD
+						<i class="fa fa-clock-o"></i>&nbsp Time TBD
 					<% else %>
-						<%= feed_item.time.strftime("%-l:%M%p") %>
+						<i class="fa fa-clock-o"></i>&nbsp <%= feed_item.time.strftime("%-l:%M%p") %>
 					<% end %>
 				</div>
 			<% end %>
 			<% if feed_item.location.present? %>				
 				<div class="gather-location">
 					<% if feed_item.location_2.present? || feed_item.location_3.present? %>
-						Location TBD
+						<i class="fa fa-map-marker"></i>&nbsp Location TBD
 					<% else %>
-						<%= feed_item.location %>
+						<i class="fa fa-map-marker"></i>&nbsp <%= feed_item.location %>
 					<% end %>
 				</div>
 			<% end %>
@@ -54,12 +54,10 @@
 		<% if invitation.status == "Yes" %>
 			<div id="circle-yes">
 				<% if current_page?(root_url) || current_page?('/gathers') %>
-					<% if signed_in? %>
-						<% if invitation.invitee == current_user %>
-							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
-						<% else %>
-							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
-						<% end %>
+					<% if invitation.invitee == current_user %>
+						<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
+					<% else %>
+						<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 					<% end %>
 				<% end %>
 				<% if invitation.invitee == feed_item.user %><b><% end %>
@@ -79,11 +77,9 @@
 			<div id="circle-no">
 				<% if current_page?(root_url) || current_page?('/gathers') %>
 					<% if invitation.invitee == current_user %>
-						<% if invitation.invitee == current_user %>
-							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
-						<% else %>
-							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
-						<% end %>
+						<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
+					<% else %>
+						<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 					<% end %>
 				<% end %>
 				<% if invitation.invitee == feed_item.user %><b><% end %>
@@ -138,10 +134,10 @@
 		  <div class="tabs">
 			<div class="misc-actions">
 				<ol>
-					<li><a href="#tabs-1_<%=feed_item.id %>">Reply</a>
-					<li><a href="#tabs-2_<%=feed_item.id %>">Invite</a>
-					<li><a href="#tabs-3_<%=feed_item.id %>">Convo</a>
-					<li><a href="#tabs-4_<%=feed_item.id %>">Rebloon</a>
+					<li><a href="#tabs-1_<%=feed_item.id %>"><i class="fa fa-reply"></i> Reply</a>
+					<li><a href="#tabs-2_<%=feed_item.id %>"><i class="fa fa-plus"></i> Invite</a>
+					<li><a href="#tabs-3_<%=feed_item.id %>"><i class="fa fa-comments-o"></i> Convo</a>
+					<li><a href="#tabs-4_<%=feed_item.id %>"><i class="fa fa-repeat"></i> Rebloon</a>
 				</ol>
 			</div>
 
@@ -196,7 +192,9 @@
 									<div class="name-select-link">Invite others by giving them this link: <b>bloon.us/<%= feed_item.gen_link %></b></div>
 								<% end %>
 							</div>
+						<% if current_user.friended_users.where("phone IS NOT NULL").count != 0 %>
 						<%= f.submit "Invite selected", data: { disable_with: 'Inviting...' }, class: "btn btn-block btn-large btn-join" %>
+						<% end %>
 						<% end %>
 					<% else %>
 						<div class="already-completed">This activity has already been completed</div>

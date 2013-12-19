@@ -125,7 +125,7 @@ class UsersController < ApplicationController
           else
           # UserMailer.welcome_email(@user).deliver
             flash[:success] = "Welcome to Bloon!"
-            redirect_to :controller => 'gathers', :action => 'new'
+            redirect_to(root_url) #redirect_to :controller => 'gathers', :action => 'new'
           end
         else
           if params["invitation"].present?

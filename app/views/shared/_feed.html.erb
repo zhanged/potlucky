@@ -4,3 +4,10 @@
 	</ol>
   <%= will_paginate @feed_items, :previous_label => nil, :next_label => nil, :inner_window => 0, :outer_window => 0 %>
 <% end %>
+<% if @feed_items.count < 5 %>
+	<br>
+	<%= render partial: 'static_pages/how' %>
+	<div class="form-300">
+		<%= button_to "Create new activity", '/new', :class => "btn btn-large btn-block btn-invite", :method => :get %>
+	</div>
+<% end %>

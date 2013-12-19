@@ -1,6 +1,6 @@
 <% provide(:title, 'Sign up') %>
 <div class="row">
-  	<div class="all-wide-form">
+  	<div class="form-300 all-wide-form">
 		<div class="page-title">Sign up</div>
 			<%= form_for(@user) do |f| %>
 				<%= render 'shared/error_messages', object: f.object %>
@@ -10,7 +10,7 @@
 				<%= f.password_field :password, placeholder: "Password" %>
 <!-- 				%= f.password_field :password_confirmation, placeholder: "Confirmm Password" %> -->
 
-				<%= f.submit "Let's Go!", data: { disable_with: 'Getting bloon ready...' }, class: "btn btn-large btn-invite btn-block" %>
+				<%= f.submit "Join", data: { disable_with: 'Getting bloon ready...' }, class: "btn btn-large btn-invite btn-block" %>
 			<% end %>
 
 	        <p class="forgot-password">We will never give away your information to 3rd parties. You will receive text messages to notify you of invitations and to organize activities with friends</p>

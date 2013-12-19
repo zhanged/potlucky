@@ -62,32 +62,30 @@ class InviteMore < ActiveRecord::Base
 				@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: @gather.id)
 				if @user.phone.present?
 					@dtl = ""
-					if @gather.date.present? 
-						@dtl = "on " + @gather.date.strftime("%a, %b %-e") 
-						if @gather.time.present? 
-							@dtl = @dtl + ", " + @gather.time.strftime("%-l:%M%p")
+					if @gather.activity.present? && @gather.activity_2.blank? && @gather.activity_3.blank? 
+						@dtl = @gather.activity
+					else
+						@dtl = "Hang out"
+					end
+					if @gather.date.present? && @gather.date_2.blank? && @gather.date_3.blank? 
+						@dtl = @dtl + " on " + @gather.date.strftime("%a, %b %-e") 
+						if @gather.time.present? && @gather.time_2.blank? && @gather.time_3.blank? 
+							@dtl = @dtl + " @" + @gather.time.strftime("%-l:%M%p")
 						end
-					elsif @gather.time.present? 
-						@dtl = "at " + @gather.time.strftime("%-l:%M%p")
+					elsif @gather.time.present? && @gather.time_2.blank? && @gather.time_3.blank? 
+						@dtl = @dtl + " at " + @gather.time.strftime("%-l:%M%p")
 					end 
-					if @gather.location.present?
-						if @gather.time.present? || @gather.date.present?
+					if @gather.location.present? && @gather.location_2.blank? && @gather.location_3.blank? 
+						if (@gather.activity.present? && @gather.activity_2.blank? && @gather.activity_3.blank?) || (@gather.time.present? && @gather.time_2.blank? && @gather.time_3.blank?) || (@gather.date.present? && @gather.date_2.blank? && @gather.date_3.blank?)
 							@dtl = @dtl + " at " + @gather.location
 						else
-							@dtl = "at " + @gather.location
+							@dtl = @dtl + " at " + @gather.location
 						end
 					end
-					if @dtl != ""
-						@dtl = " " + @dtl
-					end
-					if @gather.more_details.present?						
-						@det = "where " + User.find_by(id: self.user_id).name.split(' ').first + " has provided more details"
-					else
-						@det = "for details"
-					end
+
 					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 					message = @client.account.messages.create(
-						body: "#{@gather.activity}#{@dtl}? #{User.find_by(id: self.user_id).name} invited you - #{@gather.tilt} must join for this to take off. Join on bloon.us/#{@invitation.link.in_url}",
+						body: "#{@dtl}? #{User.find_by(id: self.user_id).name} invited you - #{@gather.tilt} must join for this to take off. Join on bloon.us/#{@invitation.link.in_url}",
 					    to: @user.phone,
 					    from: ENV['TWILIO_MAIN'])
 					puts message.from
