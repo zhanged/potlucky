@@ -11,8 +11,8 @@ class CalinvitesController < ApplicationController
 	  	@calinvite = Calinvite.find(params[:id])
 	  	@calinvite.update_attributes(calinvite_params)
 	  	gather = Gather.find_by(id: @calinvite.gather_id)
-	  	gather.invited_yes.split(" ").each do |recipient|
-	  		CalMailer.meeting_request_with_calendar(gather, @calinvite, recipient).deliver
+	  	gather.invitations.where(status: "Yes").pluck(:invitee_id).each do |i|
+	  		CalMailer.meeting_request_with_calendar(gather, @calinvite, User.find_by(id: i)).deliver
 	  	end
 	  	gather.update_attributes(activity: @calinvite.cal_activity, activity_2: nil, activity_3: nil,
 	  		date: @calinvite.cal_date, date_2: nil, date_3: nil,
