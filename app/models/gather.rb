@@ -172,14 +172,14 @@ class Gather < ActiveRecord::Base
 		end
 		invite!user
 		activity_1v = "1" if self.activity.present?
-		activity_2v = "2" if self.activity_2.present?
-		activity_3v = "3" if self.activity_3.present?
+		activity_2v = "1" if self.activity_2.present?
+		activity_3v = "1" if self.activity_3.present?
 		date_1v = "1" if self.date.present? || self.time.present?
-		date_2v = "2" if self.date_2.present? || self.time_2.present?
-		date_3v = "3" if self.date_3.present? || self.time_3.present?
+		date_2v = "1" if self.date_2.present? || self.time_2.present?
+		date_3v = "1" if self.date_3.present? || self.time_3.present?
 		location_1v = "1" if self.location.present?
-		location_2v = "2" if self.location_2.present?
-		location_3v = "3" if self.location_3.present?
+		location_2v = "1" if self.location_2.present?
+		location_3v = "1" if self.location_3.present?
 		
 		invitations.find_by(invitee_id: user.id).update(status: "Yes", 
 			activity_1v: activity_1v, 

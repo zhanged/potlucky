@@ -466,7 +466,7 @@ input[type="time"],
 }
 
 .datepicker {
-	width: 45%;
+	width: 50%;
 	cursor:text;
 }
 .datepicker:-moz-placeholder {
@@ -483,7 +483,7 @@ input[type="time"],
 }
 
 .timepicker {
-	  width: 45%;
+	  width: 50%;
 }
 .timepicker:-moz-placeholder {
   color: #999999;
@@ -1176,73 +1176,73 @@ aside {
 }
 .square-1 {
 	float: right;
-	padding: .3em .3em;
-	min-width: 26px;
+	padding: .3em .1em;
+	// min-width: 26px;
 	display: inline-block;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 	text-align: center;
-	background: $sq1Color;	
-	border: 1px solid $sq1Color;
+	// background: $sq1Color;	
+	// border: 1px solid $sq1Color;
 	color: white;
 	letter-spacing: -2px;
 	margin-left: 1px;
 	a {
-		color: #fff;
+		color: #3DC900;//#fff;
 		text-decoration: none;	
 	}
 }
 .square-2 {
 	float: right;
-	padding: .3em .3em;
-	min-width: 26px;
+	padding: .3em .1em;
+	// min-width: 26px;
 	display: inline-block;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 	text-align: center;
-	background: $sq2Color;	
-	border: 1px solid $sq2Color;
+	// background: $sq2Color;	
+	// border: 1px solid $sq2Color;
 	color: white;
 	letter-spacing: -2px;
 	margin-left: 1px;
 	a {
-		color: #fff;
+		color: gold;//#fff;
 		text-decoration: none;	
 	}
 }
 .square-3 {
 	float: right;
-	padding: .3em .3em;
-	min-width: 26px;
+	padding: .3em .1em;
+	// min-width: 26px;
 	display: inline-block;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 	text-align: center;
-	background: $sq3Color;	
-	border: 1px solid $sq3Color;
+	// background: $sq3Color;	
+	// border: 1px solid $sq3Color;
 	color: white;
 	letter-spacing: -2px;
 	margin-left: 1px;
 	a {
-		color: #fff;
+		color: #ff004d;//#fff;
 		text-decoration: none;	
 	}
 }
 .square-4 {
 	float: right;
-	padding: .3em .3em;
-	min-width: 26px;
+	padding: .3em .1em;
+	// min-width: 26px;
 	display: inline-block;
 	text-decoration: line-through;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 	text-align: center;
-	background: #FFFFFF;	
-	border: 1px solid #686868;
+	// background: #FFFFFF;	
+	// border: 1px solid #686868;
 	color: #686868;
 	letter-spacing: -2px;
 	margin-left: 1px;
@@ -1602,6 +1602,22 @@ outline: -webkit-focus-ring-color auto 0px;
 	width: 100%;
 	background-color: $noActionGray;
 	overflow: hidden;
+	.fa-smile-o {
+		float: right;
+		padding: .3em 0.1em;
+	}
+	.fa-meh-o {
+		float: right;
+		padding: .3em 0.1em;
+	}
+	.fa-frown-o {
+		float: right;
+		padding: .3em 0.1em;
+	}
+	.fa-ban {
+		float: right;
+		padding: .3em 0.1em;
+	}
 }
 .results-item {
 	margin: 0 0 0 15px;
@@ -1620,6 +1636,9 @@ outline: -webkit-focus-ring-color auto 0px;
 	font-size: 14px;
 	margin: 0px 0px 0 0;
 	float: right;
+	.ui-buttonset .ui-button {
+		margin-right: -.25em;
+	}
 	.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
 		color: $mainColor;
 		background-color: white;
@@ -1629,14 +1648,26 @@ outline: -webkit-focus-ring-color auto 0px;
 		}
 	}
 	.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
-		color: #212121;
-		border: 1px 1px 1px 1px;
-		border-color: $mainColor;
+		// color: #212121;
+		background: #A8EEFF;
+		border-radius: 20px;
 	}
 	.ui-button-text-only .ui-button-text {
 		padding: 2px 5px !important;
 		font-size: 23px;
 	}
+}
+.fa-smile-o {
+	color: #3DC900;
+}
+.fa-meh-o {
+	color: gold;
+}
+.fa-frown-o {
+	color: #ff004d;	
+}
+.fa-ban {
+	color: black;
 }
 .min-friends {
 	.radio-select-area {

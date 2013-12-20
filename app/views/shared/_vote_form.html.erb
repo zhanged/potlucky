@@ -1,5 +1,5 @@
 <% if feed_item.activity_2.present? || feed_item.activity_3.present? %>
-	<div class="name-select-title">rank activities:<hr></div>
+	<div class="name-select-title">Rate activities:<hr></div>
 	<div class="name-select-invite">
 		<div class="select-item"><%= feed_item.activity %></div>
 		<div class="radio-select-area">
@@ -39,7 +39,7 @@
 	<% end %>
 <% end %>
 <% if feed_item.date_2.present? || feed_item.date_3.present? || feed_item.time_2.present? || feed_item.time_3.present? %>
-	<div class="name-select-title">rank dates & times:<hr></div>
+	<div class="name-select-title">Rate dates & times:<hr></div>
 	<div class="name-select-invite">
 		<div class="select-item"><%= feed_item.date.strftime("%a, %b %-e") if feed_item.date.present? %> <%= feed_item.time.strftime("%-l:%M%p") if feed_item.time.present? %></div>
 		<div class="radio-select-area">
@@ -80,7 +80,7 @@
 <% end %>
 
 <% if feed_item.location_2.present? || feed_item.location_3.present? %>
-	<div class="name-select-title">rank locations:<hr></div>
+	<div class="name-select-title">Rate locations:<hr></div>
 	<div class="name-select-invite">
 		<div class="select-item"><%= feed_item.location %></div>
 		<div class="radio-select-area">

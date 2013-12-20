@@ -4,7 +4,7 @@
 		<div class="name-results-invite">
 			<div class="results-item"><%= feed_item.activity %> <% if feed_item.activity == feed_item.calinvite.cal_activity %><i class="fa fa-trophy"></i><% end %></div>
 			<% feed_item.invitations.where(activity_1v: 1, status: "Yes").each do |invitation| %>			
-				<div class="square-1">
+				<!-- <div class="square-1"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -12,16 +12,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-smile-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(activity_1v: 2, status: "Yes").each do |invitation| %>			
-				<div class="square-2">
+				<!-- <div class="square-2"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -29,16 +30,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-meh-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(activity_1v: 3, status: "Yes").each do |invitation| %>			
-				<div class="square-3">
+				<!-- <div class="square-3"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -46,16 +48,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-frown-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(activity_1v: 10, status: "Yes").each do |invitation| %>			
-				<div class="square-4">
+				<!-- <div class="square-4"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %> can't do">
@@ -63,20 +66,21 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %> can't do">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-ban"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 		</div>
 		<% if feed_item.activity_2.present? %>
 			<div class="name-results-invite">
 				<div class="results-item"><%= feed_item.activity_2 %> <% if feed_item.activity_2 == feed_item.calinvite.cal_activity %><i class="fa fa-trophy"></i><% end %></div>
 				<% feed_item.invitations.where(activity_2v: 1, status: "Yes").each do |invitation| %>			
-				<div class="square-1">
+				<!-- <div class="square-1"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -84,16 +88,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-smile-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(activity_2v: 2, status: "Yes").each do |invitation| %>			
-				<div class="square-2">
+				<!-- <div class="square-2"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -101,16 +106,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-meh-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(activity_2v: 3, status: "Yes").each do |invitation| %>			
-				<div class="square-3">
+				<!-- <div class="square-3"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -118,16 +124,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-frown-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(activity_2v: 10, status: "Yes").each do |invitation| %>			
-				<div class="square-4">
+				<!-- <div class="square-4"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %> can't do">
@@ -135,13 +142,14 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %> can't do">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-ban"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			</div>
 		<% end %>
@@ -149,7 +157,7 @@
 			<div class="name-results-invite">
 				<div class="results-item"><%= feed_item.activity_3 %> <% if feed_item.activity_3 == feed_item.calinvite.cal_activity %><i class="fa fa-trophy"></i><% end %></div>
 				<% feed_item.invitations.where(activity_3v: 1, status: "Yes").each do |invitation| %>			
-				<div class="square-1">
+				<!-- <div class="square-1"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -157,16 +165,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-smile-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(activity_3v: 2, status: "Yes").each do |invitation| %>			
-				<div class="square-2">
+				<!-- <div class="square-2"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -174,16 +183,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-meh-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(activity_3v: 3, status: "Yes").each do |invitation| %>			
-				<div class="square-3">
+				<!-- <div class="square-3"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -191,16 +201,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-frown-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(activity_3v: 10, status: "Yes").each do |invitation| %>			
-				<div class="square-4">
+				<!-- <div class="square-4"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %> can't do">
@@ -208,13 +219,14 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %> can't do">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-ban"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			</div>
 		<% end %>
@@ -226,7 +238,7 @@
 		<div class="name-results-invite">
 			<div class="results-item"><%= feed_item.date.strftime("%a, %b %-e") if feed_item.date.present? %> <%= feed_item.time.strftime("%-l:%M%p") if feed_item.time.present? %> <% if (feed_item.date == feed_item.calinvite.cal_date) && (feed_item.time == feed_item.calinvite.cal_time) %><i class="fa fa-trophy"></i><% end %></div>
 			<% feed_item.invitations.where(date_1v: 1, status: "Yes").each do |invitation| %>			
-				<div class="square-1">
+				<!-- <div class="square-1"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -234,16 +246,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-smile-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(date_1v: 2, status: "Yes").each do |invitation| %>			
-				<div class="square-2">
+				<!-- <div class="square-2"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -251,16 +264,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-meh-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(date_1v: 3, status: "Yes").each do |invitation| %>			
-				<div class="square-3">
+				<!-- <div class="square-3"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -268,88 +282,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-frown-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(date_1v: 10, status: "Yes").each do |invitation| %>			
-				<div class="square-4">
-					<% if current_page?(root_url) || current_page?('/gathers') %>
-						<% if invitation.invitee == current_user %>
-							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
-						<% else %>
-							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
-						<% end %>
-					<% end %>
-					<% if invitation.invitee.name.present? %>
-						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
-					<% else %>
-						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
-					</a>
-				</div>			
-			<% end %>
-		</div>
-		<% if feed_item.date_2.present? || feed_item.time_2.present? %>
-			<div class="name-results-invite">
-				<div class="results-item"><%= feed_item.date_2.strftime("%a, %b %-e") if feed_item.date_2.present? %> <%= feed_item.time_2.strftime("%-l:%M%p") if feed_item.time_2.present? %> <% if (feed_item.date_2 == feed_item.calinvite.cal_date) && (feed_item.time_2 == feed_item.calinvite.cal_time) %><i class="fa fa-trophy"></i><% end %></div>
-				<% feed_item.invitations.where(date_2v: 1, status: "Yes").each do |invitation| %>			
-				<div class="square-1">
-					<% if current_page?(root_url) || current_page?('/gathers') %>
-						<% if invitation.invitee == current_user %>
-							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
-						<% else %>
-							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
-						<% end %>
-					<% end %>
-					<% if invitation.invitee.name.present? %>
-						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
-					<% else %>
-						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
-					</a>
-				</div>			
-			<% end %>
-			<% feed_item.invitations.where(date_2v: 2, status: "Yes").each do |invitation| %>			
-				<div class="square-2">
-					<% if current_page?(root_url) || current_page?('/gathers') %>
-						<% if invitation.invitee == current_user %>
-							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
-						<% else %>
-							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
-						<% end %>
-					<% end %>
-					<% if invitation.invitee.name.present? %>
-						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
-					<% else %>
-						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
-					</a>
-				</div>			
-			<% end %>
-			<% feed_item.invitations.where(date_2v: 3, status: "Yes").each do |invitation| %>			
-				<div class="square-3">
-					<% if current_page?(root_url) || current_page?('/gathers') %>
-						<% if invitation.invitee == current_user %>
-							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
-						<% else %>
-							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
-						<% end %>
-					<% end %>
-					<% if invitation.invitee.name.present? %>
-						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
-					<% else %>
-						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
-					</a>
-				</div>			
-			<% end %>
-			<% feed_item.invitations.where(date_2v: 10, status: "Yes").each do |invitation| %>			
-				<div class="square-4">
+				<!-- <div class="square-4"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %> can't do">
@@ -357,13 +300,90 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %> can't do">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-ban"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
+			<% end %>
+		</div>
+		<% if feed_item.date_2.present? || feed_item.time_2.present? %>
+			<div class="name-results-invite">
+				<div class="results-item"><%= feed_item.date_2.strftime("%a, %b %-e") if feed_item.date_2.present? %> <%= feed_item.time_2.strftime("%-l:%M%p") if feed_item.time_2.present? %> <% if (feed_item.date_2 == feed_item.calinvite.cal_date) && (feed_item.time_2 == feed_item.calinvite.cal_time) %><i class="fa fa-trophy"></i><% end %></div>
+				<% feed_item.invitations.where(date_2v: 1, status: "Yes").each do |invitation| %>			
+				<!-- <div class="square-1"> -->
+					<% if current_page?(root_url) || current_page?('/gathers') %>
+						<% if invitation.invitee == current_user %>
+							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
+						<% else %>
+							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
+						<% end %>
+					<% end %>
+					<i class="fa fa-smile-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
+						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
+					<% else %>
+						<%= invitation.invitee.email.at(0.1).upcase %>
+					<% end %> -->
+					</a>
+				<!-- </div> -->			
+			<% end %>
+			<% feed_item.invitations.where(date_2v: 2, status: "Yes").each do |invitation| %>			
+				<!-- <div class="square-2"> -->
+					<% if current_page?(root_url) || current_page?('/gathers') %>
+						<% if invitation.invitee == current_user %>
+							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
+						<% else %>
+							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
+						<% end %>
+					<% end %>
+					<i class="fa fa-meh-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
+						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
+					<% else %>
+						<%= invitation.invitee.email.at(0.1).upcase %>
+					<% end %> -->
+					</a>
+				<!-- </div> -->			
+			<% end %>
+			<% feed_item.invitations.where(date_2v: 3, status: "Yes").each do |invitation| %>			
+				<!-- <div class="square-3"> -->
+					<% if current_page?(root_url) || current_page?('/gathers') %>
+						<% if invitation.invitee == current_user %>
+							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
+						<% else %>
+							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
+						<% end %>
+					<% end %>
+					<i class="fa fa-frown-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
+						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
+					<% else %>
+						<%= invitation.invitee.email.at(0.1).upcase %>
+					<% end %> -->
+					</a>
+				<!-- </div> -->			
+			<% end %>
+			<% feed_item.invitations.where(date_2v: 10, status: "Yes").each do |invitation| %>			
+				<!-- <div class="square-4"> -->
+					<% if current_page?(root_url) || current_page?('/gathers') %>
+						<% if invitation.invitee == current_user %>
+							<a href="<%= root_url %>" title="<%= invitation.invitee.name %> can't do">
+						<% else %>
+							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %> can't do">
+						<% end %>
+					<% end %>
+					<i class="fa fa-ban"></i>
+					<!-- <% if invitation.invitee.name.present? %>
+						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
+					<% else %>
+						<%= invitation.invitee.email.at(0.1).upcase %>
+					<% end %> -->
+					</a>
+				<!-- </div> -->			
 			<% end %>
 			</div>
 		<% end %>
@@ -371,7 +391,7 @@
 			<div class="name-results-invite">
 				<div class="results-item"><%= feed_item.date_3.strftime("%a, %b %-e") if feed_item.date_3.present? %> <%= feed_item.time_3.strftime("%-l:%M%p") if feed_item.time_3.present? %> <% if (feed_item.date_3 == feed_item.calinvite.cal_date) && (feed_item.time_3 == feed_item.calinvite.cal_time) %><i class="fa fa-trophy"></i><% end %></div>
 				<% feed_item.invitations.where(date_3v: 1, status: "Yes").each do |invitation| %>			
-				<div class="square-1">
+				<!-- <div class="square-1"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -379,16 +399,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-smile-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(date_3v: 2, status: "Yes").each do |invitation| %>			
-				<div class="square-2">
+				<!-- <div class="square-2"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -396,16 +417,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-meh-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(date_3v: 3, status: "Yes").each do |invitation| %>			
-				<div class="square-3">
+				<!-- <div class="square-3"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -413,16 +435,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-frown-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(date_3v: 10, status: "Yes").each do |invitation| %>			
-				<div class="square-4">
+				<!-- <div class="square-4"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %> can't do">
@@ -430,13 +453,14 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %> can't do">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-ban"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			</div>
 		<% end %>
@@ -448,7 +472,7 @@
 		<div class="name-results-invite">
 			<div class="results-item"><%= feed_item.location %> <% if feed_item.location == feed_item.calinvite.cal_location %><i class="fa fa-trophy"></i><% end %></div>
 			<% feed_item.invitations.where(location_1v: 1, status: "Yes").each do |invitation| %>			
-				<div class="square-1">
+				<!-- <div class="square-1"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -456,16 +480,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-smile-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(location_1v: 2, status: "Yes").each do |invitation| %>			
-				<div class="square-2">
+				<!-- <div class="square-2"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -473,16 +498,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-meh-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(location_1v: 3, status: "Yes").each do |invitation| %>			
-				<div class="square-3">
+				<!-- <div class="square-3"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -490,16 +516,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-frown-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(location_1v: 10, status: "Yes").each do |invitation| %>			
-				<div class="square-4">
+				<!-- <div class="square-4"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %> can't do">
@@ -507,20 +534,21 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %> can't do">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-ban"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 		</div>
 		<% if feed_item.location_2.present? %>
 			<div class="name-results-invite">
 				<div class="results-item"><%= feed_item.location_2 %> <% if feed_item.location_2 == feed_item.calinvite.cal_location %><i class="fa fa-trophy"></i><% end %></div>
 				<% feed_item.invitations.where(location_2v: 1, status: "Yes").each do |invitation| %>			
-				<div class="square-1">
+				<!-- <div class="square-1"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -528,16 +556,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-smile-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(location_2v: 2, status: "Yes").each do |invitation| %>			
-				<div class="square-2">
+				<!-- <div class="square-2"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -545,16 +574,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-meh-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(location_2v: 3, status: "Yes").each do |invitation| %>			
-				<div class="square-3">
+				<!-- <div class="square-3"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -562,16 +592,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-frown-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(location_2v: 10, status: "Yes").each do |invitation| %>			
-				<div class="square-4">
+				<!-- <div class="square-4"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %> can't do">
@@ -579,13 +610,14 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %> can't do">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-ban"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			</div>
 		<% end %>
@@ -593,7 +625,7 @@
 			<div class="name-results-invite">
 				<div class="results-item"><%= feed_item.location_3 %> <% if feed_item.location_3 == feed_item.calinvite.cal_location %><i class="fa fa-trophy"></i><% end %></div>
 				<% feed_item.invitations.where(location_3v: 1, status: "Yes").each do |invitation| %>			
-				<div class="square-1">
+				<!-- <div class="square-1"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -601,16 +633,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-smile-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(location_3v: 2, status: "Yes").each do |invitation| %>			
-				<div class="square-2">
+				<!-- <div class="square-2"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -618,16 +651,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-meh-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(location_3v: 3, status: "Yes").each do |invitation| %>			
-				<div class="square-3">
+				<!-- <div class="square-3"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
@@ -635,16 +669,17 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-frown-o"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			<% feed_item.invitations.where(location_3v: 10, status: "Yes").each do |invitation| %>			
-				<div class="square-4">
+				<!-- <div class="square-4"> -->
 					<% if current_page?(root_url) || current_page?('/gathers') %>
 						<% if invitation.invitee == current_user %>
 							<a href="<%= root_url %>" title="<%= invitation.invitee.name %> can't do">
@@ -652,13 +687,14 @@
 							<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %> can't do">
 						<% end %>
 					<% end %>
-					<% if invitation.invitee.name.present? %>
+					<i class="fa fa-ban"></i>
+					<!-- <% if invitation.invitee.name.present? %>
 						<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
 					<% else %>
 						<%= invitation.invitee.email.at(0.1).upcase %>
-					<% end %>
+					<% end %> -->
 					</a>
-				</div>			
+				<!-- </div> -->			
 			<% end %>
 			</div>
 		<% end %>
