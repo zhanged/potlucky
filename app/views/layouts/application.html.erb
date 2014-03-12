@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head data-no-turbolink>
 	<%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
 	<meta name="apple-mobile-web-app-capable" content="no" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -13,12 +13,11 @@
 	<link rel="stylesheet" href="/font-awesome-4.0.3/css/font-awesome.min.css">
 	<%= csrf_meta_tags %>
 	<%= render 'layouts/shim' %>
-	<%= render 'layouts/miscjs' %>
 </head>
 
 	<body data-no-turbolink>
 		<%= render 'layouts/header' %>
-		<div class="container-fluid" data-no-turbolink>
+		<div class="container-fluid">
 			<% flash.each do |key, value| %>
 				<div class="center alert alert-<%= key %>"><%= value %></div>
 			<% end %>
