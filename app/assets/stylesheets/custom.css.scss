@@ -1800,9 +1800,7 @@ outline: -webkit-focus-ring-color auto 0px;
 	color: black;
 }
 .fa-check {
-	line-height: 0 !important;
-	vertical-align: middle;
-	padding-bottom: 3px;
+	margin-bottom: -1px;
 }
 .min-friends {
 	.radio-select-area {
