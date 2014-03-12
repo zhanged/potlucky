@@ -18,8 +18,10 @@ class GathersController < ApplicationController
 				flash[:success] = "Activity created! Share this link with friends not yet invited: bloon.us/#{@gather.gen_link}"
 				redirect_to root_url
 			else				
-				@feed_items = current_user.feed.paginate(page: params[:page], per_page: 10) #Also in static_pages_controller, needed here so show feed during error
-				render 'static_pages/home'
+				flash[:error] = "Please include an activity"
+				redirect_to (request.env['HTTP_REFERER'])
+				# @feed_items = current_user.feed.paginate(page: params[:page], per_page: 10) #Also in static_pages_controller, needed here so show feed during error
+				# render 'static_pages/home'
 			end
 		else
 			@user = current_user
@@ -38,18 +40,18 @@ class GathersController < ApplicationController
 		link = Link.find_by(in_url: params[:id])
 		@gather = Gather.find_by(id: link.gathering_id)
 		@updates = @gather.updates
-		if @gather.activity.present? && @gather.activity_2.blank? && @gather.activity_3.blank?
-			@activity_set = "yes"
-		end
-		if @gather.date.present? && @gather.date_2.blank? && @gather.date_3.blank? 
-			@date_set = "yes" 
-		end
-		if @gather.time.present? && @gather.time_2.blank? && @gather.time_3.blank?
-			@time_set = "yes" 
-		end
-		if @gather.location.present? && @gather.location_2.blank? && @gather.location_3.blank?
-			@location_set = "yes" 
-		end
+		# if @gather.activity.present? && @gather.activity_2.blank? && @gather.activity_3.blank?
+		# 	@activity_set = "yes"
+		# end
+		# if @gather.date.present? && @gather.date_2.blank? && @gather.date_3.blank? 
+		# 	@date_set = "yes" 
+		# end
+		# if @gather.time.present? && @gather.time_2.blank? && @gather.time_3.blank?
+		# 	@time_set = "yes" 
+		# end
+		# if @gather.location.present? && @gather.location_2.blank? && @gather.location_3.blank?
+		# 	@location_set = "yes" 
+		# end
 		if !signed_in?
 			if link.seen == nil
 				link.update_attributes(seen: "1")

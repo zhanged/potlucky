@@ -8,8 +8,60 @@ class TwilioController < ApplicationController
     	@body = params[:Body]
     	@invitation_id = @body.split(' ').first.gsub("Y","")
 
+    	
+
     	# Y# Responses:
-    	if @body.at(0.1) == "Y" && Invitation.find_by(id: @invitation_id).present?
+    	if @body.downcase == "y" && @to == ENV['TWILIO_MAIN']
+    	# if "Y" and to the Main #, find invitation through From # and join, then check backlog
+    		if User.find_by(phone: @formatted_phone).present?
+    			@user = User.find_by(phone: @formatted_phone)
+    			if Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").present?
+    				@invitation = Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").first
+					@user.join!(@invitation.id)
+					Gather.find_by(id: @invitation.gathering_id).increase_num_joining!(@invitation.id)
+				else
+					@invitation = Invitation.where(invitee_id: @user.id, sent: "Yes").where("when_responded IS NOT NULL").order(:when_responded).last
+					if @invitation.status == "Yes"
+				    	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+						message = @client.account.messages.create(
+							body: "Great, we've already marked you down as joining: #{@invitation.gathering.activity}",
+						    to: @user.phone,
+						    from: ENV['TWILIO_MAIN'])
+						puts message.from	
+					else 						
+						@user.join!(@invitation.id)
+						Gather.find_by(id: @invitation.gathering_id).increase_num_joining!(@invitation.id)
+						"Switched from no to yes via text"
+					end
+				end
+			end
+
+    	elsif @body.downcase == "n" && @to == ENV['TWILIO_MAIN']
+    	# if "N" and to the Main #, find invitation through From # and join, then check backlog
+    		if User.find_by(phone: @formatted_phone).present?
+    			@user = User.find_by(phone: @formatted_phone)
+    			if Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").present?
+    				@invitation = Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").first
+					@user.unjoin!(@invitation.id)
+					Gather.find_by(id: @invitation.gathering_id).decrease_num_joining!(@invitation.id)
+				else
+					@invitation = Invitation.where(invitee_id: @user.id, sent: "Yes").where("when_responded IS NOT NULL").order(:when_responded).last
+					if @invitation.status == "No"
+				    	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+						message = @client.account.messages.create(
+							body: "Aw, we've already marked you down as passing: #{@invitation.gathering.activity}",
+						    to: @user.phone,
+						    from: ENV['TWILIO_MAIN'])
+						puts message.from	
+					else 						
+						@user.unjoin!(@invitation.id)
+						Gather.find_by(id: @invitation.gathering_id).decrease_num_joining!(@invitation.id)
+						"Switched from yes to no via text"
+					end
+				end
+			end
+
+    	elsif @body.at(0.1) == "Y" && Invitation.find_by(id: @invitation_id).present?
     		# Matches an invitation
    	    	@invitation = Invitation.find_by(id: @invitation_id)
    	    	@user = User.find_by(id: @invitation.invitee_id)    		
@@ -46,7 +98,7 @@ class TwilioController < ApplicationController
 						puts message.from
 		   	    	else
 		   	    		# Phone does match user's invitation: join / unjoin	
-						if @invitation.status == "NA"
+						if @invitation.status != "Yes"
 							@user.join!(@invitation_id)
 							Gather.find_by(id: @invitation.gathering_id).increase_num_joining!(@invitation_id)
 						else

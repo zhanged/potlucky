@@ -105,18 +105,18 @@ class UsersController < ApplicationController
             @gather = Gather.find_by(id: params["invitation"]["gathering_id"])
             feed_item = @gather
             @invitation = @gather.invitations.create!(invitee_id: @user.id, 
-              activity_1v: params["invitation"]["activity_1v"],
-              activity_2v: params["invitation"]["activity_2v"],
-              activity_3v: params["invitation"]["activity_3v"],
-              date_1v: params["invitation"]["date_1v"],
-              date_2v: params["invitation"]["date_2v"],
-              date_3v: params["invitation"]["date_3v"],
-              time_1v: params["invitation"]["time_1v"],
-              time_2v: params["invitation"]["time_2v"],
-              time_3v: params["invitation"]["time_3v"],
-              location_1v: params["invitation"]["location_1v"],
-              location_2v: params["invitation"]["location_2v"],
-              location_3v: params["invitation"]["location_3v"],
+              # activity_1v: params["invitation"]["activity_1v"],
+              # activity_2v: params["invitation"]["activity_2v"],
+              # activity_3v: params["invitation"]["activity_3v"],
+              # date_1v: params["invitation"]["date_1v"],
+              # date_2v: params["invitation"]["date_2v"],
+              # date_3v: params["invitation"]["date_3v"],
+              # time_1v: params["invitation"]["time_1v"],
+              # time_2v: params["invitation"]["time_2v"],
+              # time_3v: params["invitation"]["time_3v"],
+              # location_1v: params["invitation"]["location_1v"],
+              # location_2v: params["invitation"]["location_2v"],
+              # location_3v: params["invitation"]["location_3v"],
               )
             @user.join!(@invitation.id)
             @gather.increase_num_joining!(@invitation.id)

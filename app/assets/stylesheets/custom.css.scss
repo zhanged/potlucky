@@ -41,6 +41,9 @@ $grayLight: #FFFFFF;
 $grayLighter: #FFFFFF;
 $blue: blue;
 
+$green: #3DC900;
+$red: #ff004d;
+
 /* OG 
 
 red: #e44556
@@ -466,7 +469,7 @@ input[type="time"],
 }
 
 .datepicker {
-	width: 50%;
+	width: 35%;
 	cursor:text;
 }
 .datepicker:-moz-placeholder {
@@ -577,6 +580,7 @@ input {
 }
 
 .form-control {
+	width: 65% !important;
 	border: 0px solid #cccccc;
 	border-radius: 0px;
 	-webkit-box-shadow: none;//inset 0 0px 0px rgba(0, 0, 0, 0.0);
@@ -652,30 +656,135 @@ input {
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
-.btn-join {
-	background: $joinColor;
-	border-bottom: 0px solid $joinColorBorder;
-	border-left: 15px solid white;
-	border-right: 15px solid white;
+
+.btn-join-na {
+	float: left;
+	width: 49% !important;
+	display: inline-block;
+	vertical-align: top;
+	font-weight: 800;
+	color: white;
+	margin-right: 0px;
+	background: $mainColor; //rgba(212,214,217,1);
+	border-bottom: 3px solid #00ABD6;
 //	border-bottom: 20px solid white;
 	&:hover {
-		background: $joinColorHover;
+		// background: $joinColorHover;
+//		border-bottom: 0px solid $joinColorHoverBorder;
+		color: #fff;
+	}
+}
+
+.btn-joining-na {
+	float: right;
+	width: 48% !important;
+	display: inline-block;
+	vertical-align: top;
+	font-weight: 800;
+	color: white;
+	margin-right: 0px;
+	background: $mainColor; //rgba(212,214,217,1);
+	border-bottom: 3px solid #00ABD6;
+//	border-bottom: 20px solid white;	
+	&:hover {
+		// background: $joiningColor; //#B1B3B8;
+//		border-bottom: 0px solid $joiningColorHoverBorder; //#858A91;
+		color: #fff;		
+	}
+}
+
+.btn-join {
+	float: left;
+	width: 30% !important;
+	display: inline-block;
+	vertical-align: top;
+	font-weight: 400;
+	color: $noActionGray;
+	margin-right: 0px;
+	background: $circleColorNo;
+	border: 3px solid $circleColorNo;
+//	border-bottom: 20px solid white;
+	&:hover {
+		// background: $joinColorHover;
 //		border-bottom: 0px solid $joinColorHoverBorder;
 		color: #fff;
 	}
 }
 
 .btn-joining {
-	background: $joiningColor; //rgba(212,214,217,1);
-	border-bottom: 0px solid $joiningColorBorder; //#ABB1B9;
-	border-left: 15px solid $noActionGray;
-	border-right: 15px solid $noActionGray;
-	color: $circleColor;
+	float: right;
+	width: 30% !important;
+	display: inline-block;
+	vertical-align: top;
+	font-weight: 400;
+	color: $noActionGray;
+	margin-right: 0px;
+	background: $circleColorNo; //rgba(212,214,217,1);
+	border: 3px solid $circleColorNo;
 //	border-bottom: 20px solid white;	
 	&:hover {
-		background: $joiningColor; //#B1B3B8;
+		// background: $joiningColor; //#B1B3B8;
 //		border-bottom: 0px solid $joiningColorHoverBorder; //#858A91;
-		color: $circleColor;		
+		color: #fff;		
+	}
+}
+
+.fake-joining {
+	float: left;
+	width: 70%;
+	background: white;
+	border: 3px solid $circleColorNo;
+	border-radius: 0px;
+	box-shadow: none;
+	color: $circleColorNo;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-weight: 800;
+	text-shadow: none;
+	font-size: 16px;
+	line-height: 1;
+	display: inline-block;
+	text-align: center;
+	padding: 10px;
+	-webkit-transition: .1s ease-in background-color;
+	-webkit-font-smoothing: antialiased	
+}
+
+.fake-passing {
+	float: right;
+	width: 70%;
+	background: white;
+	border: 3px solid $circleColorNo;
+	border-radius: 0px;
+	box-shadow: none;
+	color: $circleColorNo;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-weight: 800;
+	text-shadow: none;
+	font-size: 16px;
+	line-height: 1;
+	display: inline-block;
+	text-align: center;
+	padding: 10px;
+	-webkit-transition: .1s ease-in background-color;
+	-webkit-font-smoothing: antialiased	
+}
+.btn-update {
+	float: left;
+	width: 100% !important;
+	display: inline-block;
+	vertical-align: top;
+	font-weight: 800;
+	color: white;
+	margin-right: 0px;
+	background: $mainColor; //rgba(212,214,217,1);
+	border-bottom: 3px solid #00ABD6;
+//	border-bottom: 20px solid white;
+	&:hover {
+		// background: $joinColorHover;
+//		border-bottom: 0px solid $joinColorHoverBorder;
+		color: #fff;
 	}
 }
 
@@ -1101,7 +1210,7 @@ aside {
 		text-decoration: none;	
 	}
 }
-#circle-no {
+#circle-na {
 	display: inline-block;
 	margin-bottom: 4px;
 	width: 28px;
@@ -1123,7 +1232,7 @@ aside {
 		text-decoration: none;	
 	}
 }
-.circle-no-text {
+.circle-na-text {
 	font-weight: bold;
 	display: inline-block;
 	margin-bottom: 4px;
@@ -1144,6 +1253,29 @@ aside {
 	padding: 0px 7px 0px 7px;
 	a {
 		color: $circleColor;
+		text-decoration: none;	
+	}
+}
+#circle-no {
+	text-decoration:line-through;
+	display: inline-block;
+	margin-bottom: 4px;
+	width: 28px;
+	height: 28px;
+	-moz-border-radius: 28px;
+	-webkit-border-radius: 28px;
+	border-radius: 28px;
+	text-align: center;
+	font-size: 14px;
+	line-height: 28px;
+	background: white;	
+	border-style: solid;
+	border-width: 1px;
+	color: $circleColorNo;
+	border-color: $circleColorNo;
+	letter-spacing: -1px;
+	a {
+		color: $circleColorNo;
 		text-decoration: none;	
 	}
 }
@@ -1399,8 +1531,6 @@ aside {
 .completed {
 	background: $joiningColor;
 	border-bottom: 0px solid rgb(180, 180, 180);
-	border-left: 15px solid $noActionGray;
-	border-right: 15px solid $noActionGray;
 	border-radius: 0px;
 	box-shadow: none;
 	color: $circleColorNo;
@@ -1553,7 +1683,7 @@ outline: -webkit-focus-ring-color auto 0px;
 }
 .name-select-area-feed {
 	background: white;//#EEE;
-	padding: 0px 15px 8px 15px;
+	padding: 5px 0px 8px 0px;
 	font-size: 14px;
 	margin: 0px 0 0 0;
 	width: 100%;
@@ -1669,6 +1799,9 @@ outline: -webkit-focus-ring-color auto 0px;
 .fa-ban {
 	color: black;
 }
+.fa-check {
+	line-height: 0 !important;
+}
 .min-friends {
 	.radio-select-area {
 		.ui-button-text-only .ui-button-text {
@@ -1744,14 +1877,28 @@ outline: -webkit-focus-ring-color auto 0px;
 .join-form {
 	padding-bottom: 15px;
 	padding-top: 15px;
-	background: white;
+	padding-left: 15px;
+	padding-right: 15px;
+	background: $noActionGray;
+	overflow: auto;
 	// border-top: 1px solid $noActionGrayBorder;
 	// border-bottom: 1px solid $noActionGrayBorder;
 }
 .join-form-done {
 	padding-bottom: 15px;
 	padding-top: 15px;
+	padding-left: 15px;
+	padding-right: 15px;
 	background: $noActionGray;
+	overflow: auto;
+}
+.tab-form {
+	padding-bottom: 15px;
+	padding-top: 0px;
+	padding-left: 15px;
+	padding-right: 15px;
+	background: $noActionGray;
+	overflow: auto;
 }
 .results-form {
 	// padding-top: 15px;
@@ -1833,6 +1980,7 @@ outline: -webkit-focus-ring-color auto 0px;
 }
 .side-padding-5 {
 	padding: 0px 5px 0px 5px;
+	background: white;
 }
 .form-300 {
 	width: 300px;

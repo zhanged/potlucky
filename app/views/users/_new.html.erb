@@ -1,7 +1,7 @@
 <div class="form-300 all-wide-form">
 	<%= form_for(User.new) do |f| %>
 		<%= render 'shared/error_messages', object: f.object %>
-		<%= f.text_field :name, placeholder: "Name", :autofocus => true %>
+		<%= f.text_field :name, placeholder: "Full Name", :autofocus => true %>
 		<%= f.text_field :email, placeholder: "Email"  %>
 		<%= f.text_field :phone, placeholder: "Cell Number" %>
 		<%= f.password_field :password, placeholder: "Password" %>

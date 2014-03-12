@@ -2,15 +2,58 @@
 	<% @gather = feed_item %> 
 <% end %>
 <% if !signed_in? %>
-	<%= render 'shared/join', :feed_item => @gather %>
+	<!-- can both join and unjoin -->
+    <%= form_for User.new do |f| %>
+        <%= render 'shared/error_messages', object: f.object %>
+        <%= f.fields_for :invitations do |f_i| %>
+	        <input type="hidden" name="invitation[gathering_id]" value="<%= @gather.id %>">
+	        <div class="name-select-title">Complete profile:<hr></div>
+	        <div class="all-wide-form side-padding-5">
+	            <%= f.text_field :name, placeholder: "Full Name" %>
+	            <%= f.text_field :email, placeholder: "Email"  %>
+	            <%= f.text_field :phone, placeholder: "Cell Number" %>
+	            <%= f.password_field :password, placeholder: "Password" %>
+	        </div>
+
+            <%= f.submit "Join", data: { disable_with: 'Joining...' }, class: "btn btn-large btn-invite btn-block" %>
+        <% end %>
+    <% end %>
 <% else %>
 	<% if Invitation.find_by(invitee_id: current_user.id, gathering_id: feed_item.id).present? %>
 		<% if Invitation.find_by(invitee: current_user, gathering: @gather).status == "NA" %>
-			<%= render 'shared/join', :feed_item => @gather %>
+			<!-- hasn't responded -->
+			<%= form_for(Invitation.find_by(invitee: current_user, gathering: feed_item)) do |f| %>
+				<%= f.hidden_field :gathering_id, value: feed_item.id %>
+				<%= f.submit "Join", class: "btn btn-large btn-block btn-join-na", data: { disable_with: 'Joining...' } %>
+			<% end %>
+			<%= form_for(Invitation.find_by(invitee: current_user, gathering: feed_item)) do |f| %>
+				<%= f.hidden_field :gathering_id, value: feed_item.id %>
+				<%= f.submit "Pass", class: "btn btn-large btn-block btn-joining-na", data: { disable_with: 'Passing...' } %>
+			<% end %>
+		<% elsif Invitation.find_by(invitee: current_user, gathering: @gather).status == "Yes" %>
+			<!-- set as joining right now -->
+			<span class="fake-joining">Joined <i class="fa fa-check"></i></span>
+			<%= form_for(Invitation.find_by(invitee: current_user, gathering: feed_item)) do |f| %>
+				<%= f.hidden_field :gathering_id, value: feed_item.id %>
+				<%= f.submit "Pass", class: "btn btn-large btn-block btn-joining", data: { confirm: "Are you sure you want to leave this activity?", disable_with: 'Passing...' } %>
+			<% end %>
 		<% else %>
-			<%= render 'shared/unjoin', :feed_item => @gather %>
+			<!-- set as passing right now -->
+			<%= form_for(Invitation.find_by(invitee: current_user, gathering: feed_item)) do |f| %>
+				<%= f.hidden_field :gathering_id, value: feed_item.id %>
+				<%= f.submit "Join", class: "btn btn-large btn-block btn-join", data: { disable_with: 'Joining...' } %>
+				<span class="fake-passing">Passed <i class="fa fa-check"></i></span>
+			<% end %>
 		<% end %>
 	<% else %>
-		<%= render 'shared/join', :feed_item => @gather %>
+		<!-- signed in but wasn't invited -->
+		<%= form_for(@invitation) do |f| %>
+			<%= f.hidden_field :gathering_id, value: feed_item.id %>
+			<%= f.submit "Join", class: "btn btn-large btn-block btn-join-na", data: { disable_with: 'Joining...' } %>
+		<% end %>
+		<%= form_for(@invitation) do |f| %>
+			<%= f.hidden_field :gathering_id, value: feed_item.id %>
+			<%= f.submit "Pass", class: "btn btn-large btn-block btn-joining-na", data: { disable_with: 'Passing...' } %>
+		<% end %>
 	<% end %>
 <% end %>

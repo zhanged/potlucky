@@ -2,15 +2,7 @@
 	<table class="title-table"><tr>
 		<td class="td-activity">
 		  	<div class="activity">
-		  		<% if feed_item.activity.present? && feed_item.activity_2.blank? && feed_item.activity_3.blank? %>
-		  			<%= feed_item.activity %>
-		  		<% elsif (feed_item.date_2.blank? && feed_item.date_3.blank? && feed_item.time_2.blank? && feed_item.time_3.blank?) && (feed_item.date.present? || feed_item.time.present?) %>
-		  			Hang out <%= "on " + feed_item.date.strftime("%a, %b %-e") if feed_item.date.present? %> <%= "@" + feed_item.time.strftime("%-l:%M%p") if feed_item.time.present? %>	
-		  		<% elsif feed_item.location_2.blank? && feed_item.location_3.blank? && feed_item.location.present? %>
-		  			Hang out at <%= feed_item.location %>
-		  		<% else %>
-		  			Hang out
-		  		<% end %>
+	  			<%= feed_item.activity %>
 		  	</div>
   		</td>
   		<td class="td-info">
@@ -48,7 +40,7 @@
 		<% if (feed_item.num_joining) >= feed_item.tilt %>
 			<div class="circle-yes-text"><%= "Enough joined - this is on!" %></div>
 		<% else %>
-			<div class="circle-no-text"><%= feed_item.tilt - feed_item.num_joining %> more must join for this to happen</div>
+			<div class="circle-na-text"><%= feed_item.tilt - feed_item.num_joining %> more must join for this to happen</div>
 		<% end %>
 	<% feed_item.invitations.each do |invitation| %>
 		<% if invitation.status == "Yes" %>
@@ -74,6 +66,28 @@
 
 	<% feed_item.invitations.each do |invitation| %>
 		<% if invitation.status == "NA" %>
+			<div id="circle-na">
+				<% if current_page?(root_url) || current_page?('/gathers') %>
+					<% if invitation.invitee == current_user %>
+						<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
+					<% else %>
+						<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
+					<% end %>
+				<% end %>
+				<% if invitation.invitee == feed_item.user %><b><% end %>
+				<% if invitation.invitee.name.present? %>
+					<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
+				<% else %>
+					<%= invitation.invitee.email.at(0.1).upcase %>
+				<% end %>
+				<% if invitation.invitee == feed_item.user %></b><% end %>
+				</a>
+			</div>
+		<% end %>
+	<% end %>
+
+	<% feed_item.invitations.each do |invitation| %>
+		<% if invitation.status == "No" %>
 			<div id="circle-no">
 				<% if current_page?(root_url) || current_page?('/gathers') %>
 					<% if invitation.invitee == current_user %>
@@ -97,7 +111,6 @@
 
 	<% if signed_in? && (current_page?(root_url) || current_page?(controller: 'gathers', action: 'show')) && (Invitation.find_by(invitee_id: current_user.id, gathering_id: feed_item.id).present? ) %>
 		<% if (Invitation.find_by(invitee_id: current_user.id, gathering_id: feed_item.id).status == "Yes") %>
-			<%= render 'shared/organizer_view', :feed_item => feed_item %>		
 			<% if (feed_item.user_id == current_user.id) && (Invitation.find_by(invitee_id: current_user.id, gathering_id: feed_item.id).status == "Yes") %>		
 				<%= render 'shared/cal_invite_form', :feed_item => feed_item %>		
 			<% end %>
@@ -106,27 +119,17 @@
 
 	<% if current_page?(root_url) || current_page?(controller: 'gathers', action: 'show') %>
 		<% if signed_in? && Invitation.find_by(invitee_id: current_user.id, gathering_id: feed_item.id).present? %>
-			<% if Invitation.find_by(invitee_id: current_user.id, gathering_id: feed_item.id).status == "Yes" || feed_item.completed.present? %>
-				<div class="join-form-done">
-			<% else %>
-				<div class="join-form">
+			<div class="join-form">
+		<% end %>
+		<% if !request.path.match(/^\/users/) %>
+			<% if feed_item.completed.blank? %>
+				<span><%= render 'shared/join_form', :feed_item => feed_item %></span> <!-- USED TO BE :feed_item => feed_item -->
 			<% end %>
-		<% else %>
 			<% if feed_item.completed.present? %>
-				<div class="join-form-done">
-			<% else %>
-				<div class="join-form">
+				<span class="completed">Completed</span>
 			<% end %>
 		<% end %>
-					<% if !request.path.match(/^\/users/) %>
-						<% if feed_item.completed.blank? %>
-							<span><%= render 'shared/join_form', :feed_item => feed_item %></span> <!-- USED TO BE :feed_item => feed_item -->
-						<% end %>
-						<% if feed_item.completed.present? %>
-							<span class="completed">Completed</span>
-						<% end %>
-					<% end %>
-				</div>
+			</div>
 	<% end %>
 
 	<% if signed_in? && (current_page?(root_url) || current_page?(controller: 'gathers', action: 'show')) %>
@@ -134,15 +137,15 @@
 		  <div class="tabs">
 			<div class="misc-actions">
 				<ol>
-					<li><a href="#tabs-1_<%=feed_item.id %>"><i class="fa fa-reply"></i> Reply</a>
-					<li><a href="#tabs-2_<%=feed_item.id %>"><i class="fa fa-plus"></i> Invite</a>
-					<li><a href="#tabs-3_<%=feed_item.id %>"><i class="fa fa-comments-o"></i> Convo</a>
-					<li><a href="#tabs-4_<%=feed_item.id %>"><i class="fa fa-repeat"></i> Rebloon</a>
+					<li><a href="#tabs-1_<%=feed_item.id %>" id="ga-reply-tab">Reply</a>
+					<li><a href="#tabs-2_<%=feed_item.id %>" id="ga-invite-tab">Invite</a>
+					<li><a href="#tabs-3_<%=feed_item.id %>" id="ga-convo-tab">Convo</a>
+					<li><a href="#tabs-4_<%=feed_item.id %>" id="ga-rebloon-tab">Rebloon</a>
 				</ol>
 			</div>
 
 			<div id="tabs-1_<%=feed_item.id %>">
-				<div class="join-form">
+				<div class="tab-form">
 			    	<% if feed_item.completed.blank? %>
 						<% if feed_item.user == current_user %>
 							<%= form_for(Update.new) do |f| %>
@@ -152,7 +155,7 @@
 									<%= f.hidden_field :gather_id, :value => feed_item.id %>
 									<textarea name="update[content]" placeholder="e.g. Tix almost out, join within hour" size="60"></textarea>
 								</div>
-								<%= f.submit "Send update to all", data: { disable_with: 'Sending update...' }, class: "btn btn-block btn-large btn-join" %>
+								<%= f.submit "Send update to all", data: { disable_with: 'Sending update...' }, class: "btn btn-block btn-large btn-update" %>
 							<% end %>
 						<% else %>
 							<%= form_for(Update.new) do |f| %>
@@ -162,7 +165,7 @@
 									<%= f.hidden_field :gather_id, :value => feed_item.id %>
 									<textarea name="update[content]" placeholder="Sorry, can't make it bc..." size="60"></textarea>
 								</div>
-								<%= f.submit "Respond to organizer", data: { disable_with: 'Sending response...' }, class: "btn btn-block btn-large btn-join" %>
+								<%= f.submit "Respond to organizer", data: { disable_with: 'Sending response...' }, class: "btn btn-block btn-large btn-update" %>
 							<% end %>
 						<% end %>
 					<% else %>
@@ -172,7 +175,7 @@
 			</div>
 			
 			<div id="tabs-2_<%=feed_item.id %>">
-				<div class="join-form">
+				<div class="tab-form">
 				    <% if feed_item.completed.blank? %>
 						<!-- <div class="name-select-title">Select friends to invite:<hr></div> -->
 							<!-- <textarea class="share-link-area" size="60" onclick="this.focus();this.select()" readonly="readonly">Interested in hanging out with me? Join me here: bloon.us/<%= feed_item.gen_link %></textarea> -->
@@ -193,7 +196,7 @@
 								<% end %>
 							</div>
 						<% if current_user.friended_users.where("phone IS NOT NULL").count != 0 %>
-						<%= f.submit "Invite selected", data: { disable_with: 'Inviting...' }, class: "btn btn-block btn-large btn-join" %>
+						<%= f.submit "Invite selected", data: { disable_with: 'Inviting...' }, class: "btn btn-block btn-large btn-update" %>
 						<% end %>
 						<% end %>
 					<% else %>
@@ -246,7 +249,7 @@
 			    	<% if friends_with_no_phone == "yes" %>
 			    		<div class="organized-by">Not all friends here can be reblooned :(</div>
 			    	<% else %>
-						<div class="organized-by"><a href="#rebloon" onclick="make_visible('gather_form'); reBloon(<%= feed_item.invited.to_json %>, 'new-gather-form-invite', 'gather_form'); whosInvited(<%= User.where(id: feed_item.invitations.pluck(:invitee_id)).pluck(:name).join(", ").to_json %>, 'whos-invited', 'gather_form')">Create a new Bloon inviting the same people
+						<div class="organized-by"><a href="#rebloon" id="ga-rebloon-link" onclick="make_visible('gather_form'); reBloon(<%= feed_item.invited.to_json %>, 'new-gather-form-invite', 'gather_form'); whosInvited(<%= User.where(id: feed_item.invitations.pluck(:invitee_id)).pluck(:name).join(", ").to_json %>, 'whos-invited', 'gather_form')">Create a new Bloon inviting the same people
 				     	</a></div>
 				     <% end %>
 				<% end %>

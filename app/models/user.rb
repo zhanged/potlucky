@@ -47,12 +47,12 @@ class User < ActiveRecord::Base
 
 	def join!(invitation_id)
 		this_invitation = Invitation.find_by(id: invitation_id)
-		this_invitation.update(status: "Yes")
+		this_invitation.update_attributes(status: "Yes", when_responded: Time.now)
 	end
 
 	def unjoin!(invitation_id)
 		this_invitation = Invitation.find_by(id: invitation_id)
-		this_invitation.update(status: "NA")
+		this_invitation.update_attributes(status: "No", when_responded: Time.now)
 	end
 
 	def send_password_reset

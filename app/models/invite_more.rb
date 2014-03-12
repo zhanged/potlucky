@@ -23,7 +23,7 @@ class InviteMore < ActiveRecord::Base
 
 		# udpate Gather
 		@gather.update_attributes(invited: @gather.invited + " " + formatted_invited)
-		@gather.update_attributes(invited_no: @gather.invited_no + " " + formatted_invited)
+		# @gather.update_attributes(invited_no: @gather.invited_no + " " + formatted_invited)
 		@gather.update_attributes(num_invited: @gather.num_invited + invitees.count)
 		
 		# Creating invitations
@@ -61,36 +61,60 @@ class InviteMore < ActiveRecord::Base
 				@gather.invite!@user
 				@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: @gather.id)
 				if @user.phone.present?
-					@dtl = ""
-					if @gather.activity.present? && @gather.activity_2.blank? && @gather.activity_3.blank? 
-						@dtl = @gather.activity
-					else
-						@dtl = "Hang out"
-					end
-					if @gather.date.present? && @gather.date_2.blank? && @gather.date_3.blank? 
-						@dtl = @dtl + " on " + @gather.date.strftime("%a, %b %-e") 
-						if @gather.time.present? && @gather.time_2.blank? && @gather.time_3.blank? 
-							@dtl = @dtl + " @" + @gather.time.strftime("%-l:%M%p")
-						end
-					elsif @gather.time.present? && @gather.time_2.blank? && @gather.time_3.blank? 
-						@dtl = @dtl + " at " + @gather.time.strftime("%-l:%M%p")
-					end 
-					if @gather.location.present? && @gather.location_2.blank? && @gather.location_3.blank? 
-						if (@gather.activity.present? && @gather.activity_2.blank? && @gather.activity_3.blank?) || (@gather.time.present? && @gather.time_2.blank? && @gather.time_3.blank?) || (@gather.date.present? && @gather.date_2.blank? && @gather.date_3.blank?)
-							@dtl = @dtl + " at " + @gather.location
-						else
-							@dtl = @dtl + " at " + @gather.location
-						end
-					end
+					if Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").blank?
+					# if user hasn't responded to an invite, send reminder, else go ahead and send invitation
 
-					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
-					message = @client.account.messages.create(
-						body: "#{@dtl}? #{User.find_by(id: self.user_id).name} invited you - #{@gather.tilt} must join for this to take off. Join on bloon.us/#{@invitation.link.in_url}",
-					    to: @user.phone,
-					    from: ENV['TWILIO_MAIN'])
-					puts message.from
-					puts message.to
-					puts message.body
+						if @gather.date.present? 
+							@dtl = @gather.activity + " on " + @gather.date.strftime("%a, %b %-e") 
+						else
+							@dtl = @gather.activity
+						end
+						# @dtl = ""
+						# if @gather.activity.present? && @gather.activity_2.blank? && @gather.activity_3.blank? 
+						# 	@dtl = @gather.activity
+						# else
+						# 	@dtl = "Hang out"
+						# end
+						# if @gather.date.present? && @gather.date_2.blank? && @gather.date_3.blank? 
+						# 	@dtl = @dtl + " on " + @gather.date.strftime("%a, %b %-e") 
+						# 	if @gather.time.present? && @gather.time_2.blank? && @gather.time_3.blank? 
+						# 		@dtl = @dtl + " @" + @gather.time.strftime("%-l:%M%p")
+						# 	end
+						# elsif @gather.time.present? && @gather.time_2.blank? && @gather.time_3.blank? 
+						# 	@dtl = @dtl + " at " + @gather.time.strftime("%-l:%M%p")
+						# end 
+						# if @gather.location.present? && @gather.location_2.blank? && @gather.location_3.blank? 
+						# 	if (@gather.activity.present? && @gather.activity_2.blank? && @gather.activity_3.blank?) || (@gather.time.present? && @gather.time_2.blank? && @gather.time_3.blank?) || (@gather.date.present? && @gather.date_2.blank? && @gather.date_3.blank?)
+						# 		@dtl = @dtl + " at " + @gather.location
+						# 	else
+						# 		@dtl = @dtl + " at " + @gather.location
+						# 	end
+						# end
+
+						@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+						message = @client.account.messages.create(
+							body: "#{@dtl}? #{User.find_by(id: self.user_id).name} invited you - #{@gather.tilt} must join for this to take off. REPLY 'Y' to join or 'N' to pass",
+						    to: @user.phone,
+						    from: ENV['TWILIO_MAIN'])
+						puts message.from
+						puts message.to
+						puts message.body
+
+						@invitation.update_attributes(sent: "Yes", when_sent: Time.now)
+					else
+						# send reminder text to respond to the previous invitation 
+						@invitation.update_attributes(sent: "No")
+						old_invitation = Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").last
+						@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+							message = @client.account.messages.create(
+								body: "You've been invited to another activity via Bloon! To receive it, first respond Y/N to your last invitation (#{old_invitation.gathering.activity} from #{old_invitation.gathering.user.name})",
+							    to: @user.phone,
+							    from: ENV['TWILIO_MAIN'])
+						puts message.from
+						puts message.to
+						puts message.body
+						puts "reminder text"
+					end
 				else
 					UserMailer.invitation_email(@user, @gather, @invitation, User.find_by(id: self.user_id), @to_invitees).deliver
 				end

@@ -26,7 +26,7 @@ class InvitationsController < ApplicationController
 		if current_user.phone.present?
 			@invitation = Invitation.find_by(id: params["id"])
 			@invitation.update_attributes(invitation_params)
-			if Invitation.find_by(id: params["id"]).status == "NA"
+			if params[:commit] == "Join"
 				current_user.join!(params["id"])
 				Gather.find_by(id: @invitation.gathering_id).increase_num_joining!(params["id"])
 				if Calinvite.find_by(gather_id: @invitation.gathering_id).present?

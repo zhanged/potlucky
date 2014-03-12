@@ -1,0 +1,21 @@
+<% if feed_item.links.pluck(:seen).compact.inject(:+) != nil %>
+	<div class="seen">
+		<b>Viewed by:</b>
+		<% feed_item.links.where(seen: !nil).each do |link| %>
+			<% if link.seen != nil && link.invitation_id.present? %>
+				<% if link == feed_item.links.where(seen: !nil).last %>
+					<%= User.find_by(id: Invitation.find_by(id: link.invitation_id).invitee_id).name %>
+				<% else %>
+					<%= User.find_by(id: Invitation.find_by(id: link.invitation_id).invitee_id).name %>, 
+				<% end %>
+			<% end %>
+		<% end %>
+		<% if feed_item.links.present? %>
+			<% if feed_item.links.find_by(invitation_id: nil).seen != nil %>
+					<%= "& " if feed_item.links.pluck(:seen).compact.inject(:+) - feed_item.links.find_by(invitation_id: nil).seen > 0 %>						
+					<%= pluralize(feed_item.links.find_by(invitation_id: nil).seen, 'anonymous') %>
+				
+			<% end %>
+		<% end %>
+	</div>
+<% end %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131210011341) do
+ActiveRecord::Schema.define(version: 20140310204614) do
 
   create_table "calinvites", force: true do |t|
     t.integer  "gather_id"
@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(version: 20131210011341) do
     t.integer  "wait_hours"
     t.time     "wait_time"
     t.text     "gen_link"
+    t.integer  "num_passing",  default: 1
   end
 
   add_index "gathers", ["user_id", "created_at"], name: "index_gathers_on_user_id_and_created_at"
@@ -74,7 +75,7 @@ ActiveRecord::Schema.define(version: 20131210011341) do
   create_table "invitations", force: true do |t|
     t.integer  "gathering_id"
     t.integer  "invitee_id"
-    t.string   "status",       default: "NA"
+    t.string   "status",         default: "NA"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "number_used"
@@ -90,6 +91,9 @@ ActiveRecord::Schema.define(version: 20131210011341) do
     t.integer  "location_1v"
     t.integer  "location_2v"
     t.integer  "location_3v"
+    t.string   "sent"
+    t.datetime "when_sent"
+    t.datetime "when_responded"
   end
 
   add_index "invitations", ["gathering_id", "invitee_id"], name: "index_invitations_on_gathering_id_and_invitee_id", unique: true

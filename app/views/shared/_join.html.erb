@@ -2,13 +2,12 @@
 	<% if Invitation.find_by(invitee: current_user, gathering: feed_item).present? %>
 		<%= form_for(Invitation.find_by(invitee: current_user, gathering: feed_item)) do |f| %>
 			<%= f.hidden_field :gathering_id, value: feed_item.id %>
-			<%= render 'shared/vote_form', :feed_item => feed_item %>
 			<%= f.submit "Join", class: "btn btn-large btn-block btn-join", data: { disable_with: 'Please wait...' } %>
+			<span class="fake-passing">Passing</span>
 		<% end %>
 	<% else %>
 		<%= form_for(@invitation) do |f| %>
 			<%= f.hidden_field :gathering_id, value: feed_item.id %>
-			<%= render 'shared/vote_form', :feed_item => feed_item %>
 			<%= f.submit "Join", class: "btn btn-large btn-block btn-join", data: { disable_with: 'Please wait...' } %>
 		<% end %>
 	<% end %>
@@ -17,7 +16,6 @@
         <%= render 'shared/error_messages', object: f.object %>
         <%= f.fields_for :invitations do |f_i| %>
 	        <input type="hidden" name="invitation[gathering_id]" value="<%= @gather.id %>">
-	        <%= render 'shared/vote_form', :feed_item => feed_item %>
 	        <div class="name-select-title">Complete profile:<hr></div>
 	        <div class="all-wide-form side-padding-5">
 	            <%= f.text_field :name, placeholder: "Name" %>
