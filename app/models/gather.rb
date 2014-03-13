@@ -219,6 +219,13 @@ class Gather < ActiveRecord::Base
 			)
 		self.update_attributes(num_joining: 1)
 		@calinvite = Calinvite.create!(gather_id: self.id, cal_activity: self.activity, cal_date: self.date, cal_time: self.time, cal_location: self.location)
+
+		tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
+		tracker.track(user.id, 'Created Activity', {
+			'Activity ID' => self.id,
+			'Activity' => self.activity,
+			'Tilt' => self.tilt
+			})
 	end
 
 	def invited_already?(other_user)
@@ -229,6 +236,13 @@ class Gather < ActiveRecord::Base
 		invitations.create!(invitee_id: other_user.id)
 		short_link = String.random_alphanumeric
 		links.create!(in_url: short_link, out_url: "/gathers/"+short_link, invitation_id: Invitation.find_by(gathering_id: self.id, invitee_id: other_user.id).id)
+
+		tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
+		tracker.track(other_user.id, 'Invited', {
+			'Activity ID' => self.id,
+			'Activity' => self.activity,
+			'Invitation ID' => Invitation.find_by(gathering_id: self.id, invitee_id: other_user.id).id
+			})
 	end
 
 	def uninvite!(other_user)
@@ -295,7 +309,7 @@ class Gather < ActiveRecord::Base
 			
 		if @gather.num_joining < (@gather.tilt)
 			message = @client.account.messages.create(
-				body: "Bloon: Great, we've marked you down as interested in: #{@gather.activity}! You'll send you a group text if this takes off",
+				body: "Bloon: Great, we've marked you down as interested in: #{@gather.activity}! We'll send you a group text if this takes off",
 			    to: @joining_user.phone,
 			    from: ENV['TWILIO_MAIN'])
 			puts message.from
@@ -384,11 +398,13 @@ class Gather < ActiveRecord::Base
 				puts message.from
 			end
 
-			message = @client.account.messages.create(
-					body: "As the organizer, you can send a calendar invite to current & future participants when you finalize the details - just follow this link bloon.us/#{Invitation.find_by(invitee_id: @gather.user_id, gathering_id: @gather.id).link.in_url}",
-				    to: @gather.user.phone,
-				    from: Invitation.find_by(invitee_id: @gather.user_id, gathering_id: @gather.id).number_used)
-				puts message.from
+			if Invitation.find_by(invitee_id: @gather.user_id, gathering_id: @gather.id).number_used.present?
+				message = @client.account.messages.create(
+						body: "As the organizer, you can send a calendar invite to current & future participants when you finalize the details - just follow this link bloon.us/#{Invitation.find_by(invitee_id: @gather.user_id, gathering_id: @gather.id).link.in_url}",
+					    to: @gather.user.phone,
+					    from: Invitation.find_by(invitee_id: @gather.user_id, gathering_id: @gather.id).number_used)
+					puts message.from
+			end
 
 			@gather.update_attributes(details: ("#{@gather.details} <br>Bloon: #{gather_name} has taken off with #{User.find_by(email: invited_yes_array.last).name.split(' ').first}, #{@people_joining_less_user}! Reply to this group text to plan the details together "))
 
@@ -465,6 +481,13 @@ class Gather < ActiveRecord::Base
 
 			old_invitation.update_attributes(sent: "Yes", when_sent: Time.now)
 		end
+
+		tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
+		tracker.track(@joining_user.id, 'Joined Activity', {
+			'Activity ID' => @gather.id,
+			'Activity' => @gather.activity,
+			'Invitation ID' => @this_invitation.id
+			})
 
 	end
 
@@ -684,6 +707,13 @@ class Gather < ActiveRecord::Base
 
 			old_invitation.update_attributes(sent: "Yes", when_sent: Time.now)
 		end
+
+		tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
+		tracker.track(@unjoining_user.id, 'Passed Activity', {
+			'Activity ID' => @gather.id,
+			'Activity' => @gather.activity,
+			'Invitation ID' => @this_invitation.id
+			})
 
 	end
 

@@ -56,6 +56,11 @@ class Update < ActiveRecord::Base
 					puts message.from
 				end
 			end
+			tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
+			tracker.track(responder.id, 'Updated (Organizer)', {
+				'Activity ID' => gather.id,
+				'Activity' => gather.activity
+				})
 		else
 			# From invitee, texts the organizer
 			organizer = User.find_by(id: gather.user_id)
@@ -74,6 +79,12 @@ class Update < ActiveRecord::Base
 				    from: ENV['TWILIO_MAIN'])
 				puts message.from	
 			end
+			tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
+			tracker.track(responder.id, 'Updated (Invitee)', {
+				'To' => organizer.id,
+				'Activity ID' => gather.id,
+				'Activity' => gather.activity
+				})
 		end
 	end
 end

@@ -13,6 +13,7 @@
 	<link rel="stylesheet" href="/font-awesome-4.0.3/css/font-awesome.min.css">
 	<%= csrf_meta_tags %>
 	<%= render 'layouts/shim' %>
+	<%= render 'layouts/mixpanel' %>
 </head>
 
 	<body data-no-turbolink>
@@ -26,5 +27,6 @@
 			<%= debug(params) if Rails.env.development? %>
 		</div>
 		<%= render 'layouts/googleanalytics' if Rails.env.production? %>
+		<%= render 'layouts/mixpanel_links' if Rails.env.production? %>
 	</body>
 </html>

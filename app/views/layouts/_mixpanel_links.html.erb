@@ -1,0 +1,61 @@
+<script type="text/javascript">
+
+    mixpanel.identify(<%= current_user.id if signed_in? %>);
+
+    // mixpanel.track_links("#new_gather", "create activity", {
+    //     "referrer": document.referrer
+    // });
+
+    mixpanel.track_links("#ga-new-activity", "new activity form", {
+        "referrer": document.referrer
+    });
+
+    mixpanel.track_links("#ga-sign-in", "sign in", {
+        "referrer": document.referrer
+    });
+
+    mixpanel.track_links("#ga-login", "log in", {
+        "referrer": document.referrer
+    });
+
+    mixpanel.track_links("#ga-reply-tab", "reply tab", {
+        "referrer": document.referrer
+    });
+
+    mixpanel.track_links("#ga-invite-tab", "invite tab", {
+        "referrer": document.referrer
+    });
+
+    mixpanel.track_links("#ga-convo-tab", "convo tab", {
+        "referrer": document.referrer
+    });
+
+    mixpanel.track_links("#ga-rebloon-tab", "rebloon tab", {
+        "referrer": document.referrer
+    });
+
+    mixpanel.track_links("#ga-rebloon-link", "rebloon link", {
+        "referrer": document.referrer
+    });
+
+    // mixpanel.track_links("#new_update", "update reply", {
+    //     "referrer": document.referrer
+    // });
+
+    // mixpanel.track_links("#new_invite_more", "invite more", {
+    //     "referrer": document.referrer
+    // });
+
+    // mixpanel.track_links("#new_user", "new user", {
+    //     "referrer": document.referrer
+    // });
+
+    mixpanel.track_links("#ga-learn-more", "learn more", {
+        "referrer": document.referrer
+    });
+
+    mixpanel.track_links("#ga-how", "learn how", {
+        "referrer": document.referrer
+    });
+
+</script>

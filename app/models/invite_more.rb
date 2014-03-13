@@ -115,6 +115,14 @@ class InviteMore < ActiveRecord::Base
 						puts message.body
 						puts "reminder text"
 					end
+
+					tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
+					tracker.track(User.find_by(id: self.user_id).id, 'Invited More', {
+						'To' => @user.id,
+						'Activity ID' => @gather.id,
+						'Activity' => @gather.activity,
+						'Invitation ID' => @invitation.id
+						})
 				else
 					UserMailer.invitation_email(@user, @gather, @invitation, User.find_by(id: self.user_id), @to_invitees).deliver
 				end

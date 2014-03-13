@@ -28,6 +28,17 @@ class User < ActiveRecord::Base
 	has_secure_password :validations => false # users canNOT be created without passwords
 	validates :password, length: { minimum: 6 }
 	validate :phone_is_real
+	after_create do
+		tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
+		tracker.people.set(self.id, {
+	    '$name'       => self.name,
+	    '$email'      => self.email,
+	    '$phone'      => self.phone,
+	    '$created_at' => self.created_at
+	    });
+	    tracker.track(self.id, 'New User Signed Up', {
+			})
+	end
 
 	def User.new_remember_token
 		SecureRandom.urlsafe_base64
@@ -65,6 +76,10 @@ class User < ActiveRecord::Base
 
 	def friend!(other_user)
 		friendships.create!(friender_id: self.id, friended_id: other_user.id)
+		tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
+		tracker.people.set(self.id, {
+	    '$friends'       => self.friended_users.pluck(:email).count
+	    });
 	end
 
 	def friends

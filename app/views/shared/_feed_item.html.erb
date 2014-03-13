@@ -129,7 +129,9 @@
 				<span class="completed">Completed</span>
 			<% end %>
 		<% end %>
+		<% if signed_in? %>	
 			</div>
+		<% end %>	
 	<% end %>
 
 	<% if signed_in? && (current_page?(root_url) || current_page?(controller: 'gathers', action: 'show')) %>

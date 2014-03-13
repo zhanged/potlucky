@@ -5,6 +5,9 @@ module SessionsHelper
 		cookies.permanent[:remember_token] = remember_token
 		user.update_attribute(:remember_token, User.encrypt(remember_token))
 		self.current_user = user
+		tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
+		tracker.track(user.id, 'Signed In', {
+			})
 	end
 
 	def signed_in?
