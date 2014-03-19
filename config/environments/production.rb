@@ -79,5 +79,5 @@ Potlucky::Application.configure do
   config.log_formatter = ::Logger::Formatter.new
 
   # Added per http://www.mattboldt.com/heroku-staging-production-environments/ for staging environment to use same db as production
-  ENV["DATABASE_URL"]: "postgres://tuigmnmoiitugi:Uk2YHIkZZ_9smyCDB_8Hs5TgTU@ec2-107-21-112-215.compute-1.amazonaws.com:5432/df9tpigc7gbg2r"
+  ENV["DATABASE_URL"] = "postgres://tuigmnmoiitugi:Uk2YHIkZZ_9smyCDB_8Hs5TgTU@ec2-107-21-112-215.compute-1.amazonaws.com:5432/df9tpigc7gbg2r"
 end
