@@ -3,7 +3,7 @@
 <% end %>
 <% if !signed_in? %>
 	<!-- can both join and unjoin -->
-    <%= form_for User.new do |f| %>
+<!--     <%= form_for User.new do |f| %>
         <%= render 'shared/error_messages', object: f.object %>
         <%= f.fields_for :invitations do |f_i| %>
 	        <input type="hidden" name="invitation[gathering_id]" value="<%= @gather.id %>">
@@ -14,10 +14,10 @@
 	            <%= f.text_field :phone, placeholder: "Cell Number" %>
 	            <%= f.password_field :password, placeholder: "Password" %>
 	        </div>
-
-            <%= f.submit "Join", data: { disable_with: 'Joining...' }, class: "btn btn-large btn-invite btn-block" %>
+	        <%= f.submit "Join", data: { disable_with: 'Joining...' }, class: "btn btn-large btn-invite btn-block" %>
         <% end %>
-    <% end %>
+    <% end %> -->
+    <%= render 'users/new' %>
 <% else %>
 	<% if Invitation.find_by(invitee_id: current_user.id, gathering_id: feed_item.id).present? %>
 		<% if Invitation.find_by(invitee: current_user, gathering: @gather).status == "NA" %>

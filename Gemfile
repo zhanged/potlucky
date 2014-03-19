@@ -13,6 +13,9 @@ gem 'figaro', '0.7.0' # Installed figaro gem: http://railsapps.github.io/rails-e
 gem 'newrelic_rpm'
 gem 'icalendar', '1.2.3'
 gem 'mixpanel-ruby', '1.3.0'
+gem 'omniauth'
+gem 'omniauth-facebook', '1.4.0'
+gem 'koala', '1.9.0'
 
 group :development, :test do
   gem 'sqlite3', '1.3.7'

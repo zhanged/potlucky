@@ -40,6 +40,7 @@ class GathersController < ApplicationController
 		link = Link.find_by(in_url: params[:id])
 		@gather = Gather.find_by(id: link.gathering_id)
 		@updates = @gather.updates
+		remember_gather(@gather.id)
 		# if @gather.activity.present? && @gather.activity_2.blank? && @gather.activity_3.blank?
 		# 	@activity_set = "yes"
 		# end

@@ -2,6 +2,11 @@
 <div class="row">
 	<div class="form-300 all-wide-form">
 		<div class="page-title">Sign in</div>
+			
+			<%= link_to image_tag("active_600.png", :border => 0), "/auth/facebook", id: "sign_in" %>
+
+			<hr>
+
 			<%= form_for(:session, url: sessions_path, :method => :post) do |f| %>
 
 				<%= f.text_field :email, placeholder: "Email", :autofocus => true %>

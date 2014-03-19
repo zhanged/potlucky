@@ -1,55 +1,59 @@
-<% provide(:title, "Edit user") %>
-<div class="row">
-  <div class="all-wide-form">
-    <section>
-      <div class="row">
-        <div id="circle-big" class="user-info-margin">
-          <a href="<%= user_path(@user) %>">
-            <% if @user.name.present? %>
-              <%= @user.name.at(0.1).upcase %><%= @user.name.split(' ').last.at(0.1).upcase if @user.name.split(' ').second.present? %>
+<% if @user.phone.present?  %>
+  <% provide(:title, "Settings") %>
+  <div class="row">
+    <div class="all-wide-form">
+      <section>
+        <div class="row">
+          <div id="circle-big" class="user-info-margin">
+            <a href="<%= user_path(@user) %>">
+              <% if @user.name.present? %>
+                <%= @user.name.at(0.1).upcase %><%= @user.name.split(' ').last.at(0.1).upcase if @user.name.split(' ').second.present? %>
+              <% else %>
+                <%= @user.email.at(0.1).upcase %>
+              <% end %>
+            </a>
+          </div>
+          <span class="name-big user-info-margin">
+              <% if @user.name.present? %>
+              <%= @user.name %>
             <% else %>
-              <%= @user.email.at(0.1).upcase %>
+              <%= @user.email.split('@').first %>
             <% end %>
-          </a>
+          </span>
+          <span class="user-stats user-info-margin">
+            <%= current_user.email %>
+            <br>
+            <%= pluralize(@user.gathers.count, "invite") %>, <%= @user.gatherings.count %> invited
+          </span>
         </div>
-        <span class="name-big user-info-margin">
-            <% if @user.name.present? %>
-            <%= @user.name %>
-          <% else %>
-            <%= @user.email.split('@').first %>
+      </section>
+      <% if @user.phone.blank?  %>
+        <p id="why-put-in-number">
+          We'll let you know via text when an activity you've joined takes off (reaches critical mass) and when you get invited to new activites
+        </p>
+      <% end %>
+          <%= form_for(@user) do |f| %>
+            <%= render 'shared/error_messages', object: f.object %>
+
+            <% if @user.phone.blank?  %>
+              <%= f.text_field :name, placeholder: "Name", value: "" %>
+            <% else %>
+              <%= f.text_field :name, placeholder: "Name" %>
+            <% end %>
+  <!--           <%= f.text_field :email, placeholder: "Email", readonly: true %> -->
+            <%= f.text_field :phone, placeholder: "Cell Number" %>
+            <%= f.password_field :password, placeholder: "Password" %>
+  <!--           <%= f.password_field :password_confirmation, placeholder: "Confirm Password" %> -->
+
+            <%= f.submit "Save", data: { disable_with: 'Saving...' }, class: "btn btn-large btn-invite btn-block" %>
           <% end %>
-        </span>
-        <span class="user-stats user-info-margin">
-          <%= current_user.email %>
-          <br>
-          <%= pluralize(@user.gathers.count, "invite") %>, <%= @user.gatherings.count %> invited
-        </span>
-      </div>
-    </section>
-    <% if @user.phone.blank?  %>
-      <p id="why-put-in-number">
-        We'll let you know via text when an activity you've joined takes off (reaches critical mass) and when you get invited to new activites
-      </p>
-    <% end %>
-        <%= form_for(@user) do |f| %>
-          <%= render 'shared/error_messages', object: f.object %>
 
-          <% if @user.phone.blank?  %>
-            <%= f.text_field :name, placeholder: "Name", value: "" %>
-          <% else %>
-            <%= f.text_field :name, placeholder: "Name" %>
-          <% end %>
-<!--           <%= f.text_field :email, placeholder: "Email", readonly: true %> -->
-          <%= f.text_field :phone, placeholder: "Cell Number" %>
-          <%= f.password_field :password, placeholder: "Password" %>
-<!--           <%= f.password_field :password_confirmation, placeholder: "Confirm Password" %> -->
-
-          <%= f.submit "Save", data: { disable_with: 'Saving...' }, class: "btn btn-large btn-invite btn-block" %>
-        <% end %>
-
-        <p class="forgot-password">We will never give away your information to 3rd parties. You will receive text messages to notify you of invitations and to organize activities with friends</p>
-<!--         <%= gravatar_for(@user) %>
-        <a href="http://gravatar.com/emails">change</a>
- -->  
+          <p class="forgot-password">We will never give away your information to 3rd parties. You will receive text messages to notify you of invitations and to organize activities with friends</p>
+  <!--         <%= gravatar_for(@user) %>
+          <a href="http://gravatar.com/emails">change</a>
+   -->  
+    </div>
   </div>
-</div>
+<% else %>
+  <%= render 'users/phone' %>
+<% end %>

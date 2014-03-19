@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140310204614) do
+ActiveRecord::Schema.define(version: 20140318051837) do
 
   create_table "calinvites", force: true do |t|
     t.integer  "gather_id"
@@ -150,6 +150,18 @@ ActiveRecord::Schema.define(version: 20140310204614) do
     t.string   "remember_token"
     t.boolean  "admin",           default: false
     t.string   "auth_token"
+    t.string   "provider"
+    t.string   "uid"
+    t.text     "image"
+    t.text     "token"
+    t.datetime "expires_at"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "location_id"
+    t.text     "location_name"
+    t.string   "gender"
+    t.string   "timezone"
+    t.string   "locale"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true

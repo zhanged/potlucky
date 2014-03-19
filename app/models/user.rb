@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
 	has_many :gathers, dependent: :destroy
 	belongs_to :invitation, foreign_key: "invitee_id"
-	has_many :reverse_invitations, foreign_key: "invitee_id", class_name: "Invitation"
+	has_many :reverse_invitations, foreign_key: "invitee_id", class_name: "Invitation", dependent: :destroy
 	accepts_nested_attributes_for :invitation, :allow_destroy => true
 	has_many :gatherings, through: :reverse_invitations
 	has_many :friendships, foreign_key: "friender_id"
@@ -24,10 +24,10 @@ class User < ActiveRecord::Base
 	validates :name, 	presence: true, length: { maximum: 22 }
 	VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 	validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
-	validates :phone, presence: true, :on => :update, length: { is: 10 }
+	# validates :phone, presence: true, :on => :update, length: { is: 10 }
 	has_secure_password :validations => false # users canNOT be created without passwords
 	validates :password, length: { minimum: 6 }
-	validate :phone_is_real
+	# validate :phone_is_real
 	after_create do
 		tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
 		tracker.people.set(self.id, {
@@ -95,12 +95,94 @@ class User < ActiveRecord::Base
 		begin
         @client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 	        message = @client.account.messages.create(
-	          body: "Welcome to Bloon! You'll receive new invitations from this phone number. If you didn't sign up for Bloon, reply 'Pop22'",
+	          body: "Welcome to Bloon! You'll receive invitations from your friends through this phone number. If you didn't sign up for Bloon, reply 'Pop22'",
 	          to: self.phone,
 	          from: ENV['TWILIO_MAIN'])
 	        puts message.to, message.body               
 	    rescue 
 	        errors.add(:phone, "number doesn't seem to be correct, please re-enter your phone number")
+		end
+	end
+
+	def self.from_omniauth(auth)
+		# clean up gmails
+		inputted_email = auth.info.email.downcase
+		if inputted_email.split('@').last == "gmail.com"
+			inputted_email = inputted_email.split('@').first.gsub(".","") + "@" + inputted_email.split('@').last
+		end
+
+
+		if User.find_by(email: inputted_email).present?
+		# If this is an existing user
+			user = User.find_by(email: inputted_email)
+			user.provider = auth.provider
+	    	user.uid = auth.uid unless auth.uid.blank?
+	    	user.email = inputted_email
+	    	if auth.info.present?
+	    		user.name = auth.info.name unless auth.info.name.blank?
+		    	user.first_name = auth.info.first_name unless auth.info.first_name.blank?
+    			user.last_name = auth.info.last_name unless auth.info.last_name.blank?
+		    	user.image = auth.info.image unless auth.info.image.blank?
+    		end
+    		if auth.raw_info.present?
+	    		user.gender = auth.extra.raw_info.gender unless auth.extra.raw_info.gender.blank?
+			    user.timezone = auth.extra.raw_info.timezone unless auth.extra.raw_info.timezone.blank?
+			    user.locale = auth.extra.raw_info.locale unless auth.extra.raw_info.locale.blank?
+			    if auth.raw_info.location.present?	
+					user.location_id = auth.extra.raw_info.location.id unless auth.extra.raw_info.location.id.blank?
+				    user.location_name = auth.extra.raw_info.location.name unless auth.extra.raw_info.location.name.blank?
+				end
+			end	
+	    	user.token = auth.credentials.token unless auth.credentials.token.blank?
+	    	user.expires_at = Time.at(auth.credentials.expires_at) unless auth.credentials.expires_at.blank?
+	    	user.save!(:validate => false)
+
+	    	# Find fb friends
+	    	user.find_fb_friends(user)
+
+		else
+		# If this is a new user
+		    where(auth.slice(:provider, :uid)).first_or_initialize.tap do |user|
+		    	user.provider = auth.provider unless auth.provider.blank?
+		    	user.uid = auth.uid unless auth.uid.blank?		    	
+		    	user.email = inputted_email
+		    	if auth.info.present?
+		    		user.name = auth.info.name unless auth.info.name.blank?
+			    	user.first_name = auth.info.first_name unless auth.info.first_name.blank?
+	    			user.last_name = auth.info.last_name unless auth.info.last_name.blank?
+			    	user.image = auth.info.image unless auth.info.image.blank?
+	    		end
+	    		if auth.raw_info.present?
+		    		user.gender = auth.extra.raw_info.gender unless auth.extra.raw_info.gender.blank?
+				    user.timezone = auth.extra.raw_info.timezone unless auth.extra.raw_info.timezone.blank?
+				    user.locale = auth.extra.raw_info.locale unless auth.extra.raw_info.locale.blank?
+				    if auth.raw_info.location.present?	
+						user.location_id = auth.extra.raw_info.location.id unless auth.extra.raw_info.location.id.blank?
+					    user.location_name = auth.extra.raw_info.location.name unless auth.extra.raw_info.location.name.blank?
+					end
+				end					    
+		    	user.token = auth.credentials.token unless auth.credentials.token.blank?
+		    	user.expires_at = Time.at(auth.credentials.expires_at) unless auth.credentials.expires_at.blank?
+		    	user.password = SecureRandom.urlsafe_base64(10)
+		    	user.save!(:validate => false)
+		    	
+		    	# Find fb friends
+	    		user.find_fb_friends(user)
+			end
+	    end
+	end
+
+	def find_fb_friends(user)
+		@graph = Koala::Facebook::API.new(user.token)
+	    friends = @graph.get_connections("me", "friends")
+	    friends_array = friends.map { |x| x["id"] }
+	    fb_friends = friends_array & User.pluck(:uid)
+	    fb_friends.each do |uid|
+	    	a_user = User.find_by(uid: uid)
+	    	if a_user.not_friend?(user)
+				a_user.friend!(user)
+				user.friend!(a_user)
+			end
 		end
 	end
 

@@ -34,7 +34,7 @@ $activityColor: #686868; //#474747;
 $feedbgColor: rgba(218, 218, 218, 0.5);
 $leftbgColor: rgba(255, 255, 255, 0.4);
 
-$noActionGray: #F8F8F8;
+$noActionGray: white;//#F8F8F8;
 $noActionGrayBorder: #E0E0E0;
 
 $grayLight: #FFFFFF;
@@ -1971,7 +1971,7 @@ outline: -webkit-focus-ring-color auto 0px;
 	font-size: 36px;
 	text-align: center;
 	font-weight: 300;
-	text-transform: uppercase;
+	// text-transform: uppercase;
 	color: $logonavbarColor;
 	padding: 15px 0px 10px 0px;
 	input {
@@ -2006,4 +2006,69 @@ outline: -webkit-focus-ring-color auto 0px;
 	text-align: center;
 	width: 118px;
 	cursor:text;
+}
+#sign_in {
+	display: block;
+}
+.email_signup {
+	font-size: 14px;
+	margin: 5px 0px -2px 0px;
+	display: block;
+	width: 300px;
+	text-align: left;
+	height: 40px;
+	border-radius: 2px;
+	background: $noActionGray;
+	font-weight: 500;
+	line-height: 2.7em;
+}
+.have-account {
+	font-size: 16px;
+	color: white;
+	margin-top: 10px;
+	text-align: center;
+}
+.signup-phone {
+	float: left;
+	width: 70%;
+	font-size: x-large;
+	input {
+		height: 56px !important;
+	}
+}
+
+.signup-phone-btn {
+	height: 56px;
+	width: 30% !important;
+	margin: 0px;
+	background: $inviteColor;
+	margin-bottom: 5px;
+	border: 10px solid white;
+}
+.bullets {
+	color: white;
+	font-size: 16px;
+	margin-bottom: 20px;
+	ul {
+		-webkit-padding-start: 20px;
+		margin-bottom: 5px;
+	}
+	li {
+		margin-bottom: 0.5em;
+	}
+	p {
+		margin-bottom: 0.1em;
+		font-weight: 800;
+		font-size: 21px;
+	}
+}
+.fb-facepile {
+	position: static !important;
+    bottom: 15px;
+    margin-top: 50px;
+    float: inherit;
+	width: 300px !important;
+	margin-left: auto;
+	margin-right: auto;
+	display: inherit !important;
 }

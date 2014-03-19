@@ -28,6 +28,10 @@ Potlucky::Application.routes.draw do
   match '/new',  to: 'gathers#new',           via: 'get'
   match ':in_url', to: 'links#go',           via: 'get'
   match '/:id', to: 'gathers#show', via: 'get'
+  match 'auth/:provider/callback', to: 'sessions#create', via: [:get, :post]
+  match 'auth/failure', to: redirect('/'), via: [:get, :post]
+
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

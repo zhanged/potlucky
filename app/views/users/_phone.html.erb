@@ -1,0 +1,18 @@
+<% provide(:title, "Phone number") %>
+<div class="form-300 all-wide-form">
+	<div class="page-title">Phone Number</div>
+	<div class="bullets">
+		<p>So Bloon can:</p>
+		<ul>
+			<li>Send you invitations from your friends</li>
+			<li>Keep you updated on your activities</li>
+			<li>Put you in a group text chat with your friends when an activity takes off</li>
+		</ul>
+	</div>
+  	<%= form_for(current_user) do |f| %>
+		<%= render 'shared/error_messages', object: f.object %>
+		<div class="signup-phone"><%= f.text_field :phone, placeholder: "Cell Number", :autofocus => true %></div>
+		<%= f.submit "Next", data: { disable_with: '...' }, class: "btn btn-large btn-block signup-phone-btn" %>
+	<% end %>
+    <p class="forgot-password">Standard text messaging rates apply</p>
+</div>

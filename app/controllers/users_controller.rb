@@ -48,19 +48,31 @@ class UsersController < ApplicationController
   end
 
   def update
-    previous_phone = @user.phone
-    if previous_phone != user_params[:phone]
-      begin
-        @client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
-        message = @client.account.messages.create(
-          body: "Welcome to Bloon! You'll receive new invitations from this phone number. If you didn't sign up for Bloon, reply 'Pop22'",
-            to: user_params[:phone],
-            from: ENV['TWILIO_MAIN'])
-        puts message.to, message.body               
-      rescue 
-        flash[:error] = "Oops this cell number doesn't seem to be correct, please re-enter your cell number"
-        render 'edit'
-      else
+    if params[:commit] == "Save"
+    # Settings
+      previous_phone = @user.phone
+      if previous_phone != user_params[:phone].gsub(/\D/,'')
+        begin
+          @client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+          message = @client.account.messages.create(
+            body: "Welcome to Bloon! You'll receive new invitations from this phone number. If you didn't sign up for Bloon, reply 'Pop22'",
+              to: user_params[:phone],
+              from: ENV['TWILIO_MAIN'])
+          puts message.to, message.body               
+        rescue 
+          flash[:error] = "Oops this cell number doesn't seem to be correct, please re-enter your cell number"
+          render 'edit'
+        else
+          if @user.update_attributes(user_params)
+            @user.update_attributes(auth_token: SecureRandom.urlsafe_base64)
+            flash[:success] = "Profile updated!"
+            sign_in @user
+            redirect_to(root_url)
+          else
+            render 'edit'
+          end        
+        end
+      else 
         if @user.update_attributes(user_params)
           @user.update_attributes(auth_token: SecureRandom.urlsafe_base64)
           flash[:success] = "Profile updated!"
@@ -68,22 +80,53 @@ class UsersController < ApplicationController
           redirect_to(root_url)
         else
           render 'edit'
-        end        
+        end
       end
-    else 
-      if @user.update_attributes(user_params)
-        @user.update_attributes(auth_token: SecureRandom.urlsafe_base64)
-        flash[:success] = "Profile updated!"
-        sign_in @user
-        redirect_to(root_url)
-      else
+    else
+    # New user
+      begin
+        @client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+        message = @client.account.messages.create(
+          body: "Welcome to Bloon! You'll receive invitations from your friends through this phone number. If you didn't sign up for Bloon, reply 'Pop22'",
+            to: user_params[:phone],
+            from: ENV['TWILIO_MAIN'])
+        puts message.to, message.body               
+      rescue 
+        flash[:error] = "Oops this cell number doesn't seem to be correct, please re-enter your cell number"
         render 'edit'
+      else
+        @user.phone = user_params[:phone].gsub(/\D/,'')
+        if @user.save!(:validate => false)
+          # @user.update_attributes(auth_token: SecureRandom.urlsafe_base64)
+          sign_in @user
+          if session[:gatherfrominvite].present? # params["invitation"].present?
+            @gather = Gather.find_by(id: session[:gatherfrominvite]) # Gather.find_by(id: params["invitation"]["gathering_id"])
+            feed_item = @gather
+            if Invitation.find_by(gathering_id: @gather.id, invitee_id: @user.id).present?
+            else              
+              @invitation = @gather.invitations.create!(invitee_id: @user.id)
+              session[:gatherfrominvite] = nil
+              # friend everyone else in the gathering
+              @gather.gather_friends(@user)
+            end
+            flash[:success] = "Welcome to Bloon!"
+            redirect_to(root_url)
+          else
+            flash[:success] = "Welcome to Bloon!"
+            redirect_to '/new'
+          end
+        else
+          render 'edit'
+        end        
       end
     end
   end
 
   def create
     @user = User.new(user_params)
+    if params[:gatherfrominvite].present?
+      remember_gather(params[:gatherfrominvite])
+    end
       # begin
       #   @client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
       #   message = @client.account.messages.create(
@@ -100,33 +143,33 @@ class UsersController < ApplicationController
         if @user.save
           sign_in @user
           puts "step 2"
-          if params["invitation"].present?
-            puts "step 3"
-            @gather = Gather.find_by(id: params["invitation"]["gathering_id"])
-            feed_item = @gather
-            @invitation = @gather.invitations.create!(invitee_id: @user.id, 
-              # activity_1v: params["invitation"]["activity_1v"],
-              # activity_2v: params["invitation"]["activity_2v"],
-              # activity_3v: params["invitation"]["activity_3v"],
-              # date_1v: params["invitation"]["date_1v"],
-              # date_2v: params["invitation"]["date_2v"],
-              # date_3v: params["invitation"]["date_3v"],
-              # time_1v: params["invitation"]["time_1v"],
-              # time_2v: params["invitation"]["time_2v"],
-              # time_3v: params["invitation"]["time_3v"],
-              # location_1v: params["invitation"]["location_1v"],
-              # location_2v: params["invitation"]["location_2v"],
-              # location_3v: params["invitation"]["location_3v"],
-              )
-            @user.join!(@invitation.id)
-            @gather.increase_num_joining!(@invitation.id)
-            flash[:success] = "Welcome to Bloon!"
-            redirect_to(root_url)
-          else
+          # if params["invitation"].present?
+          #   puts "step 3"
+          #   @gather = Gather.find_by(id: params["invitation"]["gathering_id"])
+          #   feed_item = @gather
+          #   @invitation = @gather.invitations.create!(invitee_id: @user.id, 
+          #     # activity_1v: params["invitation"]["activity_1v"],
+          #     # activity_2v: params["invitation"]["activity_2v"],
+          #     # activity_3v: params["invitation"]["activity_3v"],
+          #     # date_1v: params["invitation"]["date_1v"],
+          #     # date_2v: params["invitation"]["date_2v"],
+          #     # date_3v: params["invitation"]["date_3v"],
+          #     # time_1v: params["invitation"]["time_1v"],
+          #     # time_2v: params["invitation"]["time_2v"],
+          #     # time_3v: params["invitation"]["time_3v"],
+          #     # location_1v: params["invitation"]["location_1v"],
+          #     # location_2v: params["invitation"]["location_2v"],
+          #     # location_3v: params["invitation"]["location_3v"],
+          #     )
+          #   @user.join!(@invitation.id)
+          #   @gather.increase_num_joining!(@invitation.id)
+          #   flash[:success] = "Welcome to Bloon!"
+          #   redirect_to(root_url)
+          # else
           # UserMailer.welcome_email(@user).deliver
-            flash[:success] = "Welcome to Bloon!"
-            redirect_to(root_url) #redirect_to :controller => 'gathers', :action => 'new'
-          end
+            # flash[:success] = "Welcome to Bloon!"
+            render 'edit' # redirect_to(root_url) #redirect_to :controller => 'gathers', :action => 'new'
+          # end
         else
           if params["invitation"].present?
             error_msgs = ""
@@ -140,7 +183,16 @@ class UsersController < ApplicationController
             flash[:error] = error_msgs
             redirect_to (request.env['HTTP_REFERER'])
           else
-            render 'new'
+            error_msgs = ""
+            @user.errors.full_messages.each do |msg|
+              if msg == @user.errors.full_messages.first
+                error_msgs = msg
+              else
+                error_msgs = error_msgs +", "+ msg
+              end
+            end
+            flash[:error] = error_msgs
+            redirect_to(:back) # redirect_to(session[:return_to]) # render 'new'
           end
         end
       # end   

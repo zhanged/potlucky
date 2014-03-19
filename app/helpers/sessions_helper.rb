@@ -14,9 +14,9 @@ module SessionsHelper
 		!current_user.nil?
 	end
 
-	def current_user
-	    @current_user ||= User.find_by(remember_token: cookies[:remember_token])
-	end
+	# def current_user
+	#     @current_user ||= User.find_by(remember_token: cookies[:remember_token])
+	# end
 
 	def current_user?(user)
 	    user == current_user
@@ -50,9 +50,17 @@ module SessionsHelper
 
 	def store_location
 		if request.post? || request.put?
-    		session[:return_to] = request.env['HTTP_REFERER']
+    		session[:return_to] = request.env['HTTP_REFERER'] unless request.env['HTTP_REFERER'] == root_url
     	else
 			session[:return_to] = request.url
 		end
+	end
+
+	def remember_gather(gather_id)
+		#get gathering_id from session if it is blank
+		gather_id ||= session[:gatherfrominvite]
+		#save gathering_id to session for future requests
+		session[:gatherfrominvite] = gather_id
+		
 	end
 end

@@ -17,6 +17,7 @@
 </head>
 
 	<body data-no-turbolink>
+		<%= render 'layouts/facepile_js' if !signed_in? %>		
 		<%= render 'layouts/header' %>
 		<div class="container-fluid">
 			<% flash.each do |key, value| %>

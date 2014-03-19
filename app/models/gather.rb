@@ -717,6 +717,16 @@ class Gather < ActiveRecord::Base
 
 	end
 
+	def gather_friends(current_user)
+		self.invitations.pluck(:invitee_id).each do |invitee|
+			a_user = User.find_by(id: invitee)
+			if a_user != current_user && a_user.not_friend?(current_user)
+				a_user.friend!(current_user)
+				current_user.friend!(a_user)
+			end
+		end
+	end
+
 	def tilt_must_fall_in_range_of_invited		
 		if tilt > (invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.count)
 			# errors.add(:tilt, "- Invite #{tilt - invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.count} more people for lift off number to be valid")

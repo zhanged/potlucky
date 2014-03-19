@@ -1,18 +1,21 @@
 <% if signed_in? %>
-
-<div class="row">
-	<div class="center-span">
-<!-- 		<aside class="span4 left-side">
-			<section class="gather-form">
-				%= render 'shared/gather_form' %>
-			</section>
-		</aside> -->
-		<div class="feed">
-			<div id="gather_form" style="display:none;"><h2>Create bloon:</h2><%= render 'gathers/new' %><h2>Your invitation feed:</h2></div>
-			<%= render 'shared/feed' %>
+	<% if current_user.phone.present? %>
+		<div class="row">
+			<div class="center-span">
+		<!-- 		<aside class="span4 left-side">
+					<section class="gather-form">
+						%= render 'shared/gather_form' %>
+					</section>
+				</aside> -->
+				<div class="feed">
+					<div id="gather_form" style="display:none;"><h2>Create bloon:</h2><%= render 'gathers/new' %><h2>Your invitation feed:</h2></div>
+					<%= render 'shared/feed' %>
+				</div>
+			</div>
 		</div>
-	</div>
-</div>
+	<% else %>
+		<%= render 'users/phone' %>
+	<% end %>
 <% else %>
 <div class="row">
 	<div class="center center-span">
@@ -21,10 +24,10 @@
 		<br>
 		<a href="<%= '/more' %>" id="ga-learn-more">Learn more</a>
 		</h2>
-		<div class="signup-login"><a href="<%= '/signin' %>" id="ga-login">Log in.</a> Sign up now:</div>
 		<section>
 			<%= render 'users/new' %>
 		</section>
 	</div>
 </div>
+<%= render 'layouts/facepile' if !signed_in? %>		
 <% end %>
