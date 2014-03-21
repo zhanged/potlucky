@@ -126,7 +126,7 @@ class User < ActiveRecord::Base
 			user = User.find_by(email: inputted_email)
 			user.provider = auth.provider
 	    	user.uid = auth.uid unless auth.uid.blank?
-	    	user.email = inputted_email
+	    	# user.email = inputted_email  # Don't want emails to get mixed up
 	    	if auth.info.present?
 	    		user.name = auth.info.name unless auth.info.name.blank?
 		    	user.first_name = auth.info.first_name unless auth.info.first_name.blank?

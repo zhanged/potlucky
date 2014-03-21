@@ -261,7 +261,7 @@ class Gather < ActiveRecord::Base
 			@gather.update_attributes(invited_no: @gather.invited_no.sub(@joining_user.email,''))
 			@gather.update_attributes(num_passing: @gather.num_passing - 1)
 		end
-		invited_yes_array = @gather.invited_yes.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
+		invited_yes_array = @gather.invited_yes.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq
 		@people_joining_less_user = ""
 		if @joining_user.name.present?
 			@joining_user_name_or_email = @joining_user.name.split(' ').first
@@ -536,7 +536,7 @@ class Gather < ActiveRecord::Base
 
 			if @gather.num_joining + 1 >= @gather.tilt			 
 			# Tilted already, including untilted now; let already joining group know
-				invited_yes_array = @gather.invited_yes.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
+				invited_yes_array = @gather.invited_yes.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq
 				invited_yes_array.each do |n|
 					invited_yes_user = User.find_by(email: n)
 					invited_yes_user_invitation = Invitation.find_by(gathering_id: @gather.id, invitee_id: invited_yes_user.id)				
