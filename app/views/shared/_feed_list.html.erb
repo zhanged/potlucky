@@ -1,0 +1,7 @@
+<li id="<%= feed_list.id %>">
+	<%= feed_list.item %>
+	<% if current_user?(feed_list.user) %>
+    <%= link_to "delete", feed_list, method: :delete,
+                                     data: { confirm: "You sure?" } %>
+  <% end %>
+</li>

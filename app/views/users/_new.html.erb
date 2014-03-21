@@ -1,3 +1,7 @@
+<% if current_page?(controller: 'gathers', action: 'show') %>
+	<div class="new-user-bg">
+		<h3>Sign up to join:</h3>
+<% end %>
 <div class="form-300 all-wide-form">
 	<%= link_to image_tag("active_600.png", :border => 0), "/auth/facebook", id: "sign_in" %>
 
@@ -17,7 +21,7 @@
 					<%= f.password_field :password, placeholder: "Password" %>
 					<!-- %= f.password_field :password_confirmation, placeholder: "Confirmm Password" %> -->
 
-					<%= f.submit "Join", data: { disable_with: 'Joining...' }, class: "btn btn-large btn-invite btn-block" %>
+					<%= f.submit "Join", data: { disable_with: 'Joining...' }, class: "btn btn-large btn-new-user btn-block" %>
 					<!-- <% end %> -->
 			<% end %>
 		    <!-- <p class="forgot-password">We will never give away your information to 3rd parties. You will receive text messages to notify you of invitations and to organize activities with friends</p> -->
@@ -33,7 +37,7 @@
 				<%= f.password_field :password, placeholder: "Password" %>
 				<!-- %= f.password_field :password_confirmation, placeholder: "Confirmm Password" %> -->
 
-				<%= f.submit "Join Bloon", data: { disable_with: 'Joining Bloon :D' }, class: "btn btn-large btn-invite btn-block" %>
+				<%= f.submit "Join Bloon", data: { disable_with: 'Joining Bloon :D' }, class: "btn btn-large btn-new-user btn-block" %>
 			<% end %>
 		    <!-- <p class="forgot-password">We will never give away your information to 3rd parties. You will receive text messages to notify you of invitations and to organize activities with friends</p> -->
 		</div>
@@ -43,3 +47,6 @@
 		Already have an account? <a href="/signin" id="ga-sign-in">Log in now</a>
 	</div>
 </div>
+<% if current_page?(controller: 'gathers', action: 'show') %>
+	</div>
+<% end %>

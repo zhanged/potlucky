@@ -4,31 +4,14 @@
 	<%= render 'shared/error_messages', object: f.object %> 
 	<div class="field">		
 		<div class="input-group">
-        	<input type="text" class="form-control" name="gather[activity]" placeholder="Activity details (e.g. Dinner on Saturday)">
-	        <input type="text" class="datepicker" name="gather[date]" placeholder="Date" readonly="true">
+			<div class="form-label">1. Activity Info</div>
+        	<input type="text" class="form-control" name="gather[activity]" placeholder="What, when & where">
+<!--         	<div class="form-label">Date</div>
+	        <input type="text" class="datepicker" name="gather[date]" placeholder="Date" readonly="true"> -->
         </div>
-		<textarea class="tags" id="new-gather-form-invite" style="display:none;" name="gather[invited]" placeholder="Invite: (none selected from below)" ></textarea>
-		<div class="input-group">
-			<div class="name-select-area">
-				<% if current_user.friended_users.present? %>
-					<% if current_page?(controller: 'gathers', action: 'new') %>
-						<span class="new-select-invite">Invite:</span>
-						<ol class="selectable" id="new-gather-form-invite">
-							<% current_user.friended_users.where("phone IS NOT NULL").order(:name).each do |friend| %>
-								<li class="name-select" value="<%= friend.name %>">+<%= friend.name %> <div style="display:none;">(<%= friend.email %>) </div></li>
-							<% end %>
-						</ol>
-					<% else %>
-						<span class="new-select-invite">Inviting:</span>
-						<div class="tags"><p id="whos-invited">Initial state<p></div>
-					<% end %>
-				<% end %>
-				<span class="name-select-blurb">Copy & share this link to invite others not here: <input type="text" id="gen_link" class="gen_link-form" name="gather[gen_link]" value="" readonly></span>
-			</div>
-		</div>
 
 		<div class="input-group min-friends">
-			<div class="name-select-area new-select-invite">Minimum friends needed <a title="The activity will only happen if this many friends or more join, including you"><i class="fa fa-question-circle"></i></a>: 
+			<div class="form-label">2. Minimum friends needed <a title="The activity will only happen if this many friends or more join, including you"><i class="fa fa-question-circle"></i></a> 
 				<div class="radio-select-area">
 					<div id="radio_tilt">
 					    <input type="radio" id="radio2" name="gather[tilt]" value="2" /><label for="radio2">2</label>
@@ -40,9 +23,23 @@
 				</div>
 			</div>
 		</div>
+
+		<textarea class="tags" id="new-gather-form-invite" style="display:none;" name="gather[invited]" placeholder="Invite: (none selected from below)" ></textarea>
+		<div class="input-group">
+			<!-- <div class="name-select-area"> -->
+				<% if current_user.friended_users.present? %>
+						<span class="form-label">3. Who</span>
+						<ol class="selectable" id="new-gather-form-invite">
+							<% current_user.friended_users.where("phone IS NOT NULL").order(:name).each do |friend| %>
+								<li class="name-select" value="<%= friend.name %>">+<%= friend.name %> <div style="display:none;">(<%= friend.email %>) </div></li>
+							<% end %>
+						</ol>
+				<% end %>
+				<span style="display: none" class="name-select-blurb">Copy & share this link to invite others not here: <input type="text" id="gen_link" class="gen_link-form" name="gather[gen_link]" value="" readonly></span>
+			<!-- </div> -->
+		</div>
 	</div>
-	<%= f.submit "Organize Activity", data: { disable_with: 'Please wait...' }, class: "btn btn-large btn-block btn-invite" %>
+	<%= f.submit "Send Invitations", data: { disable_with: 'Please wait...' }, class: "btn btn-large btn-block btn-invite" %>
 
 <% end %>
 </div>
-<br>

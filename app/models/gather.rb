@@ -46,7 +46,7 @@ class Gather < ActiveRecord::Base
 		# 	end
 		# end
 	end
-	default_scope -> { order('gathers.updated_at DESC') }
+	default_scope -> { order('gathers.created_at DESC') }
 	validates :activity, presence: true, length: { maximum: 70 }
 	# validates :activity_2, length: { maximum: 70 }
 	# validates :activity_3, length: { maximum: 70 }
@@ -398,13 +398,13 @@ class Gather < ActiveRecord::Base
 				puts message.from
 			end
 
-			if Invitation.find_by(invitee_id: @gather.user_id, gathering_id: @gather.id).number_used.present?
-				message = @client.account.messages.create(
-						body: "As the organizer, you can send a calendar invite to current & future participants when you finalize the details - just follow this link bloon.us/#{Invitation.find_by(invitee_id: @gather.user_id, gathering_id: @gather.id).link.in_url}",
-					    to: @gather.user.phone,
-					    from: Invitation.find_by(invitee_id: @gather.user_id, gathering_id: @gather.id).number_used)
-					puts message.from
-			end
+			# if Invitation.find_by(invitee_id: @gather.user_id, gathering_id: @gather.id).number_used.present?
+			# 	message = @client.account.messages.create(
+			# 			body: "As the organizer, you can send a calendar invite to current & future participants when you finalize the details - just follow this link bloon.us/#{Invitation.find_by(invitee_id: @gather.user_id, gathering_id: @gather.id).link.in_url}",
+			# 		    to: @gather.user.phone,
+			# 		    from: Invitation.find_by(invitee_id: @gather.user_id, gathering_id: @gather.id).number_used)
+			# 		puts message.from
+			# end
 
 			@gather.update_attributes(details: ("#{@gather.details} <br>Bloon: #{gather_name} has taken off with #{User.find_by(email: invited_yes_array.last).name.split(' ').first}, #{@people_joining_less_user}! Reply to this group text to plan the details together "))
 

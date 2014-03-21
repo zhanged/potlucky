@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140318051837) do
+ActiveRecord::Schema.define(version: 20140319055215) do
 
   create_table "calinvites", force: true do |t|
     t.integer  "gather_id"
@@ -123,6 +123,18 @@ ActiveRecord::Schema.define(version: 20140318051837) do
 
   add_index "links", ["gathering_id", "invitation_id"], name: "index_links_on_gathering_id_and_invitation_id"
   add_index "links", ["in_url"], name: "index_links_on_in_url"
+
+  create_table "lists", force: true do |t|
+    t.text     "item"
+    t.integer  "user_id"
+    t.string   "source"
+    t.string   "status"
+    t.integer  "virality"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "lists", ["user_id", "created_at"], name: "index_lists_on_user_id_and_created_at"
 
   create_table "tnumbers", force: true do |t|
     t.string   "tphone"

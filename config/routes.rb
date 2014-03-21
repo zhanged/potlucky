@@ -11,7 +11,8 @@ Potlucky::Application.routes.draw do
   resources :friendships, only: [:new, :create, :destroy]
   resources :updates, only: [:create, :destroy]
   resources :invite_mores, only: [:create, :destroy]
-  resources :links  
+  resources :links
+  resources :lists , only: [:create, :destroy]
   root to: 'static_pages#home'
   match '/signup',  to: 'users#new',           via: 'get'
   match '/lets_go',    to: 'users#lets_go',        via: 'get'
@@ -25,7 +26,7 @@ Potlucky::Application.routes.draw do
   match '/faq',   to: 'static_pages#faq',  via: 'get'
   match '/more',   to: 'static_pages#more',  via: 'get'
   match '/how',   to: 'static_pages#how',  via: 'get'
-  match '/new',  to: 'gathers#new',           via: 'get'
+  # match '/new',  to: 'gathers#new',           via: 'get'
   match ':in_url', to: 'links#go',           via: 'get'
   match '/:id', to: 'gathers#show', via: 'get'
   match 'auth/:provider/callback', to: 'sessions#create', via: [:get, :post]

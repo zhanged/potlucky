@@ -4,7 +4,7 @@
 	</ol>
   <%= will_paginate @feed_items, :previous_label => nil, :next_label => nil, :inner_window => 0, :outer_window => 0 %>
 <% end %>
-<% if @feed_items.count < 5 %>
+<% if @feed_items.count < 3 %>
 	<br>
 	<%= render partial: 'static_pages/how' %>
 	<div class="form-300">

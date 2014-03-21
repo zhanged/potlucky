@@ -12,7 +12,7 @@
 				<%= f.text_field :email, placeholder: "Email", :autofocus => true %>
 				<%= f.password_field :password, placeholder: "Password" %>
 
-				<%= f.submit "Sign in", data: { disable_with: 'Signing in...' }, class: "btn btn-block btn-invite btn-large" %>
+				<%= f.submit "Sign in", data: { disable_with: 'Signing in...' }, class: "btn btn-block btn-new-user btn-large" %>
 			<% end %>
 
 			<p class="forgot-password"><%= link_to "Forgot your password?", reset_path %></p>

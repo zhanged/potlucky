@@ -1,0 +1,11 @@
+<%= form_for(@list) do |f| %>
+  <%= render 'shared/error_messages', object: f.object %>
+  <div class="field">
+  	<div class="input-group">
+		<!-- <div class="form-label">Activity Info</div> -->
+    	<!-- <%= f.text_area :item, placeholder: "Activity for my list" %> -->
+    	<input type="text" class="form-control" name="list[item]" placeholder="Activity (e.g. Wine tasting night)">
+    </div>
+  </div>
+  <%= f.submit "Add to my list", data: { disable_with: 'Adding...' }, class: "btn btn-large btn-block btn-invite" %>
+<% end %>

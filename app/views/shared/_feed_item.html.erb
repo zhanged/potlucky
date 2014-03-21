@@ -1,8 +1,28 @@
+<% if feed_item.class.model_name.name == "Gather" %>
 <li id="<%= feed_item.id %>">
+	<table class="who-table"><tr>
+		<td class="td-invited-by">
+			<a href="<%= user_path(feed_item.user) %>"><%= feed_item.user.name %></a> invited you to:
+			<!-- <div><i class="fa fa-comment-o fa-1x"></i></div> -->
+			<!-- <div><i class="fa fa-plus fa-1x"></i></div> -->
+		</td>
+		<td class="td-status">
+  			<% if (feed_item.num_joining) >= feed_item.tilt %>
+				<div class="circle-yes-text" title="Enough friends have joined - this is happening!"> <i class="fa fa-bolt fa-1x"></i>  It's on!</div>
+			<% else %>
+				<div class="circle-na-text" title="Need at least <%= feed_item.tilt - feed_item.num_joining %> more friends to join for this activity to happen"><%= feed_item.num_joining %> / <%= feed_item.tilt %> <i class="fa fa-user fa-1x"></i></div>
+			<% end %>
+		</td>
+</table>
 	<table class="title-table"><tr>
 		<td class="td-activity">
 		  	<div class="activity">
 	  			<%= feed_item.activity %>
+<!-- 	  			<% if (feed_item.num_joining) >= feed_item.tilt %>
+					<div class="circle-yes-text" title="Enough friends have joined - this is happening!"> <i class="fa fa-bolt fa-1x"></i>  It's on!</div>
+				<% else %>
+					<div class="circle-na-text" title="Need at least <%= feed_item.tilt - feed_item.num_joining %> more friends to join for this activity to happen"><%= feed_item.num_joining %> / <%= feed_item.tilt %> <i class="fa fa-user fa-1x"></i></div>
+				<% end %> -->
 		  	</div>
   		</td>
   		<td class="td-info">
@@ -37,28 +57,17 @@
 	</tr></table>
 
 	<span class="invited"><div class="user_avatars">
-		<% if (feed_item.num_joining) >= feed_item.tilt %>
-			<div class="circle-yes-text"><%= "Enough joined - this is on!" %></div>
-		<% else %>
-			<div class="circle-na-text"><%= feed_item.tilt - feed_item.num_joining %> more must join for this to happen</div>
-		<% end %>
 	<% feed_item.invitations.each do |invitation| %>
 		<% if invitation.status == "Yes" %>
 			<div id="circle-yes">
 				<% if current_page?(root_url) || current_page?('/gathers') %>
 					<% if invitation.invitee == current_user %>
-						<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
+						<a href="<%= root_url %>" title="<%= invitation.invitee.name %> is joining">
 					<% else %>
-						<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
+						<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %> is joining">
 					<% end %>
 				<% end %>
-				<% if invitation.invitee == feed_item.user %><b><% end %>
-				<% if invitation.invitee.name.present? %>
-					<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
-				<% else %>
-					<%= invitation.invitee.email.at(0.1).upcase %>
-				<% end %>
-				<% if invitation.invitee == feed_item.user %></b><% end %>
+				<%= invitation.invitee.name.split(' ').first %> <!-- <i class="fa fa-check-circle"></i> -->
 				</a>
 			</div>
 		<% end %>
@@ -69,18 +78,12 @@
 			<div id="circle-na">
 				<% if current_page?(root_url) || current_page?('/gathers') %>
 					<% if invitation.invitee == current_user %>
-						<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
+						<a href="<%= root_url %>" title="<%= invitation.invitee.name %> hasn't responded yet">
 					<% else %>
-						<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
+						<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %> hasn't responded yet">
 					<% end %>
 				<% end %>
-				<% if invitation.invitee == feed_item.user %><b><% end %>
-				<% if invitation.invitee.name.present? %>
-					<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
-				<% else %>
-					<%= invitation.invitee.email.at(0.1).upcase %>
-				<% end %>
-				<% if invitation.invitee == feed_item.user %></b><% end %>
+				<%= invitation.invitee.name.split(' ').first %> <!-- <i class="fa fa-question-circle"></i> -->
 				</a>
 			</div>
 		<% end %>
@@ -91,31 +94,25 @@
 			<div id="circle-no">
 				<% if current_page?(root_url) || current_page?('/gathers') %>
 					<% if invitation.invitee == current_user %>
-						<a href="<%= root_url %>" title="<%= invitation.invitee.name %>">
+						<a href="<%= root_url %>" title="<%= invitation.invitee.name %> has passed">
 					<% else %>
-						<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %>">
+						<a href="<%= user_path(invitation.invitee) %>" title="<%= invitation.invitee.name %> has passed">
 					<% end %>
 				<% end %>
-				<% if invitation.invitee == feed_item.user %><b><% end %>
-				<% if invitation.invitee.name.present? %>
-					<%= invitation.invitee.name.at(0.1).upcase %><%= invitation.invitee.name.split(' ').last.at(0.1).upcase if invitation.invitee.name.split(' ').second.present? %>
-				<% else %>
-					<%= invitation.invitee.email.at(0.1).upcase %>
-				<% end %>
-				<% if invitation.invitee == feed_item.user %></b><% end %>
+				<%= invitation.invitee.name.split(' ').first %> <!-- <i class="fa fa-ban"></i> -->
 				</a>
 			</div>
 		<% end %>
 	<% end %>
 	</div></span>
 
-	<% if signed_in? && (current_page?(root_url) || current_page?(controller: 'gathers', action: 'show')) && (Invitation.find_by(invitee_id: current_user.id, gathering_id: feed_item.id).present? ) %>
+<!-- 	<% if signed_in? && (current_page?(root_url) || current_page?(controller: 'gathers', action: 'show')) && (Invitation.find_by(invitee_id: current_user.id, gathering_id: feed_item.id).present? ) %>
 		<% if (Invitation.find_by(invitee_id: current_user.id, gathering_id: feed_item.id).status == "Yes") %>
-			<% if (feed_item.user_id == current_user.id) && (Invitation.find_by(invitee_id: current_user.id, gathering_id: feed_item.id).status == "Yes") %>		
+			<% if (feed_item.user_id == current_user.id) && (Invitation.find_by(invitee_id: current_user.id, gathering_id: feed_item.id).status == "Yes") && feed_item.completed.blank? %>		
 				<%= render 'shared/cal_invite_form', :feed_item => feed_item %>		
 			<% end %>
 		<% end %>
-	<% end %>
+	<% end %> -->
 
 	<% if current_page?(root_url) || current_page?(controller: 'gathers', action: 'show') %>
 		<% if signed_in? && Invitation.find_by(invitee_id: current_user.id, gathering_id: feed_item.id).present? %>
@@ -243,7 +240,8 @@
 			</div>
 
 			<div id="tabs-4_<%=feed_item.id %>">
-			    <% if signed_in? %>
+				<div class="organized-by">Coming soon!</div>
+<!-- 			    <% if signed_in? %>
 			    	<% friends_with_no_phone = "no" %>
 			    	<% feed_item.invitations.pluck(:invitee_id).each do |i| %>
 			    		<% friends_with_no_phone = "yes" if ( User.find_by(id: i).phone.nil? || User.find_by(id: i).phone == "" ) %>
@@ -254,7 +252,7 @@
 						<div class="organized-by"><a href="#rebloon" id="ga-rebloon-link" onclick="make_visible('gather_form'); reBloon(<%= feed_item.invited.to_json %>, 'new-gather-form-invite', 'gather_form'); whosInvited(<%= User.where(id: feed_item.invitations.pluck(:invitee_id)).pluck(:name).join(", ").to_json %>, 'whos-invited', 'gather_form')">Create a new Bloon inviting the same people
 				     	</a></div>
 				     <% end %>
-				<% end %>
+				<% end %> -->
 			</div>
 
 			<div id="tabs-5_<%=feed_item.id %>">			    
@@ -262,4 +260,24 @@
 		</div>
 	<% end %>
 <div class="d-effect"></div>
+<% else %>
 </li>
+<li id="<%= feed_item.id %>">
+	<div class="list-item">
+		<table class="who-table"><tr>
+			<td class="td-invited-by">
+				<a href="<%= user_path(feed_item.user) %>"><%= feed_item.user.name %></a> wants to:
+				
+				<!-- <div><i class="fa fa-plus fa-1x"></i></div> -->
+			</td>
+		</tr></table>
+		<div class="list-item-activity">
+			<i class="fa fa-list-ul fa-1x"></i><%= feed_item.item %>
+<!-- 			<% if current_user?(feed_item.user) %>
+		    <%= link_to "delete", feed_item, method: :delete,
+		                                     data: { confirm: "You sure?" } %>
+		  	<% end %> -->
+		</div>
+	</div>
+</li>
+<% end %>

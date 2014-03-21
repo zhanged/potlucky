@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
 	has_many :gatherings, through: :reverse_invitations
 	has_many :friendships, foreign_key: "friender_id"
 	has_many :friended_users, through: :friendships, source: :friended
+	has_many :lists, dependent: :destroy
 	before_save { self.email = email.downcase }
 	before_validation do 
 		if self.phone != nil
@@ -51,6 +52,14 @@ class User < ActiveRecord::Base
 	def feed
 		Gather.from_gathers_invited_to(self)
 	end
+
+	def friends_list_feed
+		List.list_from_friends(self)
+	end	
+
+	def full_list
+		List.where(user_id: self.id)
+	end	
 
 	def join?(invitation_id)
 		Invitation.find_by(id: invitation_id).status.include?("Yes")

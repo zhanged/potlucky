@@ -24,13 +24,18 @@
 			</div>
 	    </section>
 	<div class="feed">
-		
-	<ol class="gathers">
-		<% @userfeed = @user.feed.paginate(page: params[:page], per_page: 10) %>
-		<%= render partial: 'shared/feed_item', collection: @userfeed %>
-	</ol>
+			
+	<% @userlist = @user.full_list.paginate(page: params[:page], per_page: 10) %>
+	<% if @userlist.present? %>
+		<ol class="lists">
+
+			<%= render partial: 'shared/feed_list', collection: @userlist if @userlist.present? %>
+		</ol>
+	<% else %>
+		<br><span class="name-big user-info-margin"><%= @user.name.split(' ').first %> hasn't started a list yet</span>
+	<% end %>
 	
 	</div>
-	<%= will_paginate @userfeed, :previous_label => nil, :next_label => nil, :inner_window => 0, :outer_window => 0 %>
+	<%= will_paginate @userlist, :previous_label => nil, :next_label => nil, :inner_window => 0, :outer_window => 0 %>
 
 </div>

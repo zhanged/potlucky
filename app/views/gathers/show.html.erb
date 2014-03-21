@@ -2,15 +2,7 @@
 	<h2>Create bloon</h2>
 	<%= render 'gathers/new' if signed_in? %>
 </div>
-<h2>
-<% if signed_in? %>
-	<% if @gather.user != current_user %>
-		Hey <%= current_user.name.split(' ').first %>! <%= @gather.user.name.split(' ').first %> invited you to:
-	<% end %>
-<% else %>
-	Hey there! <%= @gather.user.name.split(' ').first %> invited you to:
-<% end %>
-</h2>
+
 <ol class="gathers">
 	<%= render 'shared/feed_item', :feed_item => @gather %>
 </ol>

@@ -9,7 +9,8 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
-    @gathers = @user.gathers.paginate(page: params[:page])
+    # @gathers = @user.gathers.paginate(page: params[:page])
+    @lists = @user.lists.paginate(page: params[:page])
   end
 
   def new

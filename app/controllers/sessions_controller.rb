@@ -23,7 +23,7 @@ class SessionsController < ApplicationController
 		            end
 		            redirect_to(root_url)
 		        else
-					redirect_to '/new' # root_url
+					redirect_to(root_url)
 				end
     		else
     			redirect_to edit_user_path(current_user)
@@ -52,7 +52,7 @@ class SessionsController < ApplicationController
 			            end
 			            redirect_to(root_url)
 			        else
-						redirect_to '/new' # root_url
+						redirect_to(root_url)
 					end
 				else
 					redirect_to edit_user_path(current_user)
