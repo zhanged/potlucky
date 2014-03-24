@@ -16,10 +16,13 @@ class SessionsController < ApplicationController
 		            feed_item = @gather
 		            if Invitation.find_by(gathering_id: @gather.id, invitee_id: the_user.id).present?		            	
 		            else
-		            	@invitation = @gather.invitations.create!(invitee_id: the_user.id)
+		            	@gather.invite!(the_user)
+		            	# @invitation = @gather.invitations.create!(invitee_id: the_user.id)
 		            	session[:gatherfrominvite] = nil
 		            	# friend everyone else in the gathering
 		            	@gather.gather_friends(the_user)
+						@gather.update_attributes(invited: @gather.invited + " " + the_user.email)
+						@gather.update_attributes(num_invited: @gather.num_invited + 1)
 		            end
 		            redirect_to(root_url)
 		        else
@@ -45,10 +48,13 @@ class SessionsController < ApplicationController
 			            feed_item = @gather
 			            if Invitation.find_by(gathering_id: @gather.id, invitee_id: user.id).present?		            	
 			            else
-			            	@invitation = @gather.invitations.create!(invitee_id: user.id)
+			            	@gather.invite!(user)
+			            	# @invitation = @gather.invitations.create!(invitee_id: user.id)
 			            	session[:gatherfrominvite] = nil
 			            	# friend everyone else in the gathering
 			            	@gather.gather_friends(user)
+			            	@gather.update_attributes(invited: @gather.invited + " " + user.email)
+							@gather.update_attributes(num_invited: @gather.num_invited + 1)
 			            end
 			            redirect_to(root_url)
 			        else

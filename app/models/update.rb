@@ -15,8 +15,8 @@ class Update < ActiveRecord::Base
 			invites.each do |i|
 				invite = Invitation.find_by(id: i)
 				user = User.find_by(id: invite.invitee_id)
-				if invite.number_used.present?
-				# Joining, so text				
+				if invite.status != "No"
+				# Joining or not responded, so text				
 					message = @client.account.messages.create(
 						body: "Update from #{responder.name}: #{self.content}",
 					    to: user.phone,
@@ -47,13 +47,6 @@ class Update < ActiveRecord::Base
 						end
 					end
 					UserMailer.update_email(user, self, gather, already_joining, responder, invite).deliver
-				else
-					# Not joining but has phone, send text through main
-					message = @client.account.messages.create(
-						body: "#{responder.name} has an update for #{gather.activity}: #{self.content}",
-					    to: user.phone,
-					    from: ENV['TWILIO_MAIN'])
-					puts message.from
 				end
 			end
 			tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
@@ -71,13 +64,13 @@ class Update < ActiveRecord::Base
 				    to: organizer.phone,
 				    from: Invitation.find_by(gathering_id: gather.id, invitee_id: gather.user_id).number_used)
 				puts message.from
-			else
-			# If not tilted
-				message = @client.account.messages.create(
-					body: "Msg from #{responder.name} re: #{gather.activity} - #{self.content}",
-				    to: organizer.phone,
-				    from: ENV['TWILIO_MAIN'])
-				puts message.from	
+			# else
+			# # If not tilted
+			# 	message = @client.account.messages.create(
+			# 		body: "Msg from #{responder.name} re: #{gather.activity} - #{self.content}",
+			# 	    to: organizer.phone,
+			# 	    from: ENV['TWILIO_MAIN'])
+			# 	puts message.from	
 			end
 			tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
 			tracker.track(responder.id, 'Updated (Invitee)', {

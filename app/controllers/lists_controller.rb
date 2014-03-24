@@ -7,6 +7,11 @@ class ListsController < ApplicationController
 	def create
 		@list = current_user.lists.build(list_params)
 		if @list.save
+			tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
+			tracker.track(current_user.id, 'Added to list', {
+			'List ID' => @list.id,
+			'List Item' => @list.item
+			})
 			flash[:success] = "Added to list!"
 			redirect_to root_url
 		else

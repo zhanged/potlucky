@@ -56,7 +56,7 @@ class UsersController < ApplicationController
         begin
           @client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
           message = @client.account.messages.create(
-            body: "Welcome to Bloon! You'll receive new invitations from this phone number. If you didn't sign up for Bloon, reply 'Pop22'",
+            body: "Welcome to Bloon! If you didn't sign up for Bloon, reply 'Pop22'",
               to: user_params[:phone],
               from: ENV['TWILIO_MAIN'])
           puts message.to, message.body               
@@ -88,7 +88,7 @@ class UsersController < ApplicationController
       begin
         @client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
         message = @client.account.messages.create(
-          body: "Welcome to Bloon! You'll receive invitations from your friends through this phone number. If you didn't sign up for Bloon, reply 'Pop22'",
+          body: "Welcome to Bloon! If you didn't sign up for Bloon, reply 'Pop22'",
             to: user_params[:phone],
             from: ENV['TWILIO_MAIN'])
         puts message.to, message.body               
@@ -105,10 +105,13 @@ class UsersController < ApplicationController
             feed_item = @gather
             if Invitation.find_by(gathering_id: @gather.id, invitee_id: @user.id).present?
             else              
-              @invitation = @gather.invitations.create!(invitee_id: @user.id)
+              @gather.invite!@user
+              # @invitation = @gather.invitations.create!(invitee_id: @user.id)
               session[:gatherfrominvite] = nil
               # friend everyone else in the gathering
               @gather.gather_friends(@user)
+              @gather.update_attributes(invited: @gather.invited + " " + @user.email)
+              @gather.update_attributes(num_invited: @gather.num_invited + 1)
             end
             flash[:success] = "Welcome to Bloon!"
             redirect_to(root_url)

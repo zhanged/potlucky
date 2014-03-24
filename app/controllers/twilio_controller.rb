@@ -2,8 +2,8 @@ class TwilioController < ApplicationController
 	BASE_URL = "http://bloon.us/twilio/respond"
   
     def respond
-    	@from = params[:From]
-    	@to = params[:To]
+    	@from = params[:From] # user's number
+    	@to = params[:To]  # twilio number
     	@formatted_phone = @from.gsub("+1","")
     	@body = params[:Body]
     	@invitation_id = @body.split(' ').first.gsub("Y","")
@@ -11,103 +11,129 @@ class TwilioController < ApplicationController
     	
 
     	# Y# Responses:
-    	if @body.downcase == "y" && @to == ENV['TWILIO_MAIN']
-    	# if "Y" and to the Main #, find invitation through From # and join, then check backlog
+    	if @body.downcase == "y"
+    	# if "Y", find invitation through To # and join
     		if User.find_by(phone: @formatted_phone).present?
     			@user = User.find_by(phone: @formatted_phone)
-    			if Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").present?
-    				@invitation = Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").first
+    			if Invitation.where(invitee_id: @user.id, number_used: @to, status: "NA").present?
+    				# If hasn't repsonded yet
+    				@invitation = Invitation.find_by(invitee_id: @user.id, number_used: @to)
 					@user.join!(@invitation.id)
 					Gather.find_by(id: @invitation.gathering_id).increase_num_joining!(@invitation.id)
+					puts "Joining as first response"	
+				elsif Invitation.where(invitee_id: @user.id, number_used: @to, status: "No").present?
+					# If passed and no wants to join
+    				@invitation = Invitation.find_by(invitee_id: @user.id, number_used: @to)
+					@user.join!(@invitation.id)
+					Gather.find_by(id: @invitation.gathering_id).increase_num_joining!(@invitation.id)
+					puts "Joining, was passing before"	
+				elsif Invitation.where(invitee_id: @user.id, number_used: @to, status: "Yes").present?
+					# If already joining
+    				@invitation = Invitation.find_by(invitee_id: @user.id, number_used: @to)
+			    	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+					message = @client.account.messages.create(
+						body: "Great, we've already marked you down as joining: #{@invitation.gathering.activity}",
+					    to: @user.phone,
+					    from: @invitation.number_used)
+					puts message.from
+					puts "Trying to join again"	
 				else
-					@invitation = Invitation.where(invitee_id: @user.id, sent: "Yes").where("when_responded IS NOT NULL").order(:when_responded).last
-					if @invitation.status == "Yes"
-				    	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
-						message = @client.account.messages.create(
-							body: "Great, we've already marked you down as joining: #{@invitation.gathering.activity}",
-						    to: @user.phone,
-						    from: ENV['TWILIO_MAIN'])
-						puts message.from	
-					else 						
-						@user.join!(@invitation.id)
-						Gather.find_by(id: @invitation.gathering_id).increase_num_joining!(@invitation.id)
-						"Switched from no to yes via text"
-					end
+					# Else joining too late
+			    	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+					message = @client.account.messages.create(
+						body: "Sorry, this activity has already been completed",
+					    to: @user.phone,
+					    from: @to)
+					puts message.from
+					puts "Joining too late"		
 				end
 			end
 
-    	elsif @body.downcase == "n" && @to == ENV['TWILIO_MAIN']
-    	# if "N" and to the Main #, find invitation through From # and join, then check backlog
+    	elsif @body.downcase == "n"
+    	# if "N", find invitation through To # and unjoin
     		if User.find_by(phone: @formatted_phone).present?
     			@user = User.find_by(phone: @formatted_phone)
-    			if Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").present?
-    				@invitation = Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").first
+    			if Invitation.where(invitee_id: @user.id, number_used: @to, status: "NA").present?
+    				# Hasn't responded yet
+    				@invitation = Invitation.find_by(invitee_id: @user.id, number_used: @to)
 					@user.unjoin!(@invitation.id)
 					Gather.find_by(id: @invitation.gathering_id).decrease_num_joining!(@invitation.id)
+					puts "Passing as first response"	
+				elsif Invitation.where(invitee_id: @user.id, number_used: @to, status: "Yes").present?
+					# Was joining
+    				@invitation = Invitation.find_by(invitee_id: @user.id, number_used: @to)
+					@user.unjoin!(@invitation.id)
+					Gather.find_by(id: @invitation.gathering_id).decrease_num_joining!(@invitation.id)
+					puts "Passing, was joining before"	
+				elsif Invitation.where(invitee_id: @user.id, number_used: @to, status: "No").present?
+					# Is already passing
+    				@invitation = Invitation.find_by(invitee_id: @user.id, number_used: @to)
+					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+					message = @client.account.messages.create(
+						body: "Aw, we've already marked you down as passing: #{@invitation.gathering.activity}",
+					    to: @user.phone,
+					    from: @invitation.number_used)
+					puts message.from
+					puts "Trying to pass again"
 				else
-					@invitation = Invitation.where(invitee_id: @user.id, sent: "Yes").where("when_responded IS NOT NULL").order(:when_responded).last
-					if @invitation.status == "No"
-				    	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
-						message = @client.account.messages.create(
-							body: "Aw, we've already marked you down as passing: #{@invitation.gathering.activity}",
-						    to: @user.phone,
-						    from: ENV['TWILIO_MAIN'])
-						puts message.from	
-					else 						
-						@user.unjoin!(@invitation.id)
-						Gather.find_by(id: @invitation.gathering_id).decrease_num_joining!(@invitation.id)
-						"Switched from yes to no via text"
-					end
+					# Else passing too late
+			    	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+					message = @client.account.messages.create(
+						body: "Sorry, this activity has already been completed",
+					    to: @user.phone,
+					    from: @to)
+					puts message.from
+					puts "Passing too late"	
 				end
 			end
 
-    	elsif @body.at(0.1) == "Y" && Invitation.find_by(id: @invitation_id).present?
-    		# Matches an invitation
-   	    	@invitation = Invitation.find_by(id: @invitation_id)
-   	    	@user = User.find_by(id: @invitation.invitee_id)    		
+   #  	elsif @body.at(0.1) == "Y" && Invitation.find_by(id: @invitation_id).present?
+   #  		# Matches an invitation
+   # 	    	@invitation = Invitation.find_by(id: @invitation_id)
+   # 	    	@user = User.find_by(id: @invitation.invitee_id)    		
 
-   	    	if Gather.find_by(id: @invitation.gathering_id).completed.present?
-				# Y# response when the gathering has already been completed
-		    	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
-				message = @client.account.messages.create(
-					body: "Oops, this activity has already ended",
-				    to: @from,
-				    from: @to)
-				puts message.from				
-   	    	else
-	   	    	if @user.phone.blank?
-	   	    		# Invitee doesn't have a phone number: record it and join/unjoin. Will be error if wrong new user texts this
-		   	    	@user.phone = @formatted_phone
-		    		@user.save(validate: false)
-					if @invitation.status == "NA"
-						@user.join!(@invitation_id)
-						Gather.find_by(id: @invitation.gathering_id).increase_num_joining!(@invitation_id)
-					else
-						@user.unjoin!(@invitation_id)
-						Gather.find_by(id: @invitation.gathering_id).decrease_num_joining!(@invitation_id)
-					end
-				else	
-		   	    	# Invitee does have a phone already recorded
-		   	    	if (User.find_by(phone: @formatted_phone) != User.find_by(id: Invitation.find_by(id: @invitation_id).invitee_id))
-				    	# Phone doesn't match up with invitation's user: Error
-				    	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
-						message = @client.account.messages.create(
-							body: "Oops, please enter the correct code. For more help, email hello@bloon.us",
-						    to: @from,
-						    from: @to)
-						puts message.from
-		   	    	else
-		   	    		# Phone does match user's invitation: join / unjoin	
-						if @invitation.status != "Yes"
-							@user.join!(@invitation_id)
-							Gather.find_by(id: @invitation.gathering_id).increase_num_joining!(@invitation_id)
-						else
-							@user.unjoin!(@invitation_id)
-							Gather.find_by(id: @invitation.gathering_id).decrease_num_joining!(@invitation_id)
-						end
-			    	end
-				end
-			end			
+   # 	    	if Gather.find_by(id: @invitation.gathering_id).completed.present?
+			# 	# Y# response when the gathering has already been completed
+		 #    	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+			# 	message = @client.account.messages.create(
+			# 		body: "Oops, this activity has already ended",
+			# 	    to: @from,
+			# 	    from: @to)
+			# 	puts message.from				
+   # 	    	else
+	  #  	    	if @user.phone.blank?
+	  #  	    		# Invitee doesn't have a phone number: record it and join/unjoin. Will be error if wrong new user texts this
+		 #   	    	@user.phone = @formatted_phone
+		 #    		@user.save(validate: false)
+			# 		if @invitation.status == "NA"
+			# 			@user.join!(@invitation_id)
+			# 			Gather.find_by(id: @invitation.gathering_id).increase_num_joining!(@invitation_id)
+			# 		else
+			# 			@user.unjoin!(@invitation_id)
+			# 			Gather.find_by(id: @invitation.gathering_id).decrease_num_joining!(@invitation_id)
+			# 		end
+			# 	else	
+		 #   	    	# Invitee does have a phone already recorded
+		 #   	    	if (User.find_by(phone: @formatted_phone) != User.find_by(id: Invitation.find_by(id: @invitation_id).invitee_id))
+			# 	    	# Phone doesn't match up with invitation's user: Error
+			# 	    	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+			# 			message = @client.account.messages.create(
+			# 				body: "Oops, please enter the correct code. For more help, email hello@bloon.us",
+			# 			    to: @from,
+			# 			    from: @to)
+			# 			puts message.from
+		 #   	    	else
+		 #   	    		# Phone does match user's invitation: join / unjoin	
+			# 			if @invitation.status != "Yes"
+			# 				@user.join!(@invitation_id)
+			# 				Gather.find_by(id: @invitation.gathering_id).increase_num_joining!(@invitation_id)
+			# 			else
+			# 				@user.unjoin!(@invitation_id)
+			# 				Gather.find_by(id: @invitation.gathering_id).decrease_num_joining!(@invitation_id)
+			# 			end
+			#     	end
+			# 	end
+			# end			
 
 		# Incorrect phone number
 		elsif @body.downcase == "pop22" && @to == ENV['TWILIO_MAIN']

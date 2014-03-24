@@ -21,7 +21,7 @@ class InviteMore < ActiveRecord::Base
 		invitees = formatted_invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i) - @gather.invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
 		formatted_invited = invitees.join(" ")
 
-		# udpate Gather
+		# update Gather
 		@gather.update_attributes(invited: @gather.invited + " " + formatted_invited)
 		# @gather.update_attributes(invited_no: @gather.invited_no + " " + formatted_invited)
 		@gather.update_attributes(num_invited: @gather.num_invited + invitees.count)
@@ -61,8 +61,8 @@ class InviteMore < ActiveRecord::Base
 				@gather.invite!@user
 				@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: @gather.id)
 				if @user.phone.present?
-					if Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").blank?
-					# if user hasn't responded to an invite, send reminder, else go ahead and send invitation
+					# if Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").blank?
+					# # if user hasn't responded to an invite, send reminder, else go ahead and send invitation
 
 						if @gather.date.present? 
 							@dtl = @gather.activity + " on " + @gather.date.strftime("%a, %b %-e") 
@@ -95,26 +95,26 @@ class InviteMore < ActiveRecord::Base
 						message = @client.account.messages.create(
 							body: "#{@dtl}? #{User.find_by(id: self.user_id).name} invited you - #{@gather.tilt} must join for this to take off. REPLY 'Y' to join or 'N' to pass",
 						    to: @user.phone,
-						    from: ENV['TWILIO_MAIN'])
+						    from: @invitation.number_used)
 						puts message.from
 						puts message.to
 						puts message.body
 
-						@invitation.update_attributes(sent: "Yes", when_sent: Time.now)
-					else
-						# send reminder text to respond to the previous invitation 
-						@invitation.update_attributes(sent: "No")
-						old_invitation = Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").last
-						@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
-							message = @client.account.messages.create(
-								body: "You've been invited to another activity via Bloon! To receive it, first respond Y/N to your last invitation (#{old_invitation.gathering.activity} from #{old_invitation.gathering.user.name})",
-							    to: @user.phone,
-							    from: ENV['TWILIO_MAIN'])
-						puts message.from
-						puts message.to
-						puts message.body
-						puts "reminder text"
-					end
+						# @invitation.update_attributes(sent: "Yes", when_sent: Time.now)
+					# else
+					# 	# send reminder text to respond to the previous invitation 
+					# 	@invitation.update_attributes(sent: "No")
+					# 	old_invitation = Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").last
+					# 	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+					# 		message = @client.account.messages.create(
+					# 			body: "You've been invited to another activity via Bloon! To receive it, first respond Y/N to your last invitation (#{old_invitation.gathering.activity} from #{old_invitation.gathering.user.name})",
+					# 		    to: @user.phone,
+					# 		    from: ENV['TWILIO_MAIN'])
+					# 	puts message.from
+					# 	puts message.to
+					# 	puts message.body
+					# 	puts "reminder text"
+					# end
 
 					tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
 					tracker.track(User.find_by(id: self.user_id).id, 'Invited More', {

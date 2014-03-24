@@ -168,7 +168,7 @@ p {
 //	text-shadow: -1px -1px 0 white;
 	letter-spacing: -1px;
 	// text-transform: lowercase;
-	font-weight: 800;
+	font-weight: 400;
 	padding-top: 30px;
 	font-size: 3em;
 	font-family: futura, Helvetica,'Montserrat Alternates','proxima-nova',Proxima Nova,'Helvetica Neue',sans-serif;
@@ -1099,6 +1099,9 @@ aside {
 .desc-front {
 	letter-spacing: 0px;
 	font-size: 1.6em;
+	a {
+		font-size: 16px;
+	}
 }
 .welcome-front{
 	font-weight: bold;
@@ -2021,7 +2024,7 @@ outline: -webkit-focus-ring-color auto 0px;
 .page-title {
 	font-size: 36px;
 	text-align: center;
-	font-weight: 800;
+	font-weight: 400;
 	text-transform: capitalize;
 	color: $mainColor;
 	padding: 15px 0px 10px 0px;

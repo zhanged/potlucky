@@ -102,7 +102,7 @@ class Gather < ActiveRecord::Base
 				invite!@user
 				@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: self.id)
 				if @user.phone.present?
-					if Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").blank?
+					# if Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").blank?
 					# if user hasn't responded to an invite, send reminder, else go ahead and send invitation
 
 						@dtl = self.activity
@@ -144,26 +144,26 @@ class Gather < ActiveRecord::Base
 						message = @client.account.messages.create(
 							body: "#{@dtl}? #{user.name} invited you - #{tilt} must join for this to take off. REPLY 'Y' to join or 'N' to pass",
 						    to: @user.phone,
-						    from: ENV['TWILIO_MAIN'])
+						    from: @invitation.number_used)
 						puts message.from
 						puts message.to
 						puts message.body
 
-						@invitation.update_attributes(sent: "Yes", when_sent: Time.now)
-					else
-						# send reminder text to respond to the previous invitation 
-						@invitation.update_attributes(sent: "No")
-						old_invitation = Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").last
-						@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
-							message = @client.account.messages.create(
-								body: "You've been invited to another activity via Bloon! To receive it, first respond Y/N to your last invitation (#{old_invitation.gathering.activity} from #{old_invitation.gathering.user.name})",
-							    to: @user.phone,
-							    from: ENV['TWILIO_MAIN'])
-						puts message.from
-						puts message.to
-						puts message.body
-						puts "reminder text"
-					end
+						# @invitation.update_attributes(sent: "Yes", when_sent: Time.now)
+					# else
+					# 	# send reminder text to respond to the previous invitation 
+					# 	@invitation.update_attributes(sent: "No")
+					# 	old_invitation = Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").last
+					# 	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+					# 		message = @client.account.messages.create(
+					# 			body: "You've been invited to another activity via Bloon! To receive it, first respond Y/N to your last invitation (#{old_invitation.gathering.activity} from #{old_invitation.gathering.user.name})",
+					# 		    to: @user.phone,
+					# 		    from: ENV['TWILIO_MAIN'])
+					# 	puts message.from
+					# 	puts message.to
+					# 	puts message.body
+					# 	puts "reminder text"
+					# end
 				else
 					UserMailer.invitation_email(@user, self, @invitation, user, @to_invitees).deliver
 				end
@@ -233,9 +233,22 @@ class Gather < ActiveRecord::Base
 	end
 
 	def invite!(other_user)
-		invitations.create!(invitee_id: other_user.id)
+		invited_user_invitation = invitations.create!(invitee_id: other_user.id)
 		short_link = String.random_alphanumeric
-		links.create!(in_url: short_link, out_url: "/gathers/"+short_link, invitation_id: Invitation.find_by(gathering_id: self.id, invitee_id: other_user.id).id)
+		links.create!(in_url: short_link, out_url: "/gathers/"+short_link, invitation_id: invited_user_invitation.id)
+
+		if invited_user_invitation.number_used.nil?
+			all_numbers_used = other_user.reverse_invitations.pluck(:number_used)
+			@number_used = (Tnumber.pluck(:tphone) - all_numbers_used  - ENV['TWILIO_MAIN'].split('xxx')).sample
+			if @number_used.blank?
+				@numbers = @client.account.available_phone_numbers.get('US').local.list(:area_code => "415")
+				@number_used = @numbers[0].phone_number
+				@number = @client.account.incoming_phone_numbers.create(:phone_number => @number_used)	# Purchase the number
+				Tnumber.create!(tphone: @number_used)
+				@number.update(:sms_method => "GET", :sms_url => "http://bloon.us/twilio/respond")
+			end
+			invited_user_invitation.update_attributes!(number_used: @number_used)
+		end
 
 		tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
 		tracker.track(other_user.id, 'Invited', {
@@ -311,7 +324,7 @@ class Gather < ActiveRecord::Base
 			message = @client.account.messages.create(
 				body: "Bloon: Great, we've marked you down as interested in: #{@gather.activity}! We'll send you a group text if this takes off",
 			    to: @joining_user.phone,
-			    from: ENV['TWILIO_MAIN'])
+			    from: @this_invitation.number_used)
 			puts message.from
 
 			# @gather.update_attributes(details: ("#{@gather.details} <br>To #{@joining_user_name_or_email}: Great, we've marked you down as interested in #{@gather.activity[0,1].downcase + @gather.activity[1..-1]} on bloon.us. You'll get a text if this takes off "))
@@ -319,24 +332,24 @@ class Gather < ActiveRecord::Base
 			message = @client.account.messages.create(
 				body: "#{@joining_user.name} just joined you for #{gather_name} on bloon.us. If #{@gather.tilt - @gather.num_joining} more join, you will be put in a group chat",
 			    to: User.find_by(id: user_id).phone,
-			    from: ENV['TWILIO_MAIN'])
+			    from: Invitation.find_by(gathering_id: @gather.id, invitee_id: user_id).number_used)
 			puts message.from
 
 		elsif @gather.num_joining == (@gather.tilt)
 
-			# Expire existing Gather numbers?
+			# Expire existing Gather numbers that have tilted
 			Gather.where("expire IS NOT NULL").pluck(:id).each  do |g|
 				expiring_gather = Gather.find_by(id: g)
 				if expiring_gather.expire.at(0.1) == "Y" && ( ( Time.now - Time.parse(expiring_gather.expire.gsub("Y","")) ) > 60*60*24 )
 					# if it's been > 1 day since receiving warning
 					expiring_gather.update_attributes(expire: nil, completed: Time.now)
-					Invitation.where(gathering_id: expiring_gather.id, status: "Yes").pluck(:id).each do |i|
+					Invitation.where(gathering_id: expiring_gather.id).pluck(:id).each do |i|
 						Invitation.find_by(id: i).update_attributes(number_used: nil)
 					end
 					# update invitations that haven't been answered
-					Invitation.where(gathering_id: expiring_gather.id, status: "NA").pluck(:id).each do |i|
-						Invitation.find_by(id: i).update_attributes(sent: "Never")
-					end
+					# Invitation.where(gathering_id: expiring_gather.id, status: "NA").pluck(:id).each do |i|
+					# 	Invitation.find_by(id: i).update_attributes(sent: "Never")
+					# end
 				elsif expiring_gather.expire.at(0.1) != "Y" && ( ( Time.now - Time.parse(expiring_gather.expire) ) > 60*60*24*6 )
 					# if it's been > 6 days since tilting
 					add_y = "Y" + Time.now.to_s
@@ -353,25 +366,40 @@ class Gather < ActiveRecord::Base
 					expiring_gather.update_attributes(details: ("#{expiring_gather.details} <br>Bloon: Group text for #{expiring_gather.activity} expires in 24 hrs. Reply 'E' to extend. Organizer can end group texts anytime by replying 'X' "))
 				end
 			end
+
+			# Expire for Gathers that haven't tilted
+			Gather.where(completed: nil).where(expire: nil).pluck(:id).each  do |g|
+				expiring_gather = Gather.find_by(id: g)
+				if Time.now - expiring_gather.created_at > 60*60*24*7
+					# Complete the gather
+					expiring_gather.update_attributes(expire: nil, completed: Time.now)
+					# Erase phone #s
+					Invitation.where(gathering_id: expiring_gather.id).pluck(:id).each do |i|
+						Invitation.find_by(id: i).update_attributes(number_used: nil)
+					end
+				end
+			end
+
 			@gather.update_attributes(expire: Time.now)
 
 			invited_yes_array.each do |n|
 				invited_yes_user = User.find_by(email: n)
 				@invited_yes_user_invitation = Invitation.find_by(gathering_id: @gather.id, invitee_id: invited_yes_user.id)
-				if @invited_yes_user_invitation.number_used.nil?
-					all_numbers_used = invited_yes_user.reverse_invitations.pluck(:number_used)
-					@number_used = (Tnumber.pluck(:tphone) - all_numbers_used).sample
-					if @number_used.blank?
-						@numbers = @client.account.available_phone_numbers.get('US').local.list(:area_code => "415")
-						@number_used = @numbers[0].phone_number
-						@number = @client.account.incoming_phone_numbers.create(:phone_number => @number_used)	# Purchase the number
-						Tnumber.create!(tphone: @number_used)
-						@number.update(:sms_method => "GET", :sms_url => "http://bloon.us/twilio/respond")
-					end
-					@invited_yes_user_invitation.update_attributes!(number_used: @number_used)
-				else
-					@number_used = @invited_yes_user_invitation.number_used
-				end
+				# if @invited_yes_user_invitation.number_used.nil?
+				# 	all_numbers_used = invited_yes_user.reverse_invitations.pluck(:number_used)
+				# 	@number_used = (Tnumber.pluck(:tphone) - all_numbers_used).sample
+				# 	if @number_used.blank?
+				# 		@numbers = @client.account.available_phone_numbers.get('US').local.list(:area_code => "415")
+				# 		@number_used = @numbers[0].phone_number
+				# 		@number = @client.account.incoming_phone_numbers.create(:phone_number => @number_used)	# Purchase the number
+				# 		Tnumber.create!(tphone: @number_used)
+				# 		@number.update(:sms_method => "GET", :sms_url => "http://bloon.us/twilio/respond")
+				# 	end
+				# 	@invited_yes_user_invitation.update_attributes!(number_used: @number_used)
+				# else
+				# 	@number_used = @invited_yes_user_invitation.number_used
+				# end
+				@number_used = @invited_yes_user_invitation.number_used
 
 				@people_joining_less_user = ""
 				(invited_yes_array - (invited_yes_user.email.split(" "))).each do |m|
@@ -409,20 +437,21 @@ class Gather < ActiveRecord::Base
 			@gather.update_attributes(details: ("#{@gather.details} <br>Bloon: #{gather_name} has taken off with #{User.find_by(email: invited_yes_array.last).name.split(' ').first}, #{@people_joining_less_user}! Reply to this group text to plan the details together "))
 
 		elsif @gather.num_joining > (@gather.tilt)
-			if @this_invitation.number_used.nil?
-				all_numbers_used = @joining_user.reverse_invitations.pluck(:number_used)
-				@number_used = (Tnumber.pluck(:tphone) - all_numbers_used).sample
-					if @number_used.blank?
-						@numbers = @client.account.available_phone_numbers.get('US').local.list(:area_code => "415")
-						@number_used = @numbers[0].phone_number
-						@number = @client.account.incoming_phone_numbers.create(:phone_number => @number_used)	# Purchase the number
-						Tnumber.create!(tphone: @number_used)
-						@number.update(:sms_method => "GET", :sms_url => "http://bloon.us/twilio/respond")
-					end
-				@this_invitation.update_attributes(number_used: @number_used)
-			else
-				@number_used = @this_invitation.number_used
-			end
+			# if @this_invitation.number_used.nil?
+			# 	all_numbers_used = @joining_user.reverse_invitations.pluck(:number_used)
+			# 	@number_used = (Tnumber.pluck(:tphone) - all_numbers_used).sample
+			# 		if @number_used.blank?
+			# 			@numbers = @client.account.available_phone_numbers.get('US').local.list(:area_code => "415")
+			# 			@number_used = @numbers[0].phone_number
+			# 			@number = @client.account.incoming_phone_numbers.create(:phone_number => @number_used)	# Purchase the number
+			# 			Tnumber.create!(tphone: @number_used)
+			# 			@number.update(:sms_method => "GET", :sms_url => "http://bloon.us/twilio/respond")
+			# 		end
+			# 	@this_invitation.update_attributes(number_used: @number_used)
+			# else
+			# 	@number_used = @this_invitation.number_used
+			# end
+			@number_used = @this_invitation.number_used
 
 			@people_joining_less_user = ""
 			(invited_yes_array - @joining_user.email.split(" ")).each do |n|
@@ -461,26 +490,26 @@ class Gather < ActiveRecord::Base
 
 		end
 
-		# check to see if joining_user has a backlog of invites
-		if Invitation.where(invitee_id: @joining_user.id, sent: "No").any?
-			old_invitation = Invitation.where(invitee_id: @joining_user.id, sent: "No").first
-			@dtl = old_invitation.gathering.activity
-			if old_invitation.gathering.date.present? 
-				@dtl = @dtl + " on " + old_invitation.gathering.date.strftime("%a, %b %-e") 
-			end
+		# # check to see if joining_user has a backlog of invites
+		# if Invitation.where(invitee_id: @joining_user.id, sent: "No").any?
+		# 	old_invitation = Invitation.where(invitee_id: @joining_user.id, sent: "No").first
+		# 	@dtl = old_invitation.gathering.activity
+		# 	if old_invitation.gathering.date.present? 
+		# 		@dtl = @dtl + " on " + old_invitation.gathering.date.strftime("%a, %b %-e") 
+		# 	end
 
-			@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
-			message = @client.account.messages.create(
-				body: "#{@dtl}? #{old_invitation.gathering.user.name} invited you - #{old_invitation.gathering.tilt} must join for this to take off. REPLY 'Y' to join or 'N' to pass",
-			    to: @joining_user.phone,
-			    from: ENV['TWILIO_MAIN'])
-			puts message.from
-			puts message.to
-			puts message.body
-			puts "late invitation"
+		# 	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+		# 	message = @client.account.messages.create(
+		# 		body: "#{@dtl}? #{old_invitation.gathering.user.name} invited you - #{old_invitation.gathering.tilt} must join for this to take off. REPLY 'Y' to join or 'N' to pass",
+		# 	    to: @joining_user.phone,
+		# 	    from: ENV['TWILIO_MAIN'])
+		# 	puts message.from
+		# 	puts message.to
+		# 	puts message.body
+		# 	puts "late invitation"
 
-			old_invitation.update_attributes(sent: "Yes", when_sent: Time.now)
-		end
+		# 	old_invitation.update_attributes(sent: "Yes", when_sent: Time.now)
+		# end
 
 		tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
 		tracker.track(@joining_user.id, 'Joined Activity', {
@@ -524,15 +553,15 @@ class Gather < ActiveRecord::Base
 			# end
 
 			message = @client.account.messages.create(
-				body: "Sad to see you leave #{@gather.activity}! Reply Y#{@this_invitation.id} to rejoin",
+				body: "Sad to see you leave #{@gather.activity}! If you change your mind, reply 'Y' to join",
 			    to: @unjoining_user.phone,
-			    from: ENV['TWILIO_MAIN'])
+			    from: @this_invitation.number_used)
 			puts message.from
 			puts "pass1"
 
-			@gather.update_attributes(details: ("#{@gather.details} <br>To #{@unjoining_user_name_or_email}: Sad to see you leave #{@gather.activity}! Reply Y#{@this_invitation.id} to rejoin"))
+			@gather.update_attributes(details: ("#{@gather.details} <br>To #{@unjoining_user_name_or_email}: Sad to see you leave #{@gather.activity}! If you change your mind, reply 'Y' to join"))
 
-			@this_invitation.update_attributes(number_used: nil)
+			# @this_invitation.update_attributes(number_used: nil)
 
 			if @gather.num_joining + 1 >= @gather.tilt			 
 			# Tilted already, including untilted now; let already joining group know
@@ -562,7 +591,7 @@ class Gather < ActiveRecord::Base
 							message = @client.account.messages.create(
 								body: "Unfortunately #{@unjoining_user.name} is passing on #{@dtl}. Not enough friends are left for this to tilt - try inviting a few more friends",
 							    to: @user.phone,
-							    from: ENV['TWILIO_MAIN'])
+							    from: Invitation.find_by(gathering_id: @gather.id, invitee_id: @user.id).number_used)
 							puts message.from
 							puts message.to
 							puts message.body
@@ -573,7 +602,7 @@ class Gather < ActiveRecord::Base
 							message = @client.account.messages.create(
 								body: "Looks like not enough friends can join #{@dtl} for it to tilt - try inviting a few more friends",
 							    to: @user.phone,
-							    from: ENV['TWILIO_MAIN'])
+							    from: Invitation.find_by(gathering_id: @gather.id, invitee_id: @user.id).number_used)
 							puts message.from
 							puts message.to
 							puts message.body
@@ -587,7 +616,7 @@ class Gather < ActiveRecord::Base
 							message = @client.account.messages.create(
 								body: "Looks like not enough friends can join #{@dtl} for it to tilt - try inviting a few more friends",
 							    to: @user.phone,
-							    from: ENV['TWILIO_MAIN'])
+							    from: Invitation.find_by(gathering_id: @gather.id, invitee_id: @user.id).number_used)
 							puts message.from
 							puts message.to
 							puts message.body
@@ -601,7 +630,7 @@ class Gather < ActiveRecord::Base
 					message = @client.account.messages.create(
 						body: "Unfortunately #{@unjoining_user.name} is passing on #{@dtl} :(",
 					    to: @gather.user.phone,
-					    from: ENV['TWILIO_MAIN'])
+					    from: Invitation.find_by(gathering_id: @gather.id, invitee_id: @gather.user.id).number_used)
 					puts message.from
 					puts message.to
 					puts message.body
@@ -619,16 +648,15 @@ class Gather < ActiveRecord::Base
 			end
 
 			@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
-			from_number = ENV['TWILIO_MAIN']
 
 			message = @client.account.messages.create(
-				body: "Thanks for letting #{@gather.user.name.split(' ').first} know that you're passing on: #{@gather.activity}! Reply Y#{@this_invitation.id} to join if you change your mind",
+				body: "Thanks for letting #{@gather.user.name.split(' ').first} know that you're passing on: #{@gather.activity}! Reply 'Y' to join if you change your mind",
 			    to: @unjoining_user.phone,
-			    from: from_number)
+			    from: @this_invitation.number_used)
 			puts message.from
 			puts "pass6"
 
-			@gather.update_attributes(details: ("#{@gather.details} <br>To #{@unjoining_user_name_or_email}: Thanks for letting #{@gather.user.name.split(' ').first} know that you're passing! Reply Y#{@this_invitation.id} to join if you change your mind"))
+			@gather.update_attributes(details: ("#{@gather.details} <br>To #{@unjoining_user_name_or_email}: Thanks for letting #{@gather.user.name.split(' ').first} know that you're passing! Reply 'Y' to join if you change your mind"))
 
 			if ( @gather.tilt > ( @gather.num_invited - @gather.num_passing ) ) && @gather.num_invited >= @gather.tilt
 			# Can't tilt (too many friends have passed); tell everyone to invite more friends
@@ -641,7 +669,7 @@ class Gather < ActiveRecord::Base
 						message = @client.account.messages.create(
 							body: "Unfortunately #{@unjoining_user.name} is passing on #{@dtl}. Not enough friends are left for this to tilt - try inviting a few more friends",
 						    to: @user.phone,
-						    from: ENV['TWILIO_MAIN'])
+						    from: Invitation.find_by(gathering_id: @gather.id, invitee_id: @user.id).number_used)
 						puts message.from
 						puts message.to
 						puts message.body
@@ -651,7 +679,7 @@ class Gather < ActiveRecord::Base
 						message = @client.account.messages.create(
 							body: "Looks like not enough friends can join #{@dtl} for it to tilt - try inviting a few more friends",
 						    to: @user.phone,
-						    from: ENV['TWILIO_MAIN'])
+						    from: Invitation.find_by(gathering_id: @gather.id, invitee_id: @user.id).number_used)
 						puts message.from
 						puts message.to
 						puts message.body
@@ -665,7 +693,7 @@ class Gather < ActiveRecord::Base
 						message = @client.account.messages.create(
 							body: "Looks like not enough friends can join #{@dtl} for it to tilt - try inviting a few more friends",
 						    to: @user.phone,
-						    from: ENV['TWILIO_MAIN'])
+						    from: Invitation.find_by(gathering_id: @gather.id, invitee_id: @user.id).number_used)
 						puts message.from
 						puts message.to
 						puts message.body
@@ -679,7 +707,7 @@ class Gather < ActiveRecord::Base
 				message = @client.account.messages.create(
 					body: "Unfortunately #{@unjoining_user.name} is passing on #{@dtl} :(",
 				    to: @gather.user.phone,
-				    from: ENV['TWILIO_MAIN'])
+				    from: Invitation.find_by(gathering_id: @gather.id, invitee_id: @gather.user.id).number_used)
 				puts message.from
 				puts message.to
 				puts message.body
@@ -687,26 +715,26 @@ class Gather < ActiveRecord::Base
 			end
 		end
 
-		# check to see if joining_user has a backlog of invites
-		if Invitation.where(invitee_id: @unjoining_user.id, sent: "No").any?
-			old_invitation = Invitation.where(invitee_id: @unjoining_user.id, sent: "No").first
-			@dtl = old_invitation.gathering.activity
-			if old_invitation.gathering.date.present? 
-				@dtl = @dtl + " on " + old_invitation.gathering.date.strftime("%a, %b %-e") 
-			end
+		# # check to see if joining_user has a backlog of invites
+		# if Invitation.where(invitee_id: @unjoining_user.id, sent: "No").any?
+		# 	old_invitation = Invitation.where(invitee_id: @unjoining_user.id, sent: "No").first
+		# 	@dtl = old_invitation.gathering.activity
+		# 	if old_invitation.gathering.date.present? 
+		# 		@dtl = @dtl + " on " + old_invitation.gathering.date.strftime("%a, %b %-e") 
+		# 	end
 
-			@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
-			message = @client.account.messages.create(
-				body: "#{@dtl}? #{old_invitation.gathering.user.name} invited you - #{old_invitation.gathering.tilt} must join for this to take off. REPLY 'Y' to join or 'N' to pass",
-			    to: @unjoining_user.phone,
-			    from: ENV['TWILIO_MAIN'])
-			puts message.from
-			puts message.to
-			puts message.body
-			puts "late invitation"
+		# 	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+		# 	message = @client.account.messages.create(
+		# 		body: "#{@dtl}? #{old_invitation.gathering.user.name} invited you - #{old_invitation.gathering.tilt} must join for this to take off. REPLY 'Y' to join or 'N' to pass",
+		# 	    to: @unjoining_user.phone,
+		# 	    from: ENV['TWILIO_MAIN'])
+		# 	puts message.from
+		# 	puts message.to
+		# 	puts message.body
+		# 	puts "late invitation"
 
-			old_invitation.update_attributes(sent: "Yes", when_sent: Time.now)
-		end
+		# 	old_invitation.update_attributes(sent: "Yes", when_sent: Time.now)
+		# end
 
 		tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
 		tracker.track(@unjoining_user.id, 'Passed Activity', {
