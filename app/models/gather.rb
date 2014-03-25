@@ -196,6 +196,14 @@ class Gather < ActiveRecord::Base
 			end
 		end
 		invite!user
+		@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+		message = @client.account.messages.create(
+			body: "#{self.activity} invitations have been sent! Reply with any updates and we'll let everyone know",
+		    to: user.phone,
+		    from: Invitation.find_by(gathering_id: self.id, invitee_id: user.id).number_used)
+		puts message.from
+		puts message.to
+		puts message.body
 		# activity_1v = "1" if self.activity.present?
 		# activity_2v = "1" if self.activity_2.present?
 		# activity_3v = "1" if self.activity_3.present?
@@ -553,13 +561,13 @@ class Gather < ActiveRecord::Base
 			# end
 
 			message = @client.account.messages.create(
-				body: "Sad to see you leave #{@gather.activity}! If you change your mind, reply 'Y' to join",
+				body: "Sad to see you leave #{@gather.activity}! Reply 'Y' to join or reply with a msg for #{@gather.user.name.split(' ').first}",
 			    to: @unjoining_user.phone,
 			    from: @this_invitation.number_used)
 			puts message.from
 			puts "pass1"
 
-			@gather.update_attributes(details: ("#{@gather.details} <br>To #{@unjoining_user_name_or_email}: Sad to see you leave #{@gather.activity}! If you change your mind, reply 'Y' to join"))
+			@gather.update_attributes(details: ("#{@gather.details} <br>To #{@unjoining_user_name_or_email}: Sad to see you leave #{@gather.activity}! Reply 'Y' to join or reply with a msg for #{@gather.user.name.split(' ').first}"))
 
 			# @this_invitation.update_attributes(number_used: nil)
 
@@ -650,13 +658,13 @@ class Gather < ActiveRecord::Base
 			@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
 
 			message = @client.account.messages.create(
-				body: "Thanks for letting #{@gather.user.name.split(' ').first} know that you're passing on: #{@gather.activity}! Reply 'Y' to join if you change your mind",
+				body: "Thanks for letting #{@gather.user.name.split(' ').first} know that you're passing on: #{@gather.activity}! Reply 'Y' to join or reply with a msg for #{@gather.user.name.split(' ').first}",
 			    to: @unjoining_user.phone,
 			    from: @this_invitation.number_used)
 			puts message.from
 			puts "pass6"
 
-			@gather.update_attributes(details: ("#{@gather.details} <br>To #{@unjoining_user_name_or_email}: Thanks for letting #{@gather.user.name.split(' ').first} know that you're passing! Reply 'Y' to join if you change your mind"))
+			@gather.update_attributes(details: ("#{@gather.details} <br>To #{@unjoining_user_name_or_email}: Thanks for letting #{@gather.user.name.split(' ').first} know that you're passing! Reply 'Y' to join or reply with a msg for #{@gather.user.name.split(' ').first}"))
 
 			if ( @gather.tilt > ( @gather.num_invited - @gather.num_passing ) ) && @gather.num_invited >= @gather.tilt
 			# Can't tilt (too many friends have passed); tell everyone to invite more friends

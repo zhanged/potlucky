@@ -180,10 +180,12 @@ class TwilioController < ApplicationController
 				expiring_gather.update_attributes(details: ("#{expiring_gather.details} <br>Bloon: This group chat for #{expiring_gather.activity} has been closed. Visit bloon.us to create another activity! "))
 
 				expiring_gather.update_attributes(expire: nil, completed: Time.now)
-				Invitation.where(gathering_id: expiring_gather.id, status: "Yes").pluck(:id).each do |i|
+				Invitation.where(gathering_id: expiring_gather.id).pluck(:id).each do |i|
 					Invitation.find_by(id: i).update_attributes(number_used: nil)
 				end
 			end
+
+		# Update / Respond when activity hasn't tilted yet
 
 		# Group chat
 		elsif Invitation.find_by(number_used: @to, invitee_id: User.find_by(phone: @formatted_phone).id).present?
@@ -191,27 +193,65 @@ class TwilioController < ApplicationController
     		@invitation = Invitation.find_by(number_used: @to, invitee_id: User.find_by(phone: @formatted_phone).id)
     		@gather = Gather.find_by(id: @invitation.gathering_id)
     		@user = User.find_by(phone: @formatted_phone)
-    		invited_yes_array = @gather.invited_yes.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
 
     		if @user.name.present?
     			@user_name_or_email = @user.name.split(' ').first
     		else
     			@user_name_or_email = @user.email.split(/[.@]/).first.capitalize
     		end
-			
-			(invited_yes_array - @user.email.split(" ")).each do |invited_yes_array|
-				@invited_yes_user = User.find_by(email: invited_yes_array)
-				@invited_yes_user_invitation = Invitation.find_by(gathering_id: @gather.id, invitee_id: @invited_yes_user.id)
-				
-				@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
-				message = @client.account.messages.create(
-					body: "#{@user_name_or_email}: #{@body}",
-				    to: @invited_yes_user.phone,
-				    from: @invited_yes_user_invitation.number_used)
-				puts message.from
+
+			if @gather.num_joining < @gather.tilt				
+			# Hasn't tilted yet
+				if @user.id == @gather.user.id
+				# Update from organizer
+					joining_invites = Invitation.where(gathering_id: @gather.id, status: "Yes").pluck(:id)
+					na_invites = Invitation.where(gathering_id: @gather.id, status: "NA").pluck(:id)
+					(joining_invites + na_invites - [@invitation.id.to_i]).each do |invite_id|
+						invited_user = User.find_by(id: Invitation.find_by(id: invite_id).invitee_id)
+						invited_user_invitation = Invitation.find_by(gathering_id: @gather.id, invitee_id: invited_user.id)
+						
+						@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+						message = @client.account.messages.create(
+							body: "Update from #{@user_name_or_email}: #{@body}",
+						    to: invited_user.phone,
+						    from: invited_user_invitation.number_used)
+						puts message.from
+					end	
+					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+					message = @client.account.messages.create(
+						body: "Update sent!",
+					    to: @user.phone,
+					    from: @invitation.number_used)
+					puts message.from
+					
+					@gather.update_attributes(details: ("#{@gather.details} <br>Update from #{@user_name_or_email}: #{@body} "))								
+				else
+				# Response from invitee to organizer
+					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+					message = @client.account.messages.create(
+						body: "Msg from #{@user_name_or_email} to only you: #{@body}",
+					    to: @gather.user.phone,
+					    from: Invitation.find_by(gathering_id: @gather.id, invitee_id: @gather.user.id).number_used)
+					puts message.from
+					@gather.update_attributes(details: ("#{@gather.details} <br>Msg from #{@user_name_or_email}: #{@body} "))								
+				end			
+			else		
+			# Tilted already - Group chat	
+				invited_yes_array = @gather.invited_yes.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
+				(invited_yes_array - @user.email.split(" ")).each do |invited_yes_array|
+					@invited_yes_user = User.find_by(email: invited_yes_array)
+					@invited_yes_user_invitation = Invitation.find_by(gathering_id: @gather.id, invitee_id: @invited_yes_user.id)
+					
+					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+					message = @client.account.messages.create(
+						body: "#{@user_name_or_email}: #{@body}",
+					    to: @invited_yes_user.phone,
+					    from: @invited_yes_user_invitation.number_used)
+					puts message.from
+				end
+				@gather.update_attributes(details: ("#{@gather.details} <br>#{@user_name_or_email}: #{@body} "))
 			end
 
-			@gather.update_attributes(details: ("#{@gather.details} <br>#{@user_name_or_email}: #{@body} "))
 
 		elsif (( @body.at(0.1) != "Y" && Invitation.find_by(number_used: @to, invitee_id: User.find_by(phone: @formatted_phone).id).blank? ) || 
     		( @body.at(0.1) == "Y" && Invitation.find_by(id: @invitation_id).blank? ))
