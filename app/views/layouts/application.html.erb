@@ -14,7 +14,7 @@
 	<%= csrf_meta_tags %>
 	<!-- for Facebook -->          
 	<meta property="og:site_name" content="Bloon" />
-	<meta property="og:title" content="<%= @gather.activity if params[:in_url].present? %><%= "?" if params[:in_url].present? %>" />
+	<meta property="og:title" content="<%= @gather.activity if @gather.present? %><%= "? Join us!" if @gather.present? %>" />
 	<meta property="fb:app_id" content="1417718738480681" />
 	<meta property="og:image" content="http://www.bloon.us/bloon1024.png" />
 	<meta property="og:description" content="Bloon helps you organize social activities for you and your friends, effortlessly" />
