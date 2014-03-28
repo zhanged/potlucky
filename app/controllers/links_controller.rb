@@ -12,4 +12,8 @@ class LinksController < ApplicationController
       end
 	end
 
+	def show
+		@gather = Gather.find_by(gen_link: params[:in_url])
+	end
+
 end
