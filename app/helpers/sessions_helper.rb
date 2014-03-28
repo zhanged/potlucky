@@ -8,6 +8,12 @@ module SessionsHelper
 		tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
 		tracker.track(user.id, 'Signed In', {
 			})
+		tracker.people.set(user.id, {
+	        '$name'       => user.name,
+	        '$email'      => user.email,
+	        '$phone'      => user.phone,
+	        '$created_at' => user.created_at
+	    });
 	end
 
 	def signed_in?

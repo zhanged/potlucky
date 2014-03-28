@@ -29,17 +29,6 @@ class User < ActiveRecord::Base
 	has_secure_password :validations => false # users canNOT be created without passwords
 	validates :password, length: { minimum: 6 }
 	# validate :phone_is_real
-	after_create do
-		tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
-		tracker.people.set(self.id, {
-	    '$name'       => self.name,
-	    '$email'      => self.email,
-	    '$phone'      => self.phone,
-	    '$created_at' => self.created_at
-	    });
-	    tracker.track(self.id, 'New User Signed Up', {
-			})
-	end
 
 	def User.new_remember_token
 		SecureRandom.urlsafe_base64
@@ -177,6 +166,16 @@ class User < ActiveRecord::Base
 		    	
 		    	# Find fb friends
 	    		user.find_fb_friends(user)
+	
+				tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
+	              tracker.people.set(user.id, {
+	                '$name'       => user.name,
+	                '$email'      => user.email,
+	                '$phone'      => user.phone,
+	                '$created_at' => user.created_at
+	              });
+	              tracker.track(user.id, 'New User Signed Up (facebook)', {
+	              })
 			end
 	    end
 	end

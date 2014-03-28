@@ -12,6 +12,12 @@
 	<link rel="apple-touch-icon-precomposed" sizes="152x152" href="touch-icon-ipad-retina.png" />
 	<link rel="stylesheet" href="/font-awesome-4.0.3/css/font-awesome.min.css">
 	<%= csrf_meta_tags %>
+	<!-- for Facebook -->          
+	<meta property="og:site_name" content="Bloon" />
+	<meta property="og:title" content="<%= @gather.activity if params[:in_url].present? %><%= "?" if params[:in_url].present? %>" />
+	<meta property="fb:app_id" content="1417718738480681" />
+	<meta property="og:image" content="http://www.bloon.us/bloon1024.png" />
+	<meta property="og:description" content="Bloon helps you organize social activities for you and your friends, effortlessly" />
 	<%= render 'layouts/shim' %>
 	<%= render 'layouts/mixpanel' %>
 </head>

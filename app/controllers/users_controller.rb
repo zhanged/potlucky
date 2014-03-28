@@ -110,9 +110,32 @@ class UsersController < ApplicationController
         current_user.email = nil
         current_user.save!(:validate => false)
         @user.save!(:validate => false)
+        tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
+          tracker.track(@user.id, 'Converted from phone-only to user', {
+        })
         sign_in @user
-        flash[:success] = "Welcome to Bloon!"
-        redirect_to(root_url)
+        if session[:gatherfrominvite].present? # params["invitation"].present?
+          @gather = Gather.find_by(id: session[:gatherfrominvite]) # Gather.find_by(id: params["invitation"]["gathering_id"])
+          feed_item = @gather
+          if Invitation.find_by(gathering_id: @gather.id, invitee_id: @user.id).present?
+          else              
+            @gather.invite!@user
+            # @invitation = @gather.invitations.create!(invitee_id: @user.id)
+            session[:gatherfrominvite] = nil
+            # friend everyone else in the gathering
+            @gather.gather_friends(@user)
+            # @gather.update_attributes(invited: @gather.invited + " " + @user.email)
+            @gather.update_attributes(num_invited: @gather.num_invited + 1)
+          end
+          tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
+          tracker.track(@user.id, 'Signed Up from link', {
+          })
+          flash[:success] = "Welcome to Bloon!"
+          redirect_to(root_url)
+        else
+          flash[:success] = "Welcome to Bloon!"
+          redirect_to(root_url)
+        end
       elsif User.where(phone: user_params[:phone].gsub(/\D/,'')).present?
         flash[:error] = "This phone number has already been taken"
         render 'edit'
@@ -145,6 +168,9 @@ class UsersController < ApplicationController
                 # @gather.update_attributes(invited: @gather.invited + " " + @user.email)
                 @gather.update_attributes(num_invited: @gather.num_invited + 1)
               end
+              tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
+              tracker.track(@user.id, 'Signed Up from link', {
+              })
               flash[:success] = "Welcome to Bloon!"
               redirect_to(root_url)
             else
@@ -207,6 +233,9 @@ class UsersController < ApplicationController
           Invitation.find_by(gathering_id: gather.id, invitee_id: @user.id).update_attributes(number_used: number_used)
           # gather.gather_friends(@user)
           gather.update_attributes(num_invited: gather.num_invited + 1)
+          tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
+          tracker.track(@user.id, 'New User, Invited via Phone', {
+          })
           flash[:success] = "Your friend has been invited!"
           redirect_to root_url, flash: { new_gather_modal: true }
         end
@@ -230,6 +259,15 @@ class UsersController < ApplicationController
           puts "step 1"
           Rails.logger.info(@user.errors.inspect)
           if @user.save
+            tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
+            tracker.people.set(@user.id, {
+              '$name'       => @user.name,
+              '$email'      => @user.email,
+              '$phone'      => @user.phone,
+              '$created_at' => @user.created_at
+              });
+            tracker.track(@user.id, 'New User Signed Up (email)', {
+            })            
             sign_in @user
             puts "step 2"
             # if params["invitation"].present?
