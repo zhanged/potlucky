@@ -40,5 +40,7 @@
 	<h2 class="desc-front blurb">
 		<a href="<%= '/how' %>" id="ga-how">How it works</a>
 	</h2>
-	<%= render 'users/new' %>
+	<% if !signed_in? %>
+		<%= render 'users/new' %>
+	<% end %>
 </div>

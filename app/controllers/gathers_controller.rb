@@ -15,8 +15,8 @@ class GathersController < ApplicationController
 		if current_user.phone.present?
 			@gather = current_user.gathers.build(gather_params)
 			if @gather.save
-				flash[:success] = "Activity created! Share this link with friends not yet invited: bloon.us/#{@gather.gen_link}"
-				redirect_to root_url
+				# flash[:success] = "Activity created! Share this link with friends not yet invited: bloon.us/#{@gather.gen_link}"
+				redirect_to root_url, flash: { new_gather_modal: true }
 			else				
 				flash[:error] = "Please include an activity"
 				redirect_to (request.env['HTTP_REFERER'])

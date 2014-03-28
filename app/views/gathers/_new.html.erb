@@ -31,7 +31,7 @@
 						<span class="form-label">3. Who</span>
 						<ol class="selectable" id="new-gather-form-invite">
 							<% current_user.friended_users.where("phone IS NOT NULL").order(:name).each do |friend| %>
-								<li class="name-select" value="<%= friend.name %>">+<%= friend.name %> <div style="display:none;">(<%= friend.email %>) </div></li>
+								<li class="name-select" value="<%= friend.name %>">+<%= friend.name %> <div style="display:none;">(<%= friend.id %>) </div></li>
 							<% end %>
 						</ol>
 				<% end %>

@@ -17,11 +17,14 @@
 </head>
 
 	<body data-no-turbolink>
-		<%= render 'layouts/facepile_js' if !signed_in? %>		
+		<%= render 'shared/gather_modal' %>				
+		<%= render 'layouts/fb_js' %>		
 		<%= render 'layouts/header' %>
 		<div class="container-fluid">
 			<% flash.each do |key, value| %>
-				<div class="center alert alert-<%= key %>"><%= value %></div>
+				<% if !flash[:new_gather_modal]  %>
+					<div class="center alert alert-<%= key %>"><%= value %></div>
+				<% end %>
 			<% end %>
 			<%= yield %>
 			<!-- render 'layouts/footer'  -->

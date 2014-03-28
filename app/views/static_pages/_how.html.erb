@@ -36,7 +36,9 @@
 			Rebloon the same group of friends to hang out again (Bloon will text them the invitation so you don't need to share it with them)
 		</div>
 	</div>
-	<%= render 'users/new' %>
+	<% if !signed_in? %>
+		<%= render 'users/new' %>
+	<% end %>
 </div>
 
 <!-- <div class="row">

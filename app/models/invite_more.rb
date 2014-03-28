@@ -10,54 +10,61 @@ class InviteMore < ActiveRecord::Base
 			@gather.update_attributes(invited: @gather.user.email)
 		end
 		# cleaning up emails, gmails
-		invitees = more_invitees.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq
-		formatted_invited = invitees.join(" ")
-		invitees.each do |invitee|
-			if invitee.split('@').last == "gmail.com"
-				formatted_invitee = invitee.split('@').first.gsub(".","") + "@" + invitee.split('@').last
-				formatted_invited = formatted_invited.gsub(invitee,formatted_invitee)
-			end
-		end
-		invitees = formatted_invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i) - @gather.invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
-		formatted_invited = invitees.join(" ")
-
+		invitees_ids = more_invitees.scan(/\(([^\)]+)\)/).uniq
+		# formatted_invited = ""
+		# invitees_ids.each do |id|
+		# 	if User.find_by(id: id).email.present?
+		# 		formatted_invited = formatted_invited + " " + User.find_by(id: id).email
+		# 	end
+		# end
 		# update Gather
-		@gather.update_attributes(invited: @gather.invited + " " + formatted_invited)
-		# @gather.update_attributes(invited_no: @gather.invited_no + " " + formatted_invited)
-		@gather.update_attributes(num_invited: @gather.num_invited + invitees.count)
-		
-		# Creating invitations
-		invitees.each do |invitee|
-			email_name = invitee.split(/[.@]/).first.capitalize
-			formatted_email = invitee
-			
-			@to_invitees = ""
-			@gather.invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).each do |i|
-				i_email = i
-				if formatted_email != i_email && User.find_by(id: self.user_id).email != i_email
-					if @to_invitees == ""
-						if User.find_by(email: i_email).present?
-							@to_invitees = User.find_by(email: i_email).name.split(' ').first
-						else
-							@to_invitees = i.split(/[.@]/).first.capitalize
-						end
-					else
-						if User.find_by(email: i_email).present?
-							@to_invitees = User.find_by(email: i_email).name.split(' ').first + ", " + @to_invitees
-						else
-							@to_invitees = i.split(/[.@]/).first.capitalize + ", " + @to_invitees
-						end
-					end
-				end
-			end
-			if @to_invitees == ""
-				@to_invitees = "me"
-			else
-				@to_invitees = @to_invitees + " and me"
-			end
+		# @gather.update_attributes(invited: @gather.invited + " " + formatted_invited)		
+		@gather.update_attributes(num_invited: @gather.num_invited + invitees_ids.count)
 
-			if User.find_by(email: formatted_email).present?
-				@user = User.find_by(email: formatted_email)
+		# invitees = more_invitees.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq
+		# invitees.each do |invitee|
+		# 	if invitee.split('@').last == "gmail.com"
+		# 		formatted_invitee = invitee.split('@').first.gsub(".","") + "@" + invitee.split('@').last
+		# 		formatted_invited = formatted_invited.gsub(invitee,formatted_invitee)
+		# 	end
+		# end
+		# invitees = formatted_invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i) - @gather.invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
+		# formatted_invited = invitees.join(" ")
+
+		# @gather.update_attributes(invited_no: @gather.invited_no + " " + formatted_invited)
+
+		# Creating invitations
+		invitees_ids.each do |invitee|
+			# email_name = invitee.split(/[.@]/).first.capitalize
+			# formatted_email = invitee
+			
+			# @to_invitees = ""
+			# @gather.invited.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).each do |i|
+			# 	i_email = i
+			# 	if formatted_email != i_email && User.find_by(id: self.user_id).email != i_email
+			# 		if @to_invitees == ""
+			# 			if User.find_by(email: i_email).present?
+			# 				@to_invitees = User.find_by(email: i_email).name.split(' ').first
+			# 			else
+			# 				@to_invitees = i.split(/[.@]/).first.capitalize
+			# 			end
+			# 		else
+			# 			if User.find_by(email: i_email).present?
+			# 				@to_invitees = User.find_by(email: i_email).name.split(' ').first + ", " + @to_invitees
+			# 			else
+			# 				@to_invitees = i.split(/[.@]/).first.capitalize + ", " + @to_invitees
+			# 			end
+			# 		end
+			# 	end
+			# end
+			# if @to_invitees == ""
+			# 	@to_invitees = "me"
+			# else
+			# 	@to_invitees = @to_invitees + " and me"
+			# end
+
+			# if User.find_by(email: formatted_email).present?
+				@user = User.find_by(id: invitee)
 				@gather.invite!@user
 				@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: @gather.id)
 				if @user.phone.present?
@@ -123,38 +130,41 @@ class InviteMore < ActiveRecord::Base
 						'Activity' => @gather.activity,
 						'Invitation ID' => @invitation.id
 						})
-				else
-					UserMailer.invitation_email(@user, @gather, @invitation, User.find_by(id: self.user_id), @to_invitees).deliver
+				# else
+				# 	UserMailer.invitation_email(@user, @gather, @invitation, User.find_by(id: self.user_id), @to_invitees).deliver
 				end
-			else
-				first_password = SecureRandom.urlsafe_base64(10)
-				@user = User.create!(name: email_name, email: formatted_email, password: first_password, password_confirmation: first_password)
-				@gather.invite!@user
-				@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: @gather.id)
-				UserMailer.invitation_email(@user, @gather, @invitation, User.find_by(id: self.user_id), @to_invitees).deliver				
-			end
+			# else
+			# 	first_password = SecureRandom.urlsafe_base64(10)
+			# 	@user = User.create!(name: email_name, email: formatted_email, password: first_password, password_confirmation: first_password)
+			# 	@gather.invite!@user
+			# 	@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: @gather.id)
+			# 	UserMailer.invitation_email(@user, @gather, @invitation, User.find_by(id: self.user_id), @to_invitees).deliver				
+			# end
 		end
 
 		# Create Update
 		new_names = ""
-		invitees.each do |n|
+		invitees_ids.each do |n|
 			if new_names == ""
-				new_names = User.find_by(email: n).name
+				new_names = User.find_by(id: n).name
 			else
-				new_names = User.find_by(email: n).name + ", " + new_names
+				new_names = User.find_by(id: n).name + ", " + new_names
 			end
 		end
 		content = "I've invited " + new_names
 		Update.create!(gather_id: self.gather_id, user_id: self.user_id, content: content)
 
 		# Creating Friendships
-		invitees = @gather.invited.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
-		invitees.each do |invitee|
-			@user = User.find_by(email: invitee)
-			invitees.each do |n|
-				other_user = User.find_by(email: n)
+		# invitees = @gather.invited.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
+		invitees_ids.each do |invitee|
+			@user = User.find_by(id: invitee)
+			@gather.invitees.pluck(:id).each do |n|
+				other_user = User.find_by(id: n)
 				if @user != other_user && @user.not_friend?(other_user)
 					@user.friend!(other_user)
+				end
+				if @user != other_user && other_user.not_friend?(@user)
+					other_user.friend!(@user)
 				end
 			end
 		end

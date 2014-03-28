@@ -8,8 +8,9 @@ class Gather < ActiveRecord::Base
 	has_one :calinvite, dependent: :destroy
 	before_create do
 		self.gen_link = gen_link.gsub("bloon.us/","")
-		self.invited = invited.downcase.sub(user.email,"").scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.join(" ")
-		self.invited_yes = user.email
+		self.invited = invited.scan(/\(([^\)]+)\)/).uniq.join(" ") + " " + user.id.to_s # downcase.sub(user.email,"").scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.join(" ")
+		# self.invited_yes = user.id.to_s
+		# self.invited_no = ""
 		self.num_passing = 0
 #		if self.tilt == nil || self.tilt == 0
 #			self.tilt = 1
@@ -58,89 +59,31 @@ class Gather < ActiveRecord::Base
 	after_create do
 		# self.gen_link = String.random_alphanumeric
 		links.create!(in_url: self.gen_link, out_url: "/gathers/"+gen_link)
-		invitees = invited.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
+		invitees = invited.split(" ") # downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
 		self.update_attributes(num_invited: invitees.count)
-		self.update_attributes(num_invited: num_invited + 1)
+		@dtl = self.activity
+		if self.date.present? 
+			@dtl = @dtl + " on " + self.date.strftime("%a, %b %-e") 
+		end
 		invitees.each do |invitee|
-			email_name = invitee.split(/[.@]/).first.capitalize
-			formatted_email = invitee
-			if invitee.split('@').last == "gmail.com"
-				formatted_email = invitee.split('@').first.gsub(".","") + "@" + invitee.split('@').last
-			end
-			
-			@to_invitees = ""
-			invitees.each do |i|
-				if i.split('@').last == "gmail.com"
-					i_email = i.split('@').first.gsub(".","") + "@" + i.split('@').last
-				else
-					i_email = i
-				end
-				if formatted_email != i_email
-					if @to_invitees == ""
-						if User.find_by(email: i_email).present?
-							@to_invitees = User.find_by(email: i_email).name.split(' ').first
-						else
-							@to_invitees = i.split(/[.@]/).first.capitalize
-						end
-					else
-						if User.find_by(email: i_email).present?
-							@to_invitees = User.find_by(email: i_email).name.split(' ').first + ", " + @to_invitees
-						else
-							@to_invitees = i.split(/[.@]/).first.capitalize + ", " + @to_invitees
-						end
-					end
-				end
-			end
-			if @to_invitees == ""
-				@to_invitees = "me"
-			else
-				@to_invitees = @to_invitees + " and me"
-			end
-
-			if User.find_by(email: formatted_email).present?
-				@user = User.find_by(email: formatted_email)
+			if User.find_by(id: invitee).present?
+				@user = User.find_by(id: invitee)
 				invite!@user
 				@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: self.id)
 				if @user.phone.present?
-					# if Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").blank?
-					# if user hasn't responded to an invite, send reminder, else go ahead and send invitation
+					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']						
+					if @user.id == user.id						
+						message = @client.account.messages.create(
+							body: "#{self.activity} invitations have been sent! Reply with any updates and we'll let everyone know",
+						    to: user.phone,
+						    from: Invitation.find_by(gathering_id: self.id, invitee_id: user.id).number_used)
+						puts message.from
+						puts message.to
+						puts message.body
 
-						@dtl = self.activity
-						if self.date.present? 
-							@dtl = @dtl + " on " + self.date.strftime("%a, %b %-e") 
-						end
-
-						# if self.activity.present? && self.activity_2.blank? && self.activity_3.blank? 
-						# 	@dtl = self.activity
-						# else
-						# 	@dtl = "Hang out"
-						# end
-						# if self.date.present? && self.date_2.blank? && self.date_3.blank? 
-						# 	@dtl = @dtl + " on " + self.date.strftime("%a, %b %-e") 
-						# 	if self.time.present? && self.time_2.blank? && self.time_3.blank? 
-						# 		@dtl = @dtl + " @" + self.time.strftime("%-l:%M%p")
-						# 	end
-						# elsif self.time.present? && self.time_2.blank? && self.time_3.blank? 
-						# 	@dtl = @dtl + " at " + self.time.strftime("%-l:%M%p")
-						# end 
-						# if self.location.present? && self.location_2.blank? && self.location_3.blank? 
-						# 	if (self.activity.present? && self.activity_2.blank? && self.activity_3.blank?) || (self.time.present? && self.time_2.blank? && self.time_3.blank?) || (self.date.present? && self.date_2.blank? && self.date_3.blank?)
-						# 		@dtl = @dtl + " at " + self.location
-						# 	else
-						# 		@dtl = @dtl + " at " + self.location
-						# 	end
-						# end
-						# if self.more_details.present?						
-						# 	@det = "where " + user.name.split(' ').first + " has provided more details"
-						# else
-						# 	@det = "for details"
-						# end
-						# if wait_hours == 0
-						# 	@wait = ""
-						# else
-						# 	@wait = " within #{wait_hours} hours"
-						# end
-						@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+						invitations.find_by(invitee_id: user.id).update(status: "Yes")
+						self.update_attributes(num_joining: 1)
+					else						
 						message = @client.account.messages.create(
 							body: "#{@dtl}? #{user.name} invited you - #{tilt} must join for this to take off. REPLY 'Y' to join or 'N' to pass",
 						    to: @user.phone,
@@ -148,84 +91,39 @@ class Gather < ActiveRecord::Base
 						puts message.from
 						puts message.to
 						puts message.body
-
-						# @invitation.update_attributes(sent: "Yes", when_sent: Time.now)
-					# else
-					# 	# send reminder text to respond to the previous invitation 
-					# 	@invitation.update_attributes(sent: "No")
-					# 	old_invitation = Invitation.where(invitee_id: @user.id, sent: "Yes", when_responded: nil).where("when_sent IS NOT NULL").last
-					# 	@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
-					# 		message = @client.account.messages.create(
-					# 			body: "You've been invited to another activity via Bloon! To receive it, first respond Y/N to your last invitation (#{old_invitation.gathering.activity} from #{old_invitation.gathering.user.name})",
-					# 		    to: @user.phone,
-					# 		    from: ENV['TWILIO_MAIN'])
-					# 	puts message.from
-					# 	puts message.to
-					# 	puts message.body
-					# 	puts "reminder text"
-					# end
-				else
-					UserMailer.invitation_email(@user, self, @invitation, user, @to_invitees).deliver
+					end
+				# else
+				# 	UserMailer.invitation_email(@user, self, @invitation, user, @to_invitees).deliver
 				end
-			else
-				first_password = SecureRandom.urlsafe_base64(10)
-				@user = User.create!(name: email_name, email: formatted_email, password: first_password, password_confirmation: first_password)
-				invite!@user
-				@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: self.id)
-				UserMailer.invitation_email(@user, self, @invitation, user, @to_invitees).deliver				
+			# else
+			# 	first_password = SecureRandom.urlsafe_base64(10)
+			# 	@user = User.create!(name: email_name, email: formatted_email, password: first_password, password_confirmation: first_password)
+			# 	invite!@user
+			# 	@invitation = Invitation.find_by(invitee_id: @user.id, gathering_id: self.id)
+			# 	UserMailer.invitation_email(@user, self, @invitation, user, @to_invitees).deliver				
 			end
 		end
 		
-		formatted_invited = invited
+		# formatted_invited = invited
+		# invitees.each do |invitee|
+		# 	if invitee.split('@').last == "gmail.com"
+		# 		formatted_invitee = invitee.split('@').first.gsub(".","") + "@" + invitee.split('@').last
+		# 		formatted_invited = formatted_invited.gsub(invitee,formatted_invitee)
+		# 	end
+		# end
+		# self.update_attributes(invited_no: "")
+		# self.update_attributes(invited: (user.email + " " + formatted_invited))
+		# invitees = invited.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
 		invitees.each do |invitee|
-			if invitee.split('@').last == "gmail.com"
-				formatted_invitee = invitee.split('@').first.gsub(".","") + "@" + invitee.split('@').last
-				formatted_invited = formatted_invited.gsub(invitee,formatted_invitee)
-			end
-		end
-		self.update_attributes(invited_no: "")
-		self.update_attributes(invited: (user.email + " " + formatted_invited))
-		invitees = invited.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
-		invitees.each do |invitee|
-			@user = User.find_by(email: invitee)
+			@user = User.find_by(id: invitee)
 			invitees.each do |n|
-				other_user = User.find_by(email: n)
+				other_user = User.find_by(id: n)
 				if @user != other_user && @user.not_friend?(other_user)
 					@user.friend!(other_user)
 				end
 			end
 		end
-		invite!user
-		@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
-		message = @client.account.messages.create(
-			body: "#{self.activity} invitations have been sent! Reply with any updates and we'll let everyone know",
-		    to: user.phone,
-		    from: Invitation.find_by(gathering_id: self.id, invitee_id: user.id).number_used)
-		puts message.from
-		puts message.to
-		puts message.body
-		# activity_1v = "1" if self.activity.present?
-		# activity_2v = "1" if self.activity_2.present?
-		# activity_3v = "1" if self.activity_3.present?
-		# date_1v = "1" if self.date.present? || self.time.present?
-		# date_2v = "1" if self.date_2.present? || self.time_2.present?
-		# date_3v = "1" if self.date_3.present? || self.time_3.present?
-		# location_1v = "1" if self.location.present?
-		# location_2v = "1" if self.location_2.present?
-		# location_3v = "1" if self.location_3.present?
-		
-		invitations.find_by(invitee_id: user.id).update(status: "Yes", 
-			# activity_1v: activity_1v, 
-			# activity_2v: activity_2v, 
-			# activity_3v: activity_3v, 
-			# date_1v: date_1v, 
-			# date_2v: date_2v, 
-			# date_3v: date_3v, 
-			# location_1v: location_1v, 
-			# location_2v: location_2v, 
-			# location_3v: location_3v, 
-			)
-		self.update_attributes(num_joining: 1)
+
 		@calinvite = Calinvite.create!(gather_id: self.id, cal_activity: self.activity, cal_date: self.date, cal_time: self.time, cal_location: self.location)
 
 		tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
@@ -276,13 +174,14 @@ class Gather < ActiveRecord::Base
 		@gather = Gather.find_by(id: @this_invitation.gathering_id)
 		@joining_user = User.find_by(id: @this_invitation.invitee_id)
 		@gather.update_attributes(num_joining: @gather.num_joining + 1)
-		@gather.update_attributes(invited_yes: (@gather.invited_yes + " " + @joining_user.email))
-		# was previously not joining
-		if @gather.invited_no.include?(@joining_user.email)
-			@gather.update_attributes(invited_no: @gather.invited_no.sub(@joining_user.email,''))
-			@gather.update_attributes(num_passing: @gather.num_passing - 1)
-		end
-		invited_yes_array = @gather.invited_yes.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq
+		@gather.update_attributes(num_passing: @gather.invitations.where(status: "No").count)
+		invited_yes_array = @gather.invitations.where(status: "Yes").pluck(:invitee_id)
+
+		# @gather.update_attributes(invited_yes: (@gather.invited_yes + " " + @joining_user.id.to_s))
+		# # was previously not joining
+		# if @gather.invited_no.include?(@joining_user.id.to_s)
+		# 	@gather.update_attributes(invited_no: @gather.invited_no.sub(@joining_user.id.to_s,''))
+		# end
 		@people_joining_less_user = ""
 		if @joining_user.name.present?
 			@joining_user_name_or_email = @joining_user.name.split(' ').first
@@ -290,17 +189,17 @@ class Gather < ActiveRecord::Base
 			@joining_user_name_or_email = @joining_user.email.split(/[.@]/).first.capitalize
 		end
 
-		if not @gather.invited.include?(@joining_user.email)
-			@gather.invited.downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).each do |invitee|
-				other_user = User.find_by(email: invitee)
-				if @joining_user.not_friend?(other_user)
-					@joining_user.friend!(other_user)
-					other_user.friend!(@joining_user)
-				end
-			end
-			new_invited = [@gather.invited, @joining_user.email].join(" ")
-			@gather.update_attributes(invited: new_invited)
-		end
+		# if not @gather.invited.include?(@joining_user.id.to_s)
+		# 	@gather.invited.split(' ').each do |invitee|
+		# 		other_user = User.find_by(id: invitee)
+		# 		if @joining_user.not_friend?(other_user)
+		# 			@joining_user.friend!(other_user)
+		# 			other_user.friend!(@joining_user)
+		# 		end
+		# 	end
+		# 	new_invited = [@gather.invited, @joining_user.id.to_s].join(" ")
+		# 	@gather.update_attributes(invited: new_invited)
+		# end
 
 		# if @gather.activity.present? && ( @gather.activity_2 == "" || @gather.activity_2.nil? ) && ( @gather.activity_3 == "" || @gather.activity_3.nil? )
 		# 	gather_name = @gather.activity
@@ -338,7 +237,7 @@ class Gather < ActiveRecord::Base
 			# @gather.update_attributes(details: ("#{@gather.details} <br>To #{@joining_user_name_or_email}: Great, we've marked you down as interested in #{@gather.activity[0,1].downcase + @gather.activity[1..-1]} on bloon.us. You'll get a text if this takes off "))
 
 			message = @client.account.messages.create(
-				body: "#{@joining_user.name} just joined you for #{gather_name} on bloon.us. If #{@gather.tilt - @gather.num_joining} more join, you will be put in a group chat",
+				body: "#{@joining_user.name} just joined you for #{@gather.activity} on bloon.us. If #{@gather.tilt - @gather.num_joining} more join, you will be put in a group chat",
 			    to: User.find_by(id: user_id).phone,
 			    from: Invitation.find_by(gathering_id: @gather.id, invitee_id: user_id).number_used)
 			puts message.from
@@ -391,7 +290,7 @@ class Gather < ActiveRecord::Base
 			@gather.update_attributes(expire: Time.now)
 
 			invited_yes_array.each do |n|
-				invited_yes_user = User.find_by(email: n)
+				invited_yes_user = User.find_by(id: n)
 				@invited_yes_user_invitation = Invitation.find_by(gathering_id: @gather.id, invitee_id: invited_yes_user.id)
 				# if @invited_yes_user_invitation.number_used.nil?
 				# 	all_numbers_used = invited_yes_user.reverse_invitations.pluck(:number_used)
@@ -410,8 +309,8 @@ class Gather < ActiveRecord::Base
 				@number_used = @invited_yes_user_invitation.number_used
 
 				@people_joining_less_user = ""
-				(invited_yes_array - (invited_yes_user.email.split(" "))).each do |m|
-					m = User.find_by(email: m)
+				(invited_yes_array - [invited_yes_user.id]).each do |m|
+					m = User.find_by(id: m)
 					if m.name.present?
 						if @people_joining_less_user == ""
 							@people_joining_less_user = m.name.split(' ').first
@@ -442,7 +341,7 @@ class Gather < ActiveRecord::Base
 			# 		puts message.from
 			# end
 
-			@gather.update_attributes(details: ("#{@gather.details} <br>Bloon: #{gather_name} has taken off with #{User.find_by(email: invited_yes_array.last).name.split(' ').first}, #{@people_joining_less_user}! Reply to this group text to plan the details together "))
+			@gather.update_attributes(details: ("#{@gather.details} <br>Bloon: #{gather_name} has taken off with #{User.find_by(id: invited_yes_array.last).name.split(' ').first}, #{@people_joining_less_user}! Reply to this group text to plan the details together "))
 
 		elsif @gather.num_joining > (@gather.tilt)
 			# if @this_invitation.number_used.nil?
@@ -462,8 +361,8 @@ class Gather < ActiveRecord::Base
 			@number_used = @this_invitation.number_used
 
 			@people_joining_less_user = ""
-			(invited_yes_array - @joining_user.email.split(" ")).each do |n|
-				invited_yes_user = User.find_by(email: n)
+			(invited_yes_array - @joining_user.id.to_s.split(" ")).each do |n|
+				invited_yes_user = User.find_by(id: n)
 				@invited_yes_user_invitation = Invitation.find_by(gathering_id: @gather.id, invitee_id: invited_yes_user.id)
 				
 				message = @client.account.messages.create(
@@ -532,19 +431,16 @@ class Gather < ActiveRecord::Base
 		@this_invitation = Invitation.find_by!(id: invitation_id)
 		@gather = Gather.find_by(id: @this_invitation.gathering_id)
 		@unjoining_user = User.find_by(id: @this_invitation.invitee_id)
-		@gather.update_attributes(num_passing: @gather.num_passing + 1)
+		@gather.update_attributes(num_passing: @gather.invitations.where(status: "No").count)
 		if @gather.date.present? 
 			@dtl = @gather.activity + " on " + @gather.date.strftime("%a, %b %-e") 
 		else
 			@dtl = @gather.activity
 		end
 
-		if @gather.invited_yes.include?(@unjoining_user.email)
+		if @gather.num_joining != @gather.invitations.where(status: "Yes").count
 			# Was previously joining
-			@gather.update_attributes(num_joining: @gather.num_joining - 1)
-			# Gather.decrement_counter(:num_joining, @this_invitation.gathering_id)
-			@gather.update_attributes(invited_yes: @gather.invited_yes.sub(@unjoining_user.email,''))
-			@gather.update_attributes(invited_no: (@gather.invited_no + " " + @unjoining_user.email))
+			@gather.update_attributes(num_joining: @gather.invitations.where(status: "Yes").count)
 
 			if @unjoining_user.name.present?
 				@unjoining_user_name_or_email = @unjoining_user.name.split(' ').first
@@ -573,9 +469,9 @@ class Gather < ActiveRecord::Base
 
 			if @gather.num_joining + 1 >= @gather.tilt			 
 			# Tilted already, including untilted now; let already joining group know
-				invited_yes_array = @gather.invited_yes.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq
+				invited_yes_array = @gather.invitations.where(status: "Yes").pluck(:invitee_id)
 				invited_yes_array.each do |n|
-					invited_yes_user = User.find_by(email: n)
+					invited_yes_user = User.find_by(id: n)
 					invited_yes_user_invitation = Invitation.find_by(gathering_id: @gather.id, invitee_id: invited_yes_user.id)				
 
 					message = @client.account.messages.create(
@@ -647,8 +543,6 @@ class Gather < ActiveRecord::Base
 			end
 		else
 			# Passing as the first action
-			@gather.update_attributes(invited_no: (@gather.invited_no + " " + @unjoining_user.email))
-
 			if @unjoining_user.name.present?
 				@unjoining_user_name_or_email = @unjoining_user.name.split(' ').first
 			else

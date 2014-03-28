@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
 	has_many :friendships, foreign_key: "friender_id"
 	has_many :friended_users, through: :friendships, source: :friended
 	has_many :lists, dependent: :destroy
-	before_save { self.email = email.downcase }
+	# before_save { self.email = email.downcase }
 	before_validation do 
 		if self.phone != nil
 		self.phone = phone.gsub(/\D/,'')

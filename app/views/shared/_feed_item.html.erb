@@ -185,8 +185,8 @@
 					    	<div class="name-select-area-feed">
 					    		<ol class="selectable" id="select-result-<%= feed_item.id %>">
 									<% current_user.friended_users.where("phone IS NOT NULL").order(:name).each do |friend| %>
-										<% if not feed_item.invited.include? friend.email %>
-											<li class="name-select" value="<%= friend.name %>">+<%= friend.name %> <div style="display:none;">(<%= friend.email %>) </div></li>
+										<% if not feed_item.invitees.pluck(:id).include? friend.id %>
+											<li class="name-select" value="<%= friend.name %>">+<%= friend.name %> <div style="display:none;">(<%= friend.id %>) </div></li>
 										<% end %>
 									<% end %>
 								</ol>

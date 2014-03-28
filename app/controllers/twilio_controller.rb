@@ -20,13 +20,35 @@ class TwilioController < ApplicationController
     				@invitation = Invitation.find_by(invitee_id: @user.id, number_used: @to)
 					@user.join!(@invitation.id)
 					Gather.find_by(id: @invitation.gathering_id).increase_num_joining!(@invitation.id)
-					puts "Joining as first response"	
+					puts "Joining as first response"
+					# If person doesn't have a name
+					if @user.phone == @user.name
+						@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+						message = @client.account.messages.create(
+							body: "Thanks for joining #{Gather.find_by(id: @invitation.gathering_id).activity}! Please reply to this text with your name so your friends know who you are in the group text",
+						    to: @user.phone,
+						    from: ENV['TWILIO_MAIN'])
+						puts message.from
+						puts "Get name from new user"
+						Gather.find_by(id: @invitation.gathering_id).gather_friends(@user)	
+					end	
 				elsif Invitation.where(invitee_id: @user.id, number_used: @to, status: "No").present?
-					# If passed and no wants to join
+					# If passed and now wants to join
     				@invitation = Invitation.find_by(invitee_id: @user.id, number_used: @to)
 					@user.join!(@invitation.id)
 					Gather.find_by(id: @invitation.gathering_id).increase_num_joining!(@invitation.id)
 					puts "Joining, was passing before"	
+					# If person doesn't have a name
+					if @user.phone == @user.name
+						@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+						message = @client.account.messages.create(
+							body: "Thanks for joining #{Gather.find_by(id: @invitation.gathering_id).activity}! Please reply to this text with your name so your friends know who you are in the group text",
+						    to: @user.phone,
+						    from: ENV['TWILIO_MAIN'])
+						puts message.from
+						puts "Get name from new user"
+						Gather.find_by(id: @invitation.gathering_id).gather_friends(@user)		
+					end	
 				elsif Invitation.where(invitee_id: @user.id, number_used: @to, status: "Yes").present?
 					# If already joining
     				@invitation = Invitation.find_by(invitee_id: @user.id, number_used: @to)
@@ -135,6 +157,21 @@ class TwilioController < ApplicationController
 			# 	end
 			# end			
 
+		# Name response from person who doesn't have a name
+		elsif @to == ENV['TWILIO_MAIN'] && User.find_by(phone: @formatted_phone).name == @formatted_phone
+			@user = User.find_by(phone: @formatted_phone)
+			@user.name = @body
+			@user.save!(:validate => false)
+			@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
+			message = @client.account.messages.create(
+				body: "Great, thanks #{@user.name}!",
+			    to: @user.phone,
+			    from: ENV['TWILIO_MAIN'])
+			puts message.from
+			puts "Got the new user's name"
+			gather = Gather.find_by(id: Invitation.where(invitee_id: @user.id, status: "Yes").last.gathering_id)
+			gather.gather_friends(@user)
+
 		# Incorrect phone number
 		elsif @body.downcase == "pop22" && @to == ENV['TWILIO_MAIN']
 			@user = User.find_by(phone: @formatted_phone)
@@ -237,9 +274,9 @@ class TwilioController < ApplicationController
 				end			
 			else		
 			# Tilted already - Group chat	
-				invited_yes_array = @gather.invited_yes.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
-				(invited_yes_array - @user.email.split(" ")).each do |invited_yes_array|
-					@invited_yes_user = User.find_by(email: invited_yes_array)
+				invited_yes_array = @gather.invitations.where(status: "Yes").pluck(:invitee_id)
+				(invited_yes_array - [@user.id]).each do |invited_yes_array|
+					@invited_yes_user = User.find_by(id: invited_yes_array)
 					@invited_yes_user_invitation = Invitation.find_by(gathering_id: @gather.id, invitee_id: @invited_yes_user.id)
 					
 					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']
