@@ -4,8 +4,11 @@
 	<%= render 'shared/error_messages', object: f.object %> 
 	<div class="field">		
 		<div class="input-group">
-			<div class="form-label">1. Activity Info</div>
-        	<input type="text" class="form-control" name="gather[activity]" placeholder="What, when & where">
+			<div class="form-label">1. Activity<a href="#" id="quick-suggestions" onclick="toggle_visibility('suggestion_link')"><div class="suggestion-link">Need Ideas?</div></a></div>
+			<div id="suggestion_link" style="display:none;" class="quick-suggestions">
+				<%= render 'shared/quick_suggestions' %> 
+			</div>
+        	<input type="text" class="form-control" name="gather[activity]" placeholder="What, when & where?">
 <!--         	<div class="form-label">Date</div>
 	        <input type="text" class="datepicker" name="gather[date]" placeholder="Date" readonly="true"> -->
         </div>
