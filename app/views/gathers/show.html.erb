@@ -3,7 +3,12 @@
 	<%= render 'gathers/new' if signed_in? %>
 </div>
 
-<ol class="gathers">
-	<%= render 'shared/feed_item', :feed_item => @gather %>
-</ol>
-<%= render 'static_pages/how_invited', :feed_item => @gather %>
+<div class="container-fluid">
+	<ol class="gathers">
+		<%= render 'shared/feed_item', :feed_item => @gather %>
+	</ol>
+</div>
+<a href="#" id="how-does-bloon-work" onclick="toggle_visibility('how-it-works')"><div class="how_works">How does Bloon work?</div></a>
+	<div id="how-it-works" style="display:none;" class="">
+		<%= render partial: 'static_pages/how' %>
+	</div>	

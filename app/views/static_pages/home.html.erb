@@ -10,7 +10,7 @@
 				<%= render 'shared/new_form' %>
 				<div class="feed">					
 					<div id="gather_form" style="display:none;"><h2>Create bloon:</h2><%= render 'gathers/new' %><h2>Your invitation feed:</h2></div>
-					<div class="your-feed-header">Activity Feed</div>
+					<% if @feed_items.any? %><div class="your-feed-header">Activity Feed</div><% end %>
 					<%= render 'shared/feed' %>
 				</div>
 			</div>
@@ -21,14 +21,34 @@
 <% else %>
 <div class="row">
 	<div class="center center-span">
+		<div class="row bg-white"><div class="not-logged-in-800 margin-top-20">
+		  <div class="col-md-7">
+		  	<h1 class="main-blurb padding-lr-15">Quickly poll friends’ interest in:<div id="changeText" ></div></h1>
+	  		
+		    <script type="text/javascript">
+		    var text = ["Happy hour on Fri", "Potluck dinner on Sat", "Climb this weekend", "Game night on Sun"];
+		    var counter = 0;
+		    var elem = document.getElementById("changeText");
+		    setInterval(change, 1500);
+		    function change() {
+		     elem.innerHTML = text[counter];
+		        counter++;
+		        if(counter >= text.length) { counter = 0; }
+		    }
+		    </script>
+			<section>
+				<%= render 'users/new' %>
+			</section>
+		  </div>
+		  <div class="col-md-5 padding-lr-15">
+		  	<%= image_tag("sampleimg.png", id: "sampleimg") %>
+		  </div>
+		</div></div>
+		
+		<%= render 'static_pages/how' %>
+
 		<h1 class="logo-front">Have more fun</h1>
 		<h2 class="desc-front blurb">Bloon helps you organize social activities for you and your friends, effortlessly
-		<br>
-		<a href="<%= '/more' %>" id="ga-learn-more">Learn more</a>
-		</h2>
-		<section>
-			<%= render 'users/new' %>
-		</section>
 	</div>
 </div>
 <%= render 'layouts/facepile' if !signed_in? %>		

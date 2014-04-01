@@ -1,10 +1,10 @@
 <% provide(:title, 'Forgot Password?') %>
 <div class="row">
 	<div class="form-300 all-wide-form">
-		<h2>Enter your email and we'll send you a link to reset your password</h2>
+		<div class="page-title">Enter Email</div>
 				<%= form_for(:password_reset, url: password_resets_path) do |f| %>
 					<%= f.text_field :email, placeholder: "Email", :autofocus => true %>
-					<%= f.submit "Reset Password", class: "btn btn-block btn-invite btn-large" %>
+					<%= f.submit "Reset Password", class: "btn btn-block btn-new-user btn-large" %>
 				<% end %>
 	</div>
 </div>

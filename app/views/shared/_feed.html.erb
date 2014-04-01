@@ -1,10 +1,13 @@
+<% if @feed_items.count < 3 %>
+	<br>
+	<a href="#" id="how-does-bloon-work" onclick="toggle_visibility('how-it-works')"><div class="how_works">How does Bloon work?</div></a>
+	<div id="how-it-works" style="display:none;" class="">
+		<%= render partial: 'static_pages/how' %>
+	</div>	
+<% end %>
 <% if @feed_items.any? %>
   <ol class="gathers">
 		<%= render partial: 'shared/feed_item', collection: @feed_items %>
 	</ol>
   <%= will_paginate @feed_items, :previous_label => nil, :next_label => nil, :inner_window => 0, :outer_window => 0 %>
-<% end %>
-<% if @feed_items.count < 3 %>
-	<br>
-	<%= render partial: 'static_pages/how' %>
 <% end %>

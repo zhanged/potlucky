@@ -1,74 +1,19 @@
-<div class="page-title-2">How it works</div>
-<div class="row why-all">
-	<div class="why-section">
-		<i class="fa fa-edit fa-4x"></i>
-		<div class="why-title">
-			Create a Bloon
-		</div>
-		<div class="why-desc">
-			Set activity details (or use the polling feature to ask friends to vote), and set a minimum number of participants needed for the activity to take off
-		</div>
-	</div>
-	<div class="why-section">
-		<i class="fa fa-bullhorn fa-4x"></i>
-		<div class="why-title">
-			Invite friends
-		</div>
-		<div class="why-desc">
-			Share your Bloon's link with anyone you'd like to invite, where they can sign up for the activity and vote
-		</div>
-	</div>
-	<div class="why-section">
-		<i class="fa fa-users fa-4x"></i>
-		<div class="why-title">
-			Minimum friends reached
-		</div>
-		<div class="why-desc">
-			Participants, including ones that join later, are connected via a group text chat, and the organizer can send a calendar invitation
-		</div>
-	</div>
-	<div class="why-section">
-		<i class="fa fa-repeat fa-4x"></i>
-		<div class="why-title">
-			Have fun!
-		</div>
-		<div class="why-desc">
-			Rebloon the same group of friends to hang out again (Bloon will text them the invitation so you don't need to share it with them)
-		</div>
-	</div>
-	<% if !signed_in? %>
-		<%= render 'users/new' %>
-	<% end %>
+<div class="row bg-f8">
+  <div class="col-md-12 padding-lr-15 step-header">How Bloon works</div>
 </div>
-
-<!-- <div class="row">
-	<div class="span3a">
-		<img src="step1.png", alt="Invite friends to activity" height="177" width="226">
-		<h1>
-			Invite friends
-		</h1>
-		<h2>
-			Specify how many people are needed for activity to take off
-		</h2>
+<div class="row bg-f8 step">
+	<div class="not-logged-in-1000">			  
+		<div class="col-md-4 ">
+			<div>&#9312; Create Bloon</div>
+		  	<%= image_tag("step1.png", id: "") %>
+		</div>			  
+		<div class="col-md-4">
+		  	<div>&#9313; Friends polled via SMS</div>
+		  	<%= image_tag("step2.png", id: "") %>
+		</div>
+		<div class="col-md-4">
+		  	<div>&#9314; If enough Friends join, it's on!</div>
+		  	<%= image_tag("step3.png", id: "") %>
+		</div>
 	</div>
-	<div class="span3a">
-		<img src="step2.png", alt="Bloon polls interest" height="177" width="226">
-		<h1>
-			Bloon polls interest
-		</h1>
-		<h2>
-			Friends who are interested can easily join via text or email
-		</h2>
-	</div>
-	<div class="span3a">
-		<img src="step3.png", alt="If enough join, it’s on!" height="177" width="226">
-		<h1>
-			If enough join, it’s on!
-		</h1>
-		<h2>
-			Participants are put in a group chat to finalize details
-		</h2>
-	</div>
-</div
-
- -->
+</div>
