@@ -8,7 +8,5 @@
 		<%= render 'shared/feed_item', :feed_item => @gather %>
 	</ol>
 </div>
-<a href="#" id="how-does-bloon-work" onclick="toggle_visibility('how-it-works')"><div class="how_works">How does Bloon work?</div></a>
-	<div id="how-it-works" style="display:none;" class="">
-		<%= render partial: 'static_pages/how' %>
-	</div>	
+<a href="#" id="how-does-bloon-work" data-toggle="modal" data-target=".bs-example-modal-lg"><div class="how_works">How does Bloon work?</div></a>
+<%= render partial: 'static_pages/how_modal' %>

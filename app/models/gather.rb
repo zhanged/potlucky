@@ -7,10 +7,11 @@ class Gather < ActiveRecord::Base
 	has_many :links, foreign_key: "gathering_id", dependent: :destroy
 	has_one :calinvite, dependent: :destroy
 	before_create do
-		self.gen_link = gen_link.gsub("bloon.us/","")
+		# self.gen_link = gen_link.gsub("bloon.us/","")
+		self.invited = ""
 		self.invited = invited.scan(/\(([^\)]+)\)/).uniq.join(" ") + " " + user.id.to_s # downcase.sub(user.email,"").scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i).uniq.join(" ")
 		# self.invited_yes = user.id.to_s
-		# self.invited_no = ""
+		# self.invited_no = ""		
 		self.num_passing = 0
 #		if self.tilt == nil || self.tilt == 0
 #			self.tilt = 1
@@ -57,7 +58,7 @@ class Gather < ActiveRecord::Base
 	validates :user_id, presence: true
 #	validate :tilt_must_fall_in_range_of_invited, unless: "tilt.nil?"
 	after_create do
-		# self.gen_link = String.random_alphanumeric
+		self.gen_link = String.random_alphanumeric
 		links.create!(in_url: self.gen_link, out_url: "/gathers/"+gen_link)
 		invitees = invited.split(" ") # downcase.scan(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
 		self.update_attributes(num_invited: invitees.count)
@@ -73,13 +74,13 @@ class Gather < ActiveRecord::Base
 				if @user.phone.present?
 					@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']						
 					if @user.id == user.id						
-						message = @client.account.messages.create(
-							body: "#{self.activity} invitations have been sent! Reply with any updates and we'll let everyone know",
-						    to: user.phone,
-						    from: Invitation.find_by(gathering_id: self.id, invitee_id: user.id).number_used)
-						puts message.from
-						puts message.to
-						puts message.body
+						# message = @client.account.messages.create(
+						# 	body: "#{self.activity} invitations have been sent! Reply with any updates and we'll let everyone know",
+						#     to: user.phone,
+						#     from: Invitation.find_by(gathering_id: self.id, invitee_id: user.id).number_used)
+						# puts message.from
+						# puts message.to
+						# puts message.body
 
 						invitations.find_by(invitee_id: user.id).update(status: "Yes")
 						self.update_attributes(num_joining: 1)

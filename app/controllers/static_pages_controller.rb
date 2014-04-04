@@ -8,7 +8,7 @@ class StaticPagesController < ApplicationController
       # list_items = current_user.full_list
       friends_lists = current_user.friends_list_feed
       require 'will_paginate/array'
-      @feed_items = (friends_lists + gather_items).sort_by(&:created_at).reverse.paginate(page: params[:page], per_page: 10) #Also in gathers_controller
+      @feed_items = (gather_items).sort_by(&:created_at).reverse.paginate(page: params[:page], per_page: 10) #(friends_lists + gather_items) to add in lists Also in gathers_controller
   	end
   end
 

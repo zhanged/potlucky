@@ -6,12 +6,17 @@ class InviteMoresController < ApplicationController
   	end
 
 	def create
-		@invite_more = InviteMore.new(invite_more_params) 
+		@invite_more = InviteMore.new(invite_more_params)
 		if current_user.phone.present?
 			@invite_more = Gather.find_by(id: invite_more_params[:gather_id]).invite_mores.build(invite_more_params)
 			if @invite_more.save
-				flash[:success] = "New invitations sent!"
-				redirect_to root_url
+				if params[:commit] == "Invite Selected Friends"
+					flash[:success] = "New invitations sent!"
+					redirect_to root_url
+				else
+					flash[:success] = "New invitations sent!"
+					redirect_to root_url, flash: { new_gather_modal: true }
+				end
 			else				
 				flash[:error] = "Oops, invitation was not sent"
 				redirect_to root_url

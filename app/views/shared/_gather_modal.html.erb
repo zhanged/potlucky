@@ -1,10 +1,10 @@
 <% if flash[:new_gather_modal]  %>
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade invite-modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
 				<h4 class="modal-title" id="myModalLabel"><%= Gather.where(user_id: current_user.id).first.activity %> created!</h4>
 			</div>
 			<div class="modal-body">
@@ -18,53 +18,82 @@
 				<% else %>
 					<div class="invite-more-friends">Invite more friends:</div>
 				<% end %>
-				<div id="text_link">
-					<!-- <b>Invite friends via SMS:</b> -->
-					<%= form_for(User.new) do |f| %>
-						<%= render 'shared/error_messages', object: f.object %>
-						<div class="add-by-text-phone"><%= f.text_field :phone, placeholder: "Friend's Mobile Number", :autofocus => true %></div>
-						<%= f.hidden_field :gathering_id, value: Gather.where(user_id: current_user.id).first.id %>
-						<%= f.submit "Add", data: { disable_with: '...' }, class: "btn btn-large btn-block add-by-phone-btn" %>						
-					<% end %>
-					<%= form_for(User.new) do |f| %>
-						<div class="add-by-text-phone-disabled"><%= f.text_field :phone, disabled: true, placeholder: "Friend's Mobile Number", :autofocus => true %></div>
-						<%= f.submit "Add", disabled: true, data: { disable_with: '...' }, class: "btn btn-large btn-block add-by-phone-btn-disabled" %>						
-					<% end %>
-					<div class="modal-min">If <%= Gather.where(user_id: current_user.id).first.tilt %> friends join, we'll put you in a group chat</div>
-				</div>
-				<% if Gather.where(user_id: current_user.id).first.invitees.count > 1 %>
-					<div class="invited-name-title">Invited:</div>
-					<% Gather.where(user_id: current_user.id).first.invitees.each do |user| %>
-							<div class="invited-name"><i class="fa fa-check-circle"></i> <%= user.name %></div>
-					<% end %>
-				<% end %>
-				<!-- <div class="modal-body-text">Invite more friends:</div> -->
-				<!-- <div class="share-button">
-					<i class="fa fa-mobile"></i>&nbsp; Text
-				</div> -->
+				
+				<% feed_item = Gather.where(user_id: current_user.id).first %>
+				
+				<div class="row">
+					<div class="col-md-7 invite-column border-right">
+						<div class="name-select-title">My Friends<hr></div>
+							<!-- <textarea class="share-link-area" size="60" onclick="this.focus();this.select()" readonly="readonly">Interested in hanging out with me? Join me here: bloon.us/<%= feed_item.gen_link %></textarea> -->
+				    	<%= form_for(InviteMore.new) do |f| %>
+					    	<%= f.hidden_field :user_id, :value => current_user.id %>
+	                        <%= f.hidden_field :gather_id, :value => feed_item.id %>
+				    		<textarea style="display:none;" class="select-result-<%= feed_item.id %>" id="select-result-<%= feed_item.id %>" name="invite_more[more_invitees]" ></textarea>
+					    	<div class="name-select-area-feed">
+					    		<ol class="selectable" id="select-result-<%= feed_item.id %>">
+									<% current_user.friended_users.where("phone IS NOT NULL").order(:name).each do |friend| %>
+										<% if not feed_item.invitees.pluck(:id).include? friend.id %>
+											<li class="name-select" value="<%= friend.name %>"><i class="fa fa-square-o"></i><i class="fa fa-check-square-o"></i> <%= friend.name %> <div style="display:none;">(<%= friend.id %>) </div></li>
+										<% end %>
+									<% end %>
+								</ol>
+							</div>
+						<% if current_user.friended_users.where("phone IS NOT NULL").count != 0 %>
+						<%= f.submit "Invite selected", data: { disable_with: 'Inviting...' }, class: "btn btn-block btn-large btn-new-user" %>
+						<% end %>
+						<% end %>	
+					</div>
+					<div class="col-md-5 invite-column">
+					  	<div class="name-select-title spacing-for-mobile">Others<hr></div>
+					  	<div class="fb-send for-mobile-only" data-href="http://bloon.us/<%= feed_item.gen_link %>" data-colorscheme="light"></div>
+							<a onclick="facebookSendDialog('http://bloon.us/<%= feed_item.gen_link %>'); return false;">
+	 					<div class="share-button fb for-non-mobile-only"><%= image_tag("fb_share.png") %>Message</div>
+
+	 					<a href="javascript:;" onclick="toggle_visibility('copy_link_<%= feed_item.id %>')">
+							<div class="share-button">
+							<i class="fa fa-link"></i>&nbsp; Link
+							</div>
+						</a>
+						<div id="copy_link_<%= feed_item.id %>" style="display:none;" class="copy-paste">
+							<!-- Copy & Paste: -->
+							<textarea onclick="this.select();" /><%= feed_item.activity %>? We'll only do it if <%= feed_item.tilt %>+ join. Just let me know here: bloon.us/<%= feed_item.gen_link %></textarea>
+						</div>
+
+						<a href="javascript:;" onclick="toggle_visibility('text_<%= feed_item.id %>')">
+							<div class="share-button">
+							<i class="fa fa-comment"></i>&nbsp; SMS
+							</div>
+						</a>
+						<div id="text_<%= feed_item.id %>" style="display:none;" class="text-form">						
+							<div id="text_link">
+								<%= form_for(User.new) do |f| %>
+									<div class="input-group">
+										<%= render 'shared/error_messages', object: f.object %>
+										<%= f.text_field :phone, placeholder: "Friend's Mobile Number", :autofocus => true, :class => 'form-control' %>
+										<%= f.hidden_field :gathering_id, value: feed_item.id %>
+										<span class="input-group-btn">
+											<%= f.submit "Add", data: { disable_with: '...' }, class: "btn btn-large btn-block add-by-phone-btn" %>
+										</span>
+									</div>
+								<% end %>
 								
+								<%= form_for(User.new) do |f| %>
+									<div class="input-group margin-top-5">
+										<%= render 'shared/error_messages', object: f.object %>
+										<%= f.text_field :phone, disabled: true, placeholder: "Friend's Mobile Number", :class => 'form-control' %>
+										<span class="input-group-btn">
+											<%= f.submit "Add", disabled: true, data: { disable_with: '...' }, class: "btn btn-large btn-block add-by-phone-btn-disabled" %>
+										</span>
+									</div>
+								<% end %>												
+							</div>
+						</div>
+					</div>
+				</div>									
 			</div> 
 			<div class="modal-footer">
-				<div class="or-invite">Or, invite your friends through:</div>
-				<a href="#" onclick="toggle_visibility('copy_link')">
-					<div class="share-button">
-					<i class="fa fa-link"></i>&nbsp; Link
-					</div>
-				</a>
-				<a onclick="myFunction('https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fbloon.us/<%= Gather.where(user_id: current_user.id).first.gen_link %>')" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fbloon.us/<%= Gather.where(user_id: current_user.id).first.gen_link %>" target="_blank">
- 					<div class="share-button fb"><%= image_tag("fb_share.png") %>Share</div>
-				</a>
-				<script type="text/javascript">
-					function myFunction(link) {
-					window.open(link, 'facebook_share', 'height=320, width=640, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, directories=no, status=no');
-					}
-				</script>
-				<div id="copy_link" style="display:none;" class="copy-paste">
-					<b>Copy & Paste:</b>
-					<textarea onclick="this.select();" /><%= Gather.where(user_id: current_user.id).first.activity %>? We'll only do it if <%= Gather.where(user_id: current_user.id).first.tilt %>+ join. Just let me know here: bloon.us/<%= Gather.where(user_id: current_user.id).first.gen_link %></textarea>
-				</div>
-				<!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary">Save changes</button> -->
+				<button type="button" class="btn btn-default done-btn" data-dismiss="modal">Done</button>
+				<!-- <button type="button" class="btn btn-primary">Save changes</button> -->
 			</div>
 		</div>
 	</div>

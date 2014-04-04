@@ -130,10 +130,10 @@ class UsersController < ApplicationController
           tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
           tracker.track(@user.id, 'Signed Up from link', {
           })
-          flash[:success] = "Welcome to Bloon!"
+          flash[:success] = "Welcome to Bloon, #{@user.name.split(' ').first}!"
           redirect_to(root_url)
         else
-          flash[:success] = "Welcome to Bloon!"
+          flash[:success] = "Welcome to Bloon, #{@user.name.split(' ').first}!"
           redirect_to(root_url)
         end
       elsif User.where(phone: user_params[:phone].gsub(/\D/,'')).present?
@@ -171,10 +171,10 @@ class UsersController < ApplicationController
               tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
               tracker.track(@user.id, 'Signed Up from link', {
               })
-              flash[:success] = "Welcome to Bloon!"
+              flash[:success] = "Welcome to Bloon, #{@user.name.split(' ').first}!"
               redirect_to(root_url)
             else
-              flash[:success] = "Welcome to Bloon!"
+              flash[:success] = "Welcome to Bloon, #{@user.name.split(' ').first}!"
               redirect_to(root_url)
             end
           else
@@ -194,8 +194,13 @@ class UsersController < ApplicationController
         # User already exists
         @user = User.find_by(phone: user_params[:phone].gsub(/\D/,''))
         if Invitation.find_by(gathering_id: gather.id, invitee_id: User.find_by(phone: @user.phone)).present?
-          flash[:error] = "#{User.find_by(phone: @user.phone).name} has already been invited"
-          redirect_to root_url, flash: { new_gather_modal: true }
+          if gather.id == current_user.gathers.first.id
+            flash[:error] = "#{User.find_by(phone: @user.phone).name} has already been invited"
+            redirect_to root_url, flash: { new_gather_modal: true }
+          else
+            flash[:error] = "#{User.find_by(phone: @user.phone).name} has already been invited"
+            redirect_to root_url
+          end
         else
           gather.invite!(@user)
           gather.gather_friends(@user)
@@ -207,8 +212,13 @@ class UsersController < ApplicationController
             from: Invitation.find_by(gathering_id: gather.id, invitee_id: @user.id).number_used)
           puts message.to, message.body
           # NEED TO UPDATE GATHER ON INVITATION 
-          flash[:success] = "#{@user.name} has been invited!"
-          redirect_to root_url, flash: { new_gather_modal: true }
+          if gather.id == current_user.gathers.first.id
+            flash[:success] = "#{@user.name} has been invited!"
+            redirect_to root_url, flash: { new_gather_modal: true }
+          else
+            flash[:success] = "#{@user.name} has been invited!"
+            redirect_to root_url
+          end
         end
       else
         # Create new user
@@ -222,8 +232,13 @@ class UsersController < ApplicationController
             from: number_used)
           puts message.to, message.body               
         rescue 
-          flash[:error] = "Oops this cell number doesn't seem to be correct, please re-enter your friend's mobile number"
-          redirect_to (request.env['HTTP_REFERER']), flash: { new_gather_modal: true }
+          if gather.id == current_user.gathers.first.id
+            flash[:error] = "Oops this cell number doesn't seem to be correct, please re-enter your friend's mobile number"
+            redirect_to (request.env['HTTP_REFERER'])
+          else
+            flash[:error] = "Oops this cell number doesn't seem to be correct, please re-enter your friend's mobile number"
+            redirect_to (request.env['HTTP_REFERER']), flash: { new_gather_modal: true }
+          end
         else
           @user = User.new
           @user.phone = user_params[:phone].gsub(/\D/,'')          
@@ -236,8 +251,13 @@ class UsersController < ApplicationController
           tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
           tracker.track(@user.id, 'New User, Invited via Phone', {
           })
-          flash[:success] = "Your friend has been invited!"
-          redirect_to root_url, flash: { new_gather_modal: true }
+          if gather.id == current_user.gathers.first.id
+            flash[:success] = "Your friend has been invited!"
+            redirect_to root_url
+          else
+            flash[:success] = "Your friend has been invited!"
+            redirect_to root_url, flash: { new_gather_modal: true }
+          end
         end
       end
     else

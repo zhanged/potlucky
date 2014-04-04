@@ -431,8 +431,8 @@ input[type="color"],
 }
 textarea {
 	width: 100%;
-	height: 40px;
-	margin-bottom: -20px;
+	height: auto;
+	margin-bottom: 10px;
 	border: 1px solid #ebebeb;
 }
 
@@ -607,8 +607,7 @@ input {
 }
 
 .alert {
-	margin-top: 10px;
-	margin-bottom: 10px;
+	margin: 10px;
 	background-color: #D5F5FF;
 	border-radius: 10px;
 	color: #0098BE;
@@ -628,6 +627,10 @@ input {
 }
 .alert-success {
 	background-image: none;
+}
+.alert-error {
+	background: #FFb300;
+	color: white;
 }
 
 .field_with_errors {
@@ -1687,25 +1690,26 @@ outline: -webkit-focus-ring-color auto 0px;
 	color: $circleColor;
 }
 .name-select-title {
-	padding: 10px 15px 0px 15px;
 	letter-spacing: 1px;
 	font-weight: 400;
-	font-size: 18px;
-	color: $mainColor;
-	text-transform: uppercase;
+	font-size: 14px;
+	color: #505050;
 	background: white;
+	text-transform: uppercase;
 	hr {
-		margin-top: 0px;
-		margin-bottom: 0px;
+		margin-top: 2px;
+		margin-bottom: 5px;
 		border: 0;
-		border-top: 1px solid $mainColor;
+		border-top: 1px solid #E7E7E7;
 	}
 }
 .name-select {
 	display: inline-block;
 	padding: 3px 4px 2px 3px;
-	color: $mainColor;//$inviteColor;
+	color: #777777;//$inviteColor;
+	font-weight: 200;
 	cursor: pointer;
+	min-width: 135px;
 }
 .name-select-blurb {
 	padding: 3px 0px 3px 0px;
@@ -1724,11 +1728,22 @@ outline: -webkit-focus-ring-color auto 0px;
 }
 .name-select-area-feed {
 	background: white;//#EEE;
-	padding: 5px 0px 8px 0px;
+	padding: 0px 0px 8px 0px;
 	font-size: 14px;
 	margin: 0px 0 0 0;
 	width: 100%;
 //	border-top: 1px solid rgb(224, 224, 224);
+	.fa-check-square-o {
+		display: none;
+	}
+	.selectable .ui-selected {
+		.fa-check-square-o {
+			display: inline;
+		}
+		.fa-square-o {
+			display: none;
+		}
+	}
 }
 .name-select-invite {
 	font-size: 14px;
@@ -1821,8 +1836,10 @@ outline: -webkit-focus-ring-color auto 0px;
 	.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
 		// color: #212121;
 		background: white !important;
-		color: black !important;
-		// border-radius: 20px;
+		color: #555555 !important;
+		font-weight: 600 !important;
+		border-radius: 20px;
+		border: 1px solid #eeeeee !important;
 	}
 	.ui-button-text-only .ui-button-text {
 		padding: 2px 5px !important;
@@ -1914,7 +1931,8 @@ outline: -webkit-focus-ring-color auto 0px;
 	.ui-tabs .ui-tabs-nav li.ui-tabs-active {
 		background: white;
 		// font-weight: bold;
-		border-top: 1px solid $mainColor;
+		// border-top: 1px solid $mainColor;
+		font-weight: 800;
 	}
 	a:focus {
 		outline: none;
@@ -1947,7 +1965,7 @@ outline: -webkit-focus-ring-color auto 0px;
 	padding-top: 0px;
 	padding-left: 15px;
 	padding-right: 15px;
-	background: $noActionGray;
+	background: white;
 	overflow: auto;
 }
 .results-form {
@@ -2256,17 +2274,23 @@ outline: -webkit-focus-ring-color auto 0px;
 	}
 }
 .modal-dialog {
-	max-width: 360px;
+	max-width: 1000px;
+	width: auto;
+}
+.invite-modal {
+	.modal-dialog {
+		max-width: 800px;
+	}
+}
+.modal-lg {
+	.modal-body {
+		border-radius: 10px;
+		padding: 10px;
+	}
 }
 .modal {
 	color: black;
 	font-family: Helvetica;
-	textarea {
-		height: 60px;
-		margin-bottom: 0px;
-		// border: 1px solid $mainColor;
-		background: #f9feff;
-	}
 	.modal-header {
 		background: $noActionGray;
 		color: #888888;
@@ -2276,7 +2300,8 @@ outline: -webkit-focus-ring-color auto 0px;
 		border-top-right-radius: 4px;
 	}
 	.modal-body {
-		background: $noActionGray;
+		background: white;
+		padding: 10px;
 	}
 	.modal-body-text {
 		font-size: 21px;
@@ -2284,36 +2309,31 @@ outline: -webkit-focus-ring-color auto 0px;
 		color: #222222;
 		margin-bottom: 5px;
 	}
-	.share-button {
-		background: gray;
-		display: inline-block;
-		padding-top: 7px;
-		padding-bottom: 5px;
-		padding-left: 9px;
-		padding-right: 9px;
-		margin-bottom: 0px;
-		margin-right: 2px;
-		font-size: 12px;
-		color: white;
-		font-weight: 600;
-		border-radius: 3px;
-		.fa {
-			font-size: 14px;
-		}
-	}
-	.fb {
-		background: #3b5998;
-		img {
-			vertical-align: top;
-			height: 15px;
-			margin-right: 7px;
-		}
-	}
-	.new_user {
-		padding-left: 0px;
-		padding-right: 0px;
-		height: 40px;
-	}
+	// .share-button {
+	// 	background: $mainColor;
+	// 	display: inline-block;
+	// 	padding-top: 7px;
+	// 	padding-bottom: 5px;
+	// 	padding-left: 9px;
+	// 	padding-right: 9px;
+	// 	margin-bottom: 0px;
+	// 	margin-right: 2px;
+	// 	font-size: 12px;
+	// 	color: white;
+	// 	font-weight: 600;
+	// 	border-radius: 3px;
+	// 	.fa {
+	// 		font-size: 14px;
+	// 	}
+	// }
+	// .fb {
+	// 	background: #3b5998;
+	// 	img {
+	// 		vertical-align: top;
+	// 		height: 15px;
+	// 		margin-right: 7px;
+	// 	}
+	// }
 	.invited-name {
 		color: #858585;
 		font-size: 16px;
@@ -2329,15 +2349,18 @@ outline: -webkit-focus-ring-color auto 0px;
 	}
 	.invite-more-friends {
 		font-size: 21px;
+		margin-bottom: 10px;
+		margin-top: 10px;
+		padding: 0px 10px 0px 10px;
 	}
 	.alert {
-		background-color: $noActionGray;
+		padding: 0px 10px 5px 10px !important;
+		margin: 5px 0px 15px 0px;
+		background-color: transparent;
 		padding: 0px;
 		border: 0px;
 		color: $mainColor;
 		text-align: left;
-		padding-top: 0px;
-		padding-bottom: 5px;
 		font-weight: 600;
 		font-size: 16px;
 		box-shadow: inset 0 0px 0 rgba(255, 255, 255, 0.25), 0 0px 0px rgba(0, 0, 0, 0.05);
@@ -2359,17 +2382,26 @@ outline: -webkit-focus-ring-color auto 0px;
 		border-bottom-left-radius: 4px;
 		border-bottom-right-radius: 4px;
 	}
-	.copy-paste {
-		margin-top: 10px;
-		color: #575757;
+	.invite-column {
+	padding: 0px 10px 0px 10px;
+	}
+	.done-btn {
+		border: 1px solid #aaaaaa;
+		color: #4E4E4E;
+		text-transform: none;
+		border-radius: 3px;
+		background: white;
+		font-weight: 400;
+		letter-spacing: 0px;
+		float: right;
 	}
 }
 .add-by-text-phone {
-	float: left;
-	font-size: 16px;
+	// float: left;
+	// font-size: 16px;
 	input {
 		border: 1px solid #E2E2E2;
-		width: 192px;
+		// width: 192px;
 		border-top-left-radius: 3px;
 		border-bottom-left-radius: 3px;
 		height: 35px;
@@ -2388,12 +2420,12 @@ outline: -webkit-focus-ring-color auto 0px;
 	}
 }
 .add-by-phone-btn {
-	width: 60px !important;
-	height: 35px !important;
+	width: 45px !important;
+	// height: 35px !important;
 	border-top-right-radius: 3px;
 	border-bottom-right-radius: 3px;
-	display: inline;
-	float: left;
+	// display: inline;
+	// float: left;
 	text-transform: capitalize;
 	background: $mainColor;
 	letter-spacing: 0px;
@@ -2401,12 +2433,12 @@ outline: -webkit-focus-ring-color auto 0px;
 	margin-right: 0px;
 }
 .add-by-phone-btn-disabled {
-	width: 60px !important;
-	height: 35px !important;
+	width: 45px !important;
+	// height: 35px !important;
 	border-top-right-radius: 3px;
 	border-bottom-right-radius: 3px;
-	display: inline;
-	float: left;
+	// display: inline;
+	// float: left;
 	text-transform: capitalize;
 	background: #cccccc;
 	letter-spacing: 0px;
@@ -2506,4 +2538,83 @@ outline: -webkit-focus-ring-color auto 0px;
 	margin-top: 40px;
 	margin-bottom: 10px;
 	text-align: center;
+}
+.share-button {
+		width: 100%;
+		cursor: pointer;
+		background: $mainColor;
+		display: inline-block;
+		padding-top: 7px;
+		padding-bottom: 5px;
+		padding-left: 9px;
+		padding-right: 9px;
+		margin-bottom: 5px;
+		margin-right: 2px;
+		font-size: 12px;
+		color: white;
+		font-weight: 600;
+		border-radius: 3px;
+		.fa {
+			font-size: 14px;
+		}
+	}
+.fb {
+	background: #3b5998;
+	img {
+		vertical-align: top;
+		height: 15px;
+		margin-right: 7px;
+	}
+}
+.invite-column {
+	padding: 0px 10px 0px 10px;
+	background: white;
+}
+.tab-form-top {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	background: white;
+}
+.border-right {
+	border-right: 1px solid #E7E7E7;
+}
+.add_phone_line {
+	width: 100%;
+}
+.text-form {
+	.input-group {
+		padding: 0px;
+	}
+	input {
+		height: 35px;
+		border-top-left-radius: 3px;
+		border-bottom-left-radius: 3px;	
+	}
+}
+.margin-top-5 {
+	margin-top: 5px;
+}
+.for-mobile-only {
+	display: none !important; 
+}
+.for-non-mobile-only {
+	display: block !important;
+}
+@media only screen and (max-device-width: 480px) {
+	.spacing-for-mobile {
+		margin-top: 25px;
+	}
+	.border-right {
+		border-right: 0px;
+	}
+	.for-mobile-only {
+		display: block !important;
+	}
+	.for-non-mobile-only {
+		display: none !important;
+	}
+	.fb-send {
+		margin-bottom: 5px;
+	}
+/* define mobile specific styles come here */
 }

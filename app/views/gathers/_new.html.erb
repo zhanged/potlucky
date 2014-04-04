@@ -4,7 +4,7 @@
 	<%= render 'shared/error_messages', object: f.object %> 
 	<div class="field">		
 		<div class="input-group">
-			<div class="form-label">1. Activity<a href="#" id="quick-suggestions" onclick="toggle_visibility('suggestion_link')"><div class="suggestion-link">Need Ideas?</div></a></div>
+			<div class="form-label">1. Activity<a href="javascript:;" id="quick-suggestions" onclick="toggle_visibility('suggestion_link')"><div class="suggestion-link">Need Ideas?</div></a></div>
 			<div id="suggestion_link" style="display:none;" class="quick-suggestions">
 				<%= render 'shared/quick_suggestions' %> 
 			</div>
@@ -14,7 +14,7 @@
         </div>
 
 		<div class="input-group min-friends">
-			<div class="form-label">2. Minimum friends needed <a title="The activity will only happen if this many friends or more join, including you"><i class="fa fa-question-circle"></i></a> 
+			<div class="form-label">2. Minimum friends needed <a title="The activity will take off when this number of people (including yourself) join."><i class="fa fa-question-circle"></i></a> 
 				<div class="radio-select-area">
 					<div id="radio_tilt">
 					    <input type="radio" id="radio2" name="gather[tilt]" value="2" /><label for="radio2">2</label>
@@ -27,22 +27,9 @@
 			</div>
 		</div>
 
-		<textarea class="tags" id="new-gather-form-invite" style="display:none;" name="gather[invited]" placeholder="Invite: (none selected from below)" ></textarea>
-		<div class="input-group">
-			<!-- <div class="name-select-area"> -->
-				<% if current_user.friended_users.present? %>
-						<span class="form-label">3. Who</span>
-						<ol class="selectable" id="new-gather-form-invite">
-							<% current_user.friended_users.where("phone IS NOT NULL").order(:name).each do |friend| %>
-								<li class="name-select" value="<%= friend.name %>">+<%= friend.name %> <div style="display:none;">(<%= friend.id %>) </div></li>
-							<% end %>
-						</ol>
-				<% end %>
-				<span style="display: none" class="name-select-blurb">Copy & share this link to invite others not here: <input type="text" id="gen_link" class="gen_link-form" name="gather[gen_link]" value="" readonly></span>
-			<!-- </div> -->
-		</div>
+		
 	</div>
-	<%= f.submit "Send Invitations", data: { disable_with: 'Please wait...' }, class: "btn btn-large btn-block btn-invite" %>
+	<%= f.submit "Next", data: { disable_with: 'Please wait...' }, class: "btn btn-large btn-block btn-invite" %>
 
 <% end %>
 </div>

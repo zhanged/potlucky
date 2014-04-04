@@ -174,30 +174,80 @@
 			</div>
 			
 			<div id="tabs-2_<%=feed_item.id %>">
-				<div class="tab-form">
-				    <% if feed_item.completed.blank? %>
-						<!-- <div class="name-select-title">Select friends to invite:<hr></div> -->
-							<!-- <textarea class="share-link-area" size="60" onclick="this.focus();this.select()" readonly="readonly">Interested in hanging out with me? Join me here: bloon.us/<%= feed_item.gen_link %></textarea> -->
-				    	<%= form_for(InviteMore.new) do |f| %>
-					    	<%= f.hidden_field :user_id, :value => current_user.id %>
-	                        <%= f.hidden_field :gather_id, :value => feed_item.id %>
-				    		<textarea style="display:none;" class="select-result-<%= feed_item.id %>" id="select-result-<%= feed_item.id %>" name="invite_more[more_invitees]" ></textarea>
-					    	<div class="name-select-area-feed">
-					    		<ol class="selectable" id="select-result-<%= feed_item.id %>">
-									<% current_user.friended_users.where("phone IS NOT NULL").order(:name).each do |friend| %>
-										<% if not feed_item.invitees.pluck(:id).include? friend.id %>
-											<li class="name-select" value="<%= friend.name %>">+<%= friend.name %> <div style="display:none;">(<%= friend.id %>) </div></li>
-										<% end %>
-									<% end %>
-								</ol>
-								<% if feed_item.gen_link.present? %>
-									<div class="name-select-link">Invite others by giving them this link: <b>bloon.us/<%= feed_item.gen_link %></b></div>
+				<div class="tab-form-top">
+					<% if feed_item.completed.blank? %>
+<!-- 					    <div class="row bg-f8">
+						  	<div class="col-md-12 padding-lr-15 step-header">Invite Friends</div>
+						</div> -->
+						<div class="row">
+							<div class="col-md-7 invite-column border-right">
+								<div class="name-select-title">My Friends<hr></div>
+									<!-- <textarea class="share-link-area" size="60" onclick="this.focus();this.select()" readonly="readonly">Interested in hanging out with me? Join me here: bloon.us/<%= feed_item.gen_link %></textarea> -->
+						    	<%= form_for(InviteMore.new) do |f| %>
+							    	<%= f.hidden_field :user_id, :value => current_user.id %>
+			                        <%= f.hidden_field :gather_id, :value => feed_item.id %>
+						    		<textarea style="display:none;" class="select-result-<%= feed_item.id %>" id="select-result-<%= feed_item.id %>" name="invite_more[more_invitees]" ></textarea>
+							    	<div class="name-select-area-feed">
+							    		<ol class="selectable" id="select-result-<%= feed_item.id %>">
+											<% current_user.friended_users.where("phone IS NOT NULL").order(:name).each do |friend| %>
+												<% if not feed_item.invitees.pluck(:id).include? friend.id %>
+													<li class="name-select" value="<%= friend.name %>"><i class="fa fa-square-o"></i><i class="fa fa-check-square-o"></i> <%= friend.name %> <div style="display:none;">(<%= friend.id %>) </div></li>
+												<% end %>
+											<% end %>
+										</ol>
+									</div>
+								<% if current_user.friended_users.where("phone IS NOT NULL").count != 0 %>
+								<%= f.submit "Invite Selected Friends", data: { disable_with: 'Inviting...' }, class: "btn btn-block btn-large btn-new-user" %>
 								<% end %>
+								<% end %>	
+							</div>			  
+							<div class="col-md-5 invite-column">
+							  	<div class="name-select-title spacing-for-mobile">Others<hr></div>
+							  	<div class="fb-send for-mobile-only" data-href="http://bloon.us/<%= feed_item.gen_link %>" data-colorscheme="light"></div>
+									<a onclick="facebookSendDialog('http://bloon.us/<%= feed_item.gen_link %>'); return false;">
+			 					<div class="share-button fb for-non-mobile-only"><%= image_tag("fb_share.png") %>Message</div>
+
+			 					<a href="javascript:;" onclick="toggle_visibility('copy_link_<%= feed_item.id %>')">
+									<div class="share-button">
+									<i class="fa fa-link"></i>&nbsp; Link
+									</div>
+								</a>
+								<div id="copy_link_<%= feed_item.id %>" style="display:none;" class="copy-paste">
+									<!-- Copy & Paste: -->
+									<textarea onclick="this.select();" /><%= feed_item.activity %>? We'll only do it if <%= feed_item.tilt %>+ join. Just let me know here: bloon.us/<%= feed_item.gen_link %></textarea>
+								</div>
+
+								<a href="javascript:;" onclick="toggle_visibility('text_<%= feed_item.id %>')">
+									<div class="share-button">
+									<i class="fa fa-comment"></i>&nbsp; SMS
+									</div>
+								</a>
+								<div id="text_<%= feed_item.id %>" style="display:none;" class="text-form">						
+									<div id="text_link">
+										<%= form_for(User.new) do |f| %>
+											<div class="input-group">
+												<%= render 'shared/error_messages', object: f.object %>
+												<%= f.text_field :phone, placeholder: "Friend's Mobile Number", :autofocus => true, :class => 'form-control' %>
+												<%= f.hidden_field :gathering_id, value: feed_item.id %>
+												<span class="input-group-btn">
+													<%= f.submit "Add", data: { disable_with: '...' }, class: "btn btn-large btn-block add-by-phone-btn" %>
+												</span>
+											</div>
+										<% end %>
+										
+										<%= form_for(User.new) do |f| %>
+											<div class="input-group margin-top-5">
+												<%= render 'shared/error_messages', object: f.object %>
+												<%= f.text_field :phone, disabled: true, placeholder: "Friend's Mobile Number", :class => 'form-control' %>
+												<span class="input-group-btn">
+													<%= f.submit "Add", disabled: true, data: { disable_with: '...' }, class: "btn btn-large btn-block add-by-phone-btn-disabled" %>
+												</span>
+											</div>
+										<% end %>												
+									</div>
+								</div>
 							</div>
-						<% if current_user.friended_users.where("phone IS NOT NULL").count != 0 %>
-						<%= f.submit "Invite selected", data: { disable_with: 'Inviting...' }, class: "btn btn-block btn-large btn-update" %>
-						<% end %>
-						<% end %>
+						</div>					
 					<% else %>
 						<div class="already-completed">This activity has already been completed</div>
 					<% end %>

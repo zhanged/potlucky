@@ -40,7 +40,7 @@
   <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
     <ul class="nav navbar-nav navbar-right">
       <% if signed_in? %>
-        <% if current_user.phone.present? %>
+        
           <!-- <li><%= link_to "My List", user_path(current_user) %></li> -->
           <!-- <li><%= link_to "Feed", root_path %></li> -->
           <li class="dropdown">
@@ -52,7 +52,7 @@
               <!-- <li><%= link_to "Sign out", signout_path, id: "sign_out" %></li> -->
             </ul>
           </li>
-        <% end %>
+        
       <% else %>
         <li><a href="/signin" id="ga-sign-in" data-no-turbolink>Sign in</a></li>
         <!-- <li><%= link_to "FAQ", faq_path %></li> -->
