@@ -1,7 +1,6 @@
 function facebookSendDialog(url, callback) {
     FB.ui({method:'send',
-        link:url,
-
+        link:url
     }, callback);
 }
 

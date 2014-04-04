@@ -25,9 +25,12 @@
 	<body data-no-turbolink>
 		<%= render 'layouts/fb_js' %>		
 		<%= render 'layouts/header' %>
-		<%= render 'shared/gather_modal' %>				
 		
-		<% if signed_in? %>			
+		<% if signed_in? %>
+			<a style="display:none" id="facebook-send-button" onclick="facebookSendDialog('http://bloon.us'); return false;">
+	 			<div style="display:none" class="share-button fb for-non-mobile-only"></div>
+	 		</a>			
+			<%= render 'shared/gather_modal' %>				
 			<div class="container-fluid">
 				<% flash.each do |key, value| %>
 					<% if !flash[:new_gather_modal]  %>
