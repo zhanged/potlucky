@@ -46,10 +46,10 @@
 					<div class="col-md-5 invite-column">
 					  	<div class="name-select-title spacing-for-mobile">Others<hr></div>
 					  	<div class="fb-send for-mobile-only" data-href="http://bloon.us/<%= feed_item.gen_link %>" data-colorscheme="light"></div>
-							<a onclick="facebookSendDialog('http://bloon.us/<%= feed_item.gen_link %>'); return false;">
+							<a onclick="facebookSendDialog('http://bloon.us/<%= feed_item.gen_link %>'); return false;" id="facebook-send-button-modal">
 	 					<div class="share-button fb for-non-mobile-only"><%= image_tag("fb_share.png") %>Message</div>
 
-	 					<a href="javascript:;" onclick="toggle_visibility('copy_link_<%= feed_item.id %>')">
+	 					<a href="javascript:;" onclick="toggle_visibility('copy_link_<%= feed_item.id %>')" id="copy-link-button-modal">
 							<div class="share-button">
 							<i class="fa fa-link"></i>&nbsp; Link
 							</div>
@@ -59,7 +59,7 @@
 							<textarea onclick="this.select();" /><%= feed_item.activity %>? We'll only do it if <%= feed_item.tilt %>+ join. Just let me know here: bloon.us/<%= feed_item.gen_link %></textarea>
 						</div>
 
-						<a href="javascript:;" onclick="toggle_visibility('text_<%= feed_item.id %>')">
+						<a href="javascript:;" onclick="toggle_visibility('text_<%= feed_item.id %>')" id="sms-invite-button-modal">
 							<div class="share-button">
 							<i class="fa fa-comment"></i>&nbsp; SMS
 							</div>
@@ -69,7 +69,7 @@
 								<%= form_for(User.new) do |f| %>
 									<div class="input-group">
 										<%= render 'shared/error_messages', object: f.object %>
-										<%= f.text_field :phone, placeholder: "Friend's Mobile Number", :autofocus => true, :class => 'form-control' %>
+										<%= f.text_field :phone, placeholder: "Friend's Mobile Number", :autofocus => true, :class => 'form-control user_phone' %>
 										<%= f.hidden_field :gathering_id, value: feed_item.id %>
 										<span class="input-group-btn">
 											<%= f.submit "Add", data: { disable_with: '...' }, class: "btn btn-large btn-block add-by-phone-btn" %>

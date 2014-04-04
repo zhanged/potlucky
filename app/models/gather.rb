@@ -148,6 +148,7 @@ class Gather < ActiveRecord::Base
 			all_numbers_used = other_user.reverse_invitations.pluck(:number_used)
 			@number_used = (Tnumber.pluck(:tphone) - all_numbers_used  - ENV['TWILIO_MAIN'].split('xxx')).sample
 			if @number_used.blank?
+				@client = Twilio::REST::Client.new ENV['ACCOUNT_SID'], ENV['AUTH_TOKEN']						
 				@numbers = @client.account.available_phone_numbers.get('US').local.list(:area_code => "415")
 				@number_used = @numbers[0].phone_number
 				@number = @client.account.incoming_phone_numbers.create(:phone_number => @number_used)	# Purchase the number

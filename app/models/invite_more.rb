@@ -124,7 +124,7 @@ class InviteMore < ActiveRecord::Base
 					# end
 
 					tracker = Mixpanel::Tracker.new(ENV['MIXPANEL_TOKEN'])
-					tracker.track(User.find_by(id: self.user_id).id, 'Invited More', {
+					tracker.track(User.find_by(id: self.user_id).id, 'Invited', {
 						'To' => @user.id,
 						'Activity ID' => @gather.id,
 						'Activity' => @gather.activity,
