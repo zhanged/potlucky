@@ -46,8 +46,10 @@
 					<div class="col-md-5 invite-column">
 					  	<div class="name-select-title spacing-for-mobile">Others<hr></div>
 					  	<div class="fb-send for-mobile-only" data-href="http://bloon.us/<%= feed_item.gen_link %>" data-colorscheme="light"></div>
-							<a id="facebook-send-button" onclick="facebookSendDialog('http://bloon.us/<%= feed_item.gen_link %>'); return false;">
-	 					<div class="share-button fb for-non-mobile-only"><%= image_tag("fb_share.png") %>Message</div>
+						
+						<a id="facebook-send-button" onclick="facebookSendDialog('http://bloon.us/<%= feed_item.gen_link %>'); return false;">
+	 						<div class="share-button fb for-non-mobile-only"><%= image_tag("fb_share.png") %>Message</div>
+	 					</a>
 
 	 					<a href="javascript:;" onclick="toggle_visibility('copy_link_<%= feed_item.id %>')" id="copy-link-button-modal">
 							<div class="share-button">

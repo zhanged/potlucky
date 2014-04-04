@@ -1,3 +1,10 @@
+function facebookSendDialog(url, callback) {
+    FB.ui({method:'send',
+        link:url,
+
+    }, callback);
+}
+
 
   $(function() {
     $( ".tabs" ).tabs({
