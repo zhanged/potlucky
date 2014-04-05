@@ -2286,6 +2286,7 @@ outline: -webkit-focus-ring-color auto 0px;
 	.modal-body {
 		border-radius: 10px;
 		padding: 10px;
+		background: $noActionGray !important;
 	}
 }
 .modal {
@@ -2578,6 +2579,9 @@ outline: -webkit-focus-ring-color auto 0px;
 .border-right {
 	border-right: 1px solid #E7E7E7;
 }
+.border-left {
+	border-left: 1px solid #E7E7E7;
+}
 .add_phone_line {
 	width: 100%;
 }
@@ -2607,6 +2611,10 @@ outline: -webkit-focus-ring-color auto 0px;
 	.border-right {
 		border-right: 0px;
 	}
+	.border-left {
+		border-left: 0px;
+	}
+
 	.for-mobile-only {
 		display: block !important;
 	}
@@ -2617,4 +2625,7 @@ outline: -webkit-focus-ring-color auto 0px;
 		margin-bottom: 5px;
 	}
 /* define mobile specific styles come here */
+}
+.no-friends {
+	color: #888888;
 }

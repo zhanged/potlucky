@@ -183,25 +183,27 @@
 							<div class="col-md-7 invite-column border-right">
 								<div class="name-select-title">My Friends<hr></div>
 									<!-- <textarea class="share-link-area" size="60" onclick="this.focus();this.select()" readonly="readonly">Interested in hanging out with me? Join me here: bloon.us/<%= feed_item.gen_link %></textarea> -->
-						    	<%= form_for(InviteMore.new) do |f| %>
-							    	<%= f.hidden_field :user_id, :value => current_user.id %>
-			                        <%= f.hidden_field :gather_id, :value => feed_item.id %>
-						    		<textarea style="display:none;" class="select-result-<%= feed_item.id %>" id="select-result-<%= feed_item.id %>" name="invite_more[more_invitees]" ></textarea>
-							    	<div class="name-select-area-feed">
-							    		<ol class="selectable" id="select-result-<%= feed_item.id %>">
-											<% current_user.friended_users.where("phone IS NOT NULL").order(:name).each do |friend| %>
-												<% if not feed_item.invitees.pluck(:id).include? friend.id %>
-													<li class="name-select" value="<%= friend.name %>"><i class="fa fa-square-o"></i><i class="fa fa-check-square-o"></i> <%= friend.name %> <div style="display:none;">(<%= friend.id %>) </div></li>
+						    	<% if current_user.friended_users.where("phone IS NOT NULL").count != 0 %>
+							    	<%= form_for(InviteMore.new) do |f| %>
+								    	<%= f.hidden_field :user_id, :value => current_user.id %>
+				                        <%= f.hidden_field :gather_id, :value => feed_item.id %>
+							    		<textarea style="display:none;" class="select-result-<%= feed_item.id %>" id="select-result-<%= feed_item.id %>" name="invite_more[more_invitees]" ></textarea>
+								    	<div class="name-select-area-feed">
+								    		<ol class="selectable" id="select-result-<%= feed_item.id %>">
+												<% current_user.friended_users.where("phone IS NOT NULL").order(:name).each do |friend| %>
+													<% if not feed_item.invitees.pluck(:id).include? friend.id %>
+														<li class="name-select" value="<%= friend.name %>"><i class="fa fa-square-o"></i><i class="fa fa-check-square-o"></i> <%= friend.name %> <div style="display:none;">(<%= friend.id %>) </div></li>
+													<% end %>
 												<% end %>
-											<% end %>
-										</ol>
-									</div>
-								<% if current_user.friended_users.where("phone IS NOT NULL").count != 0 %>
-								<%= f.submit "Invite Selected Friends", data: { disable_with: 'Inviting...' }, class: "btn btn-block btn-large btn-new-user" %>
-								<% end %>
-								<% end %>	
+											</ol>
+										</div>
+										<%= f.submit "Invite Selected Friends", data: { disable_with: 'Inviting...' }, class: "btn btn-block btn-large btn-new-user" %>
+									<% end %>	
+								<% else %>
+									<div class="no-friends">No friends on Bloon yet - invite them!</div>
+								<% end %>							
 							</div>			  
-							<div class="col-md-5 invite-column">
+							<div class="col-md-5 invite-column border-left">
 							  	<div class="name-select-title spacing-for-mobile">Others<hr></div>
 							  	<div class="fb-send for-mobile-only" data-href="http://bloon.us/<%= feed_item.gen_link %>" data-colorscheme="light"></div>
 								<a id="facebook-send-button" onclick="facebookSendDialog('http://bloon.us/<%= feed_item.gen_link %>'); return false;">

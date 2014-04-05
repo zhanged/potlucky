@@ -234,10 +234,10 @@ class UsersController < ApplicationController
         rescue 
           if gather.id == current_user.gathers.first.id
             flash[:error] = "Oops this cell number doesn't seem to be correct, please re-enter your friend's mobile number"
-            redirect_to (request.env['HTTP_REFERER'])
+            redirect_to (request.env['HTTP_REFERER']), flash: { new_gather_modal: true }
           else
             flash[:error] = "Oops this cell number doesn't seem to be correct, please re-enter your friend's mobile number"
-            redirect_to (request.env['HTTP_REFERER']), flash: { new_gather_modal: true }
+            redirect_to (request.env['HTTP_REFERER'])
           end
         else
           @user = User.new
@@ -253,10 +253,10 @@ class UsersController < ApplicationController
           })
           if gather.id == current_user.gathers.first.id
             flash[:success] = "Your friend has been invited!"
-            redirect_to root_url
+            redirect_to root_url, flash: { new_gather_modal: true }
           else
             flash[:success] = "Your friend has been invited!"
-            redirect_to root_url, flash: { new_gather_modal: true }
+            redirect_to root_url
           end
         end
       end
