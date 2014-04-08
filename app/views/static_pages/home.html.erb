@@ -21,8 +21,10 @@
 <% else %>
 <div class="row">
 	<div class="center center-span">
-		<div class="row bg-white"><div class="not-logged-in-800 margin-top-20">
-		  <div class="col-md-7">
+		<div class="row bg-white min-height-500"><div class="not-logged-in-900 margin-top-40">
+		  <div class="col-md-5 padding-lr-15">
+		  	<%= image_tag("step3mjh50.png", id: "sampleimg") %>
+		  </div>		  <div class="col-md-7">
 		  	<h1 class="main-blurb padding-lr-15">Quickly poll friends’ interest in:<div id="changeText" ></div></h1>
 	  		
 		    <script type="text/javascript">
@@ -40,15 +42,14 @@
 				<%= render 'users/new' %>
 			</section>
 		  </div>
-		  <div class="col-md-5 padding-lr-15">
-		  	<%= image_tag("sampleimg.png", id: "sampleimg") %>
-		  </div>
-		</div></div>
-		
-		<%= render 'static_pages/how' %>
 
-		<h1 class="logo-front">Have more fun</h1>
-		<h2 class="desc-front blurb">Bloon helps you organize social activities for you and your friends, effortlessly
+		</div></div>
+		<div class="padding-top-bottom-60">
+			<%= render 'static_pages/how' %>
+		</div>
+
+<!-- 		<h1 class="logo-front">Have more fun</h1>
+		<h2 class="desc-front blurb">Bloon helps you organize social activities for you and your friends, effortlessly -->
 	</div>
 </div>
 <%= render 'layouts/facepile' if !signed_in? %>		

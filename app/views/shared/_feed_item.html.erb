@@ -181,7 +181,7 @@
 						</div> -->
 						<div class="row">
 							<div class="col-md-7 invite-column border-right">
-								<div class="name-select-title">My Friends<hr></div>
+								<div class="name-select-title">My Friends on Bloon<hr></div>
 									<!-- <textarea class="share-link-area" size="60" onclick="this.focus();this.select()" readonly="readonly">Interested in hanging out with me? Join me here: bloon.us/<%= feed_item.gen_link %></textarea> -->
 						    	<% if current_user.friended_users.where("phone IS NOT NULL").count != 0 %>
 							    	<%= form_for(InviteMore.new) do |f| %>
@@ -200,11 +200,11 @@
 										<%= f.submit "Invite Selected Friends", data: { disable_with: 'Inviting...' }, class: "btn btn-block btn-large btn-new-user" %>
 									<% end %>	
 								<% else %>
-									<div class="no-friends">No friends on Bloon yet - invite them!</div>
+									<div class="no-friends">No friends on Bloon yet - invite some!</div>
 								<% end %>							
 							</div>			  
 							<div class="col-md-5 invite-column border-left">
-							  	<div class="name-select-title spacing-for-mobile">Others<hr></div>
+							  	<div class="name-select-title spacing-for-mobile">Others Friends<hr></div>
 							  	<div class="fb-send for-mobile-only" data-href="http://bloon.us/<%= feed_item.gen_link %>" data-colorscheme="light"></div>
 								<a id="facebook-send-button" onclick="facebookSendDialog('http://bloon.us/<%= feed_item.gen_link %>'); return false;">
 			 						<div class="share-button fb for-non-mobile-only"><%= image_tag("fb_share.png") %>Message</div>

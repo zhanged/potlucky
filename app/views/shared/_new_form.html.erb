@@ -1,15 +1,17 @@
 <div class="new-tabs">
-		  <div class="tabs">
+			<% if @feed_items.blank? %>
+				<div class="new-user-gather">
+					<h3>Create Your First Bloon</h3>
+					<%= render 'gathers/new' %>
+				</div>
+			<% else %>
+				<div class="tabs">
 			<!-- <div class="misc-actions"> -->
 				<ol>
 					<li><a href="#tabs-new-gather" id="ga-new-gather-tab">Create New Bloon</a>
 					<!-- <li><a href="#tabs-new-list" id="ga-new-list-tab">New To-do</a> -->
 				</ol>
 			<!-- </div> -->
-
-			<% if @feed_items.blank? %>
-				<%= render 'gathers/new' %>
-			<% else %>
 				<div id="tabs-new-gather">
 					<%= render 'gathers/new' %>
 					<div class="tab-form"></div>

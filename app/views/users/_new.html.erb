@@ -3,9 +3,12 @@
 		<h3>Sign up to join:</h3>
 <% end %>
 <div class="form-300 all-wide-form">
-	<%= link_to image_tag("active_600@2x.png", :border => 0, :width => 300), "/auth/facebook", id: "sign_in" %>
 
-	<a href="#" onclick="toggle_visibility('email_signup'); return false;" class="email_signup">&nbsp &nbsp <i class="fa fa-envelope fa-1x"></i>&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Or Sign up with Email</a>
+	<a href="/auth/facebook", id: "sign_in" >
+		<div class="fb-signup"><%= image_tag("FB-f-Logo__blue_72.png") %>Sign up with Facebook</div>
+	</a>
+
+	<a href="#" onclick="toggle_visibility('email_signup'); return false;" class="email_signup">&nbsp &nbsp <i class="fa fa-envelope fa-1x"></i>&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Sign up with Email</a>
 
 	<% if current_page?(controller: 'gathers', action: 'show') %>
 	<!-- Invited with gather link -->
@@ -44,7 +47,7 @@
 	<% end %>
 	
 	<div class="have-account">
-		Already have an account? <a href="/signin" id="ga-sign-in">Log in now</a>
+		or <a href="/signin" id="ga-sign-in">Sign in</a>
 	</div>
 </div>
 <% if current_page?(controller: 'gathers', action: 'show') %>
