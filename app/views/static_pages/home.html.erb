@@ -25,10 +25,11 @@
 		  <div class="col-md-5 padding-lr-15">
 		  	<%= image_tag("step3mjh50.png", id: "sampleimg") %>
 		  </div>		  <div class="col-md-7">
-		  	<h1 class="main-blurb padding-lr-15">Quickly poll friends’ interest in:<div id="changeText" ></div></h1>
+		  	<h1 class="main-blurb form-300"><div id="changeText"></div>Schedule it with Bloon.</h1>
 	  		
 		    <script type="text/javascript">
-		    var text = ["Happy hour on Fri", "Potluck dinner on Sat", "Climb this weekend", "Game night on Sun"];
+		    var text = ["Need at least 5 friends for a potluck?", "Need at least 4 friends to play basketball?", "Need at least 6 friends to have a BBQ?", "Need at least 4 friends to play Settlers?"];
+
 		    var counter = 0;
 		    var elem = document.getElementById("changeText");
 		    setInterval(change, 1500);
@@ -44,9 +45,13 @@
 		  </div>
 
 		</div></div>
-		<div class="padding-top-bottom-60">
+		<div class="padding-top-bottom-60 bg-f8">
 			<%= render 'static_pages/how' %>
 		</div>
+		<div class="padding-top-bottom-60 bg-white">
+			<%= render 'static_pages/why' %>
+		</div>
+		
 
 <!-- 		<h1 class="logo-front">Have more fun</h1>
 		<h2 class="desc-front blurb">Bloon helps you organize social activities for you and your friends, effortlessly -->

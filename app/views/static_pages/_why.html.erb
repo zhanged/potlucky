@@ -1,46 +1,36 @@
-<div class="page-title-2">Why use Bloon?</div>
-<div class="row why-all">
-	<div class="why-section">
-		<i class="fa fa-rocket fa-4x"></i>
-		<div class="why-title">
-			Get faster responses
+<div class="row bg-white">
+	<div class="not-logged-in-800 why">			  
+		<div class="one-row">
+			<div class="col-md-7 padding-lr-15">
+			  	<div class="why-header">See if there's enough interest</div>
+			  	<p>Make sure enough friends committed, because some activities just aren’t worth doing without enough people.</p>
+			</div>
+			<div class="col-md-5">
+			  	<%= image_tag("why_section-01.png", alt: "Illustrations by Mei-Jean Hsu") %>
+			</div>			  
 		</div>
-		<div class="why-desc">
-			Set a minimum number of participants needed so no one will hesitate to join
+		<div class="one-row">
+			<div class="col-md-7 padding-lr-15 float-right">
+			  	<div class="why-header">Quickly poll via SMS</div>
+			  	<p>Ask friends whether they’d like to join a Bloon via SMS. No need to ask everyone individually over email, text, and IM.</p>
+			</div>
+			<div class="col-md-5 float-left">
+			  	<%= image_tag("why_section-02.png", alt: "Illustrations by Mei-Jean Hsu") %>
+			</div>			  
 		</div>
+		<div class="one-row">
+			<div class="col-md-7 padding-lr-15">
+			  	<div class="why-header">Automatic group chat</div>
+			  	<p>Friends who accept will be placed into a group chat over SMS to finalize details and keep the group up-to-date.</p>
+			</div>
+			<div class="col-md-5">
+			  	<%= image_tag("why_section-03.png", alt: "Illustrations by Mei-Jean Hsu") %>
+			</div>			  
+		</div>		
 	</div>
-	<div class="why-section">
-		<i class="fa fa-check-square-o fa-4x"></i>
-		<div class="why-title">
-			Poll when and where
-		</div>
-		<div class="why-desc">
-			Ask your friends to vote on when, where & what so you don't have to figure it all out
-		</div>
-	</div>
-	<div class="why-section">
-		<i class="fa fa-calendar-o fa-4x"></i>
-		<div class="why-title">
-			Finalize plans
-		</div>
-		<div class="why-desc">
-			Send a calendar invitation so no excuses for being late or forgetting
-		</div>
-	</div>
-	
-	<div class="why-section">
-		<i class="fa fa-comments-o fa-4x"></i>
-		<div class="why-title">
-			Group chat
-		</div>
-		<div class="why-desc">
-			Keep each other updated on last minute changes or if you're running late
-		</div>
-	</div>
-	<h2 class="desc-front blurb">
-		<a href="<%= '/how' %>" id="ga-how">How it works</a>
-	</h2>
-	<% if !signed_in? %>
-		<%= render 'users/new' %>
-	<% end %>
+		<br><br><br>
+		<section>
+			<%= render 'users/new' %>
+		</section>
+
 </div>
