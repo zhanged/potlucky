@@ -11,7 +11,7 @@ function facebookSendDialog(url, callback) {
       active: false
     });
 
-    $(".tabs ol li a").each(function(){
+    $(".tabs a").each(function(){
        $(this).click(function(e){
           e.preventDefault();
        });
