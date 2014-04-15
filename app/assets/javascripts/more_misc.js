@@ -10,12 +10,6 @@ function facebookSendDialog(url, callback) {
       collapsible: true,
       active: false
     });
-
-    $(".tabs a").each(function(){
-       $(this).click(function(e){
-          e.preventDefault();
-       });
-    });
   });
 
 

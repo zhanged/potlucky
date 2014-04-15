@@ -3,12 +3,10 @@
 <head>
 	<%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
 	<meta name="apple-mobile-web-app-capable" content="no" />
-	<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> -->
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" />
 	<%= javascript_include_tag "application", "data-turbolinks-track" => true %>
 	<%= favicon_link_tag 'favicon.ico' %>
 	<title><%= full_title(yield(:title)) %></title>
-	<!-- <link href='http://fonts.googleapis.com/css?family=Montserrat+Alternates' rel='stylesheet' type='text/css'> -->
 	<link rel="apple-touch-icon-precomposed" sizes="120x120" href="favicon-120.png" />
 	<link rel="apple-touch-icon-precomposed" sizes="152x152" href="favicon-152.png" />
 	<link rel="stylesheet" href="/font-awesome-4.0.3/css/font-awesome.min.css">
@@ -29,7 +27,15 @@
 		<% if signed_in? %>
 			<a style="display:none" id="facebook-send-button" onclick="facebookSendDialog('http://bloon.us'); return false;">
 	 			<div style="display:none" class="share-button fb for-non-mobile-only"></div>
-	 		</a>			
+	 		</a>
+	 		<div class="tabs" style="display:none" >
+				<ol>
+					<li><a href="#tabs-1" id="ga-reply-tab">Reply</a>
+					<li><a href="#tabs-2" id="ga-invite-tab">Invite</a>
+					<li><a href="#tabs-3" id="ga-convo-tab">Convo</a>
+					<li><a href="#tabs-4" id="ga-rebloon-tab">Rebloon</a>
+				</ol>
+			</div>			
 			<%= render 'shared/gather_modal' %>				
 			<div class="container-fluid">
 				<% flash.each do |key, value| %>
