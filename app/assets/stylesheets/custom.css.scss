@@ -2016,8 +2016,12 @@ outline: -webkit-focus-ring-color auto 0px;
 	// border-left: 20px solid transparent;
 	// border-right: 20px solid transparent;
 }
-.already-completed {
-	padding: 10px 15px 0px 15px;
+.already-completed-reply {
+	padding: 15px 0px 0px 0px;
+	color: #AAAAAA;
+}
+.already-completed-invite {
+	padding: 5px 15px 5px 15px;
 	color: #AAAAAA;
 }
 .name-select-link {
